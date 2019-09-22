@@ -1,5 +1,4 @@
-﻿You do **not** need the dependency if you have R2API installed.
-_If there was a way to make an "Either of these mods" dependency, I would._
+﻿*This mod also runs on [MMBAIT](https://thunderstore.io/package/varstyx/MMBAIT/) instead of R2API.*
 
 Makes the rusted lockbox spawned from rusted keys increase in size as you acquire more keys.
 
@@ -9,9 +8,10 @@ If you just want to make the lockboxes bigger in general and don't want any fanc
 
 ###Installation: 
 Place in your Bepinex/Plugins folder.
-If you have the seperate MMHook
+
 
 ##Changelog:
+- 1.1.4 Dependency changed to better work with modmananagers.
 - 1.1.2 and 1.1.3 Now baited, hooked and R2API'd.
 - 1.1.1 Now baited.
 - 1.1.0 Now with the possibility of constant scaling.
