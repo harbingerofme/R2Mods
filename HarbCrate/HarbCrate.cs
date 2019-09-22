@@ -1,14 +1,10 @@
 ﻿
 
 using BepInEx;
-using UnityEngine;
 using ItemLib;
 using RoR2;
-using System.Collections.Generic;
-using RoR2.Projectile;
 using HarbCrate.Equipment;
 using HarbCrate.Items;
-//using HarbCrate.Items;
 
 
 /*
@@ -17,10 +13,8 @@ using HarbCrate.Items;
 
 namespace HarbCrate
 {
-    //[BepInDependency("community.mmbait",BepInDependency.DependencyFlags.SoftDependency)]
-    //[BepInDependency("community.mmhook", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency(ItemLib.ItemLibPlugin.ModGuid,BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency(ItemLibPlugin.ModGuid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin("com.harbingerofme.HarbCrate", "HarbCrate", "0.0.0")]
     public class HarbCratePlugin : BaseUnityPlugin
     {
@@ -33,28 +27,13 @@ namespace HarbCrate
         public void Awake()
         {
             log = base.Logger;
-            /*var LoadedMods = BepInEx.Bootstrap.Chainloader.Plugins;
-            LoadedMods.Exists((plugin) =>
-                        {
-                            string GUID = MetadataHelper.GetMetadata(plugin).GUID;
-                            if (GUID == "community.mmbait" || GUID == "community.mmhook")
-                            {
-                                return true;
-                            }
-                            if (GUID == "com.bepis.r2api")
-                            {
-                                base.Logger.LogWarning("I've been loaded with r2api. Consider using the seperate hook package instead.");
-                                return true;
-                            }
-                            return false;
-                        });*/
 
             myEquipmentIDs = new EquipmentIndex[4];
-            
-            myEquipmentIDs[0] = (EquipmentIndex) ItemLib.ItemLib.GetEquipmentId(ColdSnap.Name);
-            myEquipmentIDs[1] = (EquipmentIndex) ItemLib.ItemLib.GetEquipmentId(DivinationDistillate.Name);
-            myEquipmentIDs[2] = (EquipmentIndex) ItemLib.ItemLib.GetEquipmentId(WrithingJar.Name);
-            myEquipmentIDs[3] = (EquipmentIndex) ItemLib.ItemLib.GetEquipmentId(GravityDisplacement.Name);
+
+            myEquipmentIDs[0] = (EquipmentIndex)ItemLib.ItemLib.GetEquipmentId(ColdSnap.Name);
+            myEquipmentIDs[1] = (EquipmentIndex)ItemLib.ItemLib.GetEquipmentId(DivinationDistillate.Name);
+            myEquipmentIDs[2] = (EquipmentIndex)ItemLib.ItemLib.GetEquipmentId(WrithingJar.Name);
+            myEquipmentIDs[3] = (EquipmentIndex)ItemLib.ItemLib.GetEquipmentId(GravityDisplacement.Name);
 
 
             myItemIds = new ItemIndex[1];
@@ -79,7 +58,7 @@ namespace HarbCrate
 
             log.LogError("BRIGHT RED SO YOU CAN FIND IT:");
             log.LogError("\t Equipment: coldsnap=" + (int)myEquipmentIDs[0] + ", distillate=" + (int)myEquipmentIDs[1] + ", writhing jar=" + (int)myEquipmentIDs[2] + ", gravnade=" + (int)myEquipmentIDs[3]);
-            log.LogError("\t Items: reduceDebuffs=" + (int) myItemIds[0]);
+            log.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]);
         }
 
 
