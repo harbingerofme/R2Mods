@@ -2,16 +2,16 @@
 
 My mods are divided in three categories: Information, Quality of Life, and New Content.
 
-###Information:
+### Information:
 These mods aim to expose information to the player in a nonintrusive manner. They should not affect gameplay.
 * [OSP Endscreen](https://github.com/harbingerofme/R2Mods/tree/master/OSP_Endscreen) is a mod that exposes the times the life of a player was saved by 'One-Shot-Protection'.
 
-###Quality of Life
+### Quality of Life
 These mods are small changes that aim to fix a behaviour that is considered "annoying" by some players. These should have a minor impact on gameplay.
 * [Bigger Lockboxes](https://github.com/harbingerofme/R2Mods/tree/master/BiggerLockboxes) makes lockboxes grow as you collect more keys. Highly configurable.
 * [No More Triple Question](https://github.com/harbingerofme/R2Mods/tree/master/NoMoreTripleQuestion) makes Multishop terminals unable to hide all their content. It also makes a modest attempt to prevent those terminals from rolling the same item 3 times, meaning there should always be a choice.
 
-###New Content
+### New Content
 These mods add new content, and as a result might significantly affect gameplay.
 * [Harb Crate](https://github.com/harbingerofme/R2Mods/tree/master/HarbCrate) adds several new items and equipment to the game. *Release Pending.*
 
