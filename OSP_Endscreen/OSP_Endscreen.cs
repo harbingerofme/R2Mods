@@ -1,7 +1,6 @@
 ﻿using RoR2;
 using RoR2.Stats;
 using BepInEx;
-using UnityEngine;
 
 namespace OSP_Endscreen
 {
