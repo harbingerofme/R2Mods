@@ -17,7 +17,7 @@ These mods add new content, and as a result might significantly affect gameplay.
 
 
 
-#Legal
+# Legal
 
 Risk of Rain 2 (RoR2) is a third-person shooter roguelike video game being developed by Hopoo Games. It is a sequel to Risk of Rain, and is being supported by Gearbox Publishing. 
 
