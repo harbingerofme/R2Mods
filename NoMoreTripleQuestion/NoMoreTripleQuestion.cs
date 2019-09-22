@@ -3,8 +3,6 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using UnityEngine;
 using R2API.Utils;
-using static MonoMod.Cil.RuntimeILReferenceBag.FastDelegateInvokers;
-using BepInEx.Configuration;
 using RoR2;
 
 /*
