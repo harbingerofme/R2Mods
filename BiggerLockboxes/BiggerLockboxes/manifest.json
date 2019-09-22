@@ -1,0 +1,10 @@
+{
+  "name": "BiggerLockboxes",
+  "version_number": "1.1.3",
+  "website_url": "",
+  "description": "Makes the size of rusty lockboxes dependent on the amount of rusted keys on the team.",
+  "dependencies": [
+	"varstyx-MMBAIT-0.0.4164457",
+    "bbepis-BepInExPack-2.0.0"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "OSP_Endscreen",
+  "version_number": "0.3.0",
+  "website_url": "",
+  "description": "Adds the amount of times your life was saved by One Shot Protection to the endscreen.",
+  "dependencies": [
+	"mistername-AssetPlus-0.1.2",
+    "bbepis-BepInExPack-2.0.0"
+  ]
+}
