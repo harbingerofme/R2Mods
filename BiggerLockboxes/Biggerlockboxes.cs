@@ -14,7 +14,7 @@ namespace HarbCrate
     [BepInDependency("community.mmbait",BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("community.mmhook", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin("com.harbingerofme.biggerlockboxes", "BiggerLockboxes", "1.1.2")]
+    [BepInPlugin("com.harbingerofme.biggerlockboxes", "BiggerLockboxes", "1.1.4")]
     public class BiggerLockboxes : BaseUnityPlugin
     {
 
