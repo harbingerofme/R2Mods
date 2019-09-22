@@ -350,3 +350,11 @@ healthchecksdb
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
+BiggerLockboxes/BiggerLockboxes/BiggerLockboxes.dll
+BiggerLockboxes/BiggerLockboxes/BiggerLockboxes.zip
+BiggerLockboxes/BiggerLockboxes/icon.png
+NoMoreTripleQuestion/NoMoreTripleQuestion/icon.png
+NoMoreTripleQuestion/NoMoreTripleQuestion/NoMoreTripleQuestion.dll
+NoMoreTripleQuestion/NoMoreTripleQuestion/NoMoreTripleQuestion.zip
+OSP_Endscreen/OSP_Endcreen/icon.png
+OSP_Endscreen/OSP_Endcreen/OSP_Endscreen.dll
