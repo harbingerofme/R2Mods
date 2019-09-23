@@ -1,15 +1,13 @@
 ﻿using ItemLib;
 using RoR2;
-using BepInEx;
 using UnityEngine;
 using R2API.Utils;
-using System;
 
 namespace HarbCrate.Items
 {
     class DebuffReducer
     {
-        public static string Name = "Perfect Timepiece";
+        public readonly static string Name = "Perfect Timepiece";
         public static float Scaling = 0.1f;
 
         public static CustomItem Build()
