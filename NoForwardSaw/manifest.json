@@ -1,0 +1,9 @@
+{
+  "name": "NoForwardSaw",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/NoForwardSaw",
+  "description": "Disables the forward momentum on Mul-T's saw.",
+  "dependencies": [
+    "bbepis-BepInExPack-2.0.0"
+  ]
+}
