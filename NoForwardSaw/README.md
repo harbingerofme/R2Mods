@@ -5,8 +5,9 @@ Mod made on request.
 ### Installation: 
 Place the dll in your Bepinex/Plugins folder.
 
-## Multiplayer:
-Only Host needs it.
+
+### Multiplayer:
+Not tested.
 
 ## Changelog:
 - 1.0.0 Release!
