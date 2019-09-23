@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoForwardSaw", "NoForwardSaw\NoForwardSaw.csproj", "{A1443266-08DB-479A-A516-99D426F26962}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{78879F59-AE2C-42EF-A0E6-9DA2D00E5610}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78879F59-AE2C-42EF-A0E6-9DA2D00E5610}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78879F59-AE2C-42EF-A0E6-9DA2D00E5610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1443266-08DB-479A-A516-99D426F26962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1443266-08DB-479A-A516-99D426F26962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1443266-08DB-479A-A516-99D426F26962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1443266-08DB-479A-A516-99D426F26962}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
