@@ -6,11 +6,14 @@ There's default values set, but you can configure to scale it differently faster
 
 If you just want to make the lockboxes bigger in general and don't want any fancy scaling, you can configure that too!
 
-###Installation: 
+### Installation: 
 Place in your Bepinex/Plugins folder.
 
+### Multiplayer:
+* Works for Host if host has installed.
+* Might work for Client if client has installed (let me know!)
 
-##Changelog:
+## Changelog:
 - 1.1.4 Dependency changed to better work with modmananagers.
 - 1.1.2 and 1.1.3 Now baited, hooked and R2API'd.
 - 1.1.1 Now baited.

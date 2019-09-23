@@ -3,8 +3,11 @@ Also makes a slight effort to prevent those same terminals from rolling the same
 
 Full R2API.utils dependency, need it for reflection. This means that on a game update, this mod will be broken until R2API is updated.
 
-###Installation: 
+### Installation: 
 Place in your Bepinex/Plugins folder.
 
-##Changelog:
+### Multiplayer
+* Does not break the game if host has installed and client doesn't.
+
+## Changelog:
 - 1.0.0 Release!
