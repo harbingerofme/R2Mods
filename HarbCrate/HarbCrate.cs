@@ -55,7 +55,7 @@ namespace HarbCrate
             };
 
             On.RoR2.GlobalEventManager.OnCharacterDeath += DivinationDistillate.DistillateQuantEffect;
-            DebuffReducer.Hooks();
+            DebuffStatReducerComponent.Hooks(myItemIds[1],myItemIds[0]);
             BrawnOverBrain.Hooks();
 
             log.LogError("BRIGHT RED SO YOU CAN FIND IT:");
@@ -63,7 +63,9 @@ namespace HarbCrate
             log.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1]);
         }
 
+        
 
+        #region itemDefs
         [Item(ItemAttribute.ItemType.Equipment)]
         public static CustomEquipment Coldsnap()
         {
@@ -106,5 +108,6 @@ namespace HarbCrate
         {
             return BrawnOverBrain.Build();
         }
+        #endregion
     }
 }

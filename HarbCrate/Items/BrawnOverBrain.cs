@@ -18,8 +18,8 @@ namespace HarbCrate.Items
                 pickupModelPath = "Prefabs/PickupModels/PickupMystery",
                 pickupIconPath = "Textures/AchievementIcons/texLoaderClearGameMonsoonIcon",
                 nameToken = Name,
-                pickupToken = "10% of damage is taken from health before shield.",
-                descriptionToken = "10%(+10% per stack)* of damage taken is taken from health before shield. This damage cannot kill while you have enough shield."
+                pickupToken = "A percentage of damage is taken from health before shield. 50% debuff reduction whilst you have shield.",
+                descriptionToken = "50%  (+0% per stack) debuff reduction whilst you have shield. 40%(+15% per stack)* of damage taken is taken from health before shield. This damage cannot kill while you have enough shield."
             };
 
             return new CustomItem(myDef, null, null, null);
