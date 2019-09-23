@@ -10,6 +10,12 @@ These mods aim to expose information to the player in a nonintrusive manner. The
 These mods are small changes that aim to fix a behaviour that is considered "annoying" by some players. These should have a minor impact on gameplay.
 * [Bigger Lockboxes](https://github.com/harbingerofme/R2Mods/tree/master/BiggerLockboxes) makes lockboxes grow as you collect more keys. Highly configurable.
 * [No More Triple Question](https://github.com/harbingerofme/R2Mods/tree/master/NoMoreTripleQuestion) makes Multishop terminals unable to hide all their content. It also makes a modest attempt to prevent those terminals from rolling the same item 3 times, meaning there should always be a choice.
+```diff 
+- Not Recommended
+These mods were made on request, and are not advisable for an "improved" experience.
+```
+- [Greedy Lockboxes](https://github.com/harbingerofme/R2Mods/tree/master/GreedyLockboxes) makes people without rusted keys unable to open lockboxes.
+ 
 
 ### New Content
 These mods add new content, and as a result might significantly affect gameplay.
