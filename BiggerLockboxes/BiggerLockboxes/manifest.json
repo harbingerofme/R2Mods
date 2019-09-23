@@ -1,7 +1,7 @@
 {
   "name": "BiggerLockboxes",
   "version_number": "1.1.4",
-  "website_url": "",
+  "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/BiggerLockboxes",
   "description": "Makes the size of rusty lockboxes dependent on the amount of rusted keys on the team.",
   "dependencies": [
 	"tristanmcpherson-R2API-2.1.16",
