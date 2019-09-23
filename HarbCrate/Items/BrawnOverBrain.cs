@@ -35,6 +35,9 @@ namespace HarbCrate.Items
             ItemIndex myIndex = (ItemIndex)ItemLib.ItemLib.GetItemId(Name);
             ILCursor c = new ILCursor(il);
             int remainingDamage = 5;
+
+            float curve_a = 0.09f, curve_b = 2.13f, curve_c = 1f;
+
             c.GotoNext(
                 MoveType.After,
                 x => x.MatchStloc(out _),
@@ -51,7 +54,7 @@ namespace HarbCrate.Items
                     int amount = self.body.inventory.GetItemCount(myIndex);
                     if (amount > 0)
                     {
-                        float passThroughAmount = damage * (1 - (1.13f / Mathf.Pow(amount + 1.13f, 0.3f)));
+                        float passThroughAmount = damage * (curve_a+ (1-curve_a)*(1 - (curve_b / Mathf.Pow(amount + curve_b, curve_c))));
                         float ReduceToAmount = Mathf.Min(self.health, 1);
                         float finalHealth = Mathf.Max(self.health - passThroughAmount, ReduceToAmount);
                         passThroughAmount = self.health - finalHealth;
