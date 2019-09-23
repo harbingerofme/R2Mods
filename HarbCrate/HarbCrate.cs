@@ -36,9 +36,10 @@ namespace HarbCrate
             myEquipmentIDs[3] = (EquipmentIndex)ItemLib.ItemLib.GetEquipmentId(GravityDisplacement.Name);
 
 
-            myItemIds = new ItemIndex[1];
+            myItemIds = new ItemIndex[2];
 
             myItemIds[0] = (ItemIndex)ItemLib.ItemLib.GetItemId(DebuffReducer.Name);
+            myItemIds[1] = (ItemIndex)ItemLib.ItemLib.GetItemId(BrawnOverBrain.Name);
 
             On.RoR2.EquipmentSlot.PerformEquipmentAction += (orig, equipSlot, equipIndex) =>
             {
@@ -55,15 +56,16 @@ namespace HarbCrate
 
             On.RoR2.GlobalEventManager.OnCharacterDeath += DivinationDistillate.DistillateQuantEffect;
             DebuffReducer.Hooks();
+            BrawnOverBrain.Hooks();
 
             log.LogError("BRIGHT RED SO YOU CAN FIND IT:");
             log.LogError("\t Equipment: coldsnap=" + (int)myEquipmentIDs[0] + ", distillate=" + (int)myEquipmentIDs[1] + ", writhing jar=" + (int)myEquipmentIDs[2] + ", gravnade=" + (int)myEquipmentIDs[3]);
-            log.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]);
+            log.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1]);
         }
 
 
         [Item(ItemAttribute.ItemType.Equipment)]
-        public static ItemLib.CustomEquipment Coldsnap()
+        public static CustomEquipment Coldsnap()
         {
             return ColdSnap.Build();
         }
@@ -97,6 +99,12 @@ namespace HarbCrate
         public static CustomItem ReduceDebuffs()
         {
             return DebuffReducer.Build();
+        }
+
+        [Item(ItemAttribute.ItemType.Item)]
+        public static CustomItem Brawnoverbrain()
+        {
+            return BrawnOverBrain.Build();
         }
     }
 }
