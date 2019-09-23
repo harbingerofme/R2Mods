@@ -17,6 +17,6 @@ Overview. More detailed numbers will follow as the release draws closer. Numbers
 ---
 ## RC1 compatability
 The following IL hooks are used:
-* RoR2.HealthComponent.takeDamage
+* RoR2.HealthComponent.TakeDamage
 
 Compatability patches will need to be written.
