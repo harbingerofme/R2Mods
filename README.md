@@ -14,6 +14,7 @@ These mods are small changes that aim to fix a behaviour that is considered "ann
 These mods were made on request, but might not fit every player.
 - [Greedy Lockboxes](https://github.com/harbingerofme/R2Mods/tree/master/GreedyLockboxes) makes people without rusted keys unable to open lockboxes.
 - [No Forward Saw](https://github.com/harbingerofme/R2Mods/tree/master/NoForwardSaw) disables the automatic forward on MUL-T's saw. 
+- [Shorter Medkits](https://github.com/harbingerofme/R2Mods/tree/master/ShorterMedkits) reduces the time it takes for the medkit to apply healing.
 
 ## New Content
 These mods add new content, and as a result might significantly affect gameplay.
