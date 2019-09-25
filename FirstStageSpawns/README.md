@@ -1,4 +1,4 @@
-﻿Spawns enemies on the first stage. They know where you live too. Get going quicker.
+﻿Enemies are already spawned on the first stage. They know where you live too. Get going quicker.
 
 ### Installation: 
 Place the dll in your Bepinex/Plugins folder.
