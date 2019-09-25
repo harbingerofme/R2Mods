@@ -58,11 +58,12 @@ namespace HarbCrate
             DebuffStatReducerComponent.Hooks(myItemIds[1],myItemIds[0]);
             BrawnOverBrain.Hooks();
 
+//TODO: wait for Ghor to make luck easier to access            IL.RoR2.CharacterMaster.get_luck
+
             log.LogError("BRIGHT RED SO YOU CAN FIND IT:");
             log.LogError("\t Equipment: coldsnap=" + (int)myEquipmentIDs[0] + ", distillate=" + (int)myEquipmentIDs[1] + ", writhing jar=" + (int)myEquipmentIDs[2] + ", gravnade=" + (int)myEquipmentIDs[3]);
             log.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1]);
         }
-
         
 
         #region itemDefs

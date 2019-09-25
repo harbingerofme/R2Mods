@@ -67,7 +67,6 @@ namespace HarbCrate.Items
 
             c.Emit(OpCodes.Stloc, remainingDamage);
             c.Emit(OpCodes.Ldloc, remainingDamage);
-            Debug.Log(il);
         }
     }
 }
