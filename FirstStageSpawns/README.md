@@ -8,5 +8,6 @@ Place the dll in your Bepinex/Plugins folder.
 Not tested. Let me know if you do test it.
 
 ## Changelog:
+- 1.1.0 Fixed Nullreference exception that could happen when entering a special stage such as the Bazaar between time.
 - 1.0.1 Updated Readme as it was unclear.
 - 1.0.0 Release!

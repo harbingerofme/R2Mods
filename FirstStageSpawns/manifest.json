@@ -1,8 +1,8 @@
 {
   "name": "FirstStageSpawns",
-  "version_number": "1.0.1",
+  "version_number": "1.1.0",
   "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/FirstStageSpawns",
-  "description": "Spawns enemies on the first stage.",
+  "description": "Enemies appear prespawned on the first stage.",
   "dependencies": [
     "bbepis-BepInExPack-2.0.0"
   ]
