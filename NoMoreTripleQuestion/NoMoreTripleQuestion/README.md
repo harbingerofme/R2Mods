@@ -10,4 +10,5 @@ Place in your Bepinex/Plugins folder.
 * Does not break the game if host has installed and client doesn't.
 
 ## Changelog:
+- 1.1.0 Fixed a bug where every terminal was rerolled. Oops!
 - 1.0.0 Release!
