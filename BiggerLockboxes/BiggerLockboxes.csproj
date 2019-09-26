@@ -21,6 +21,9 @@
     <Reference Include="Facepunch.Steamworks">
       <HintPath>..\libs\Facepunch.Steamworks.dll</HintPath>
     </Reference>
+    <Reference Include="FirstStageSpawns">
+      <HintPath>..\FirstStageSpawns\bin\Debug\netstandard2.0\FirstStageSpawns.dll</HintPath>
+    </Reference>
     <Reference Include="KdTreeLib">
       <HintPath>..\libs\KdTreeLib.dll</HintPath>
     </Reference>

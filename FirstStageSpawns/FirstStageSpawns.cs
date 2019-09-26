@@ -1,37 +1,50 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
+using System.Reflection;
 
 /*
     Code By Guido "Harb". 
      */
 
-namespace FirstStageSpawns
+namespace HarbMods
 {
-    [BepInPlugin("com.harbingerofme.firststagespawns", "FirstStageSpawns", "1.1.0")]
+    [BepInPlugin("com.harbingerofme.firststagespawns", "FirstStageSpawns", "2.0.0")]
+    [BepInDependency("com.harbingerofme.biggerlockboxes", BepInDependency.DependencyFlags.SoftDependency)]
     public class FirstStageSpawns : BaseUnityPlugin
     {
 
         public void Awake()
         {
-            On.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
+            var LoadedMods = BepInEx.Bootstrap.Chainloader.Plugins;
+            if(LoadedMods.Exists((plugin) => { return MetadataHelper.GetMetadata(plugin).GUID == "com.harbingerofme.biggerlockboxes"; }))
+            {
+                Logger.LogInfo("Detected BiggerLockboxes. Delegating my hooks!");
+            }
+            else
+            {
+                IL.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
+            }
+            
         }
 
-        private void SceneDirector_PopulateScene(On.RoR2.SceneDirector.orig_PopulateScene orig, RoR2.SceneDirector self)
+        private void SceneDirector_PopulateScene(ILContext il)
         {
-            if (RoR2.Run.instance && self)
-            {
-                if (RoR2.Run.instance.stageClearCount == 0)
-                {
-                    RoR2.Run.instance.stageClearCount = 1;
-                    float gold = self.expRewardCoefficient;
-                    self.expRewardCoefficient *= 2;
-                    orig(self);
-                    self.expRewardCoefficient = gold;
-                    RoR2.Run.instance.stageClearCount = 0;
-                    return;
-                }
-            }
-            orig(self);
+            ILCursor c = new ILCursor(il);
+            c.GotoNext(
+                MoveType.After,
+                x => x.MatchCall(out _),
+                x => x.MatchLdfld(out _),
+                x => x.MatchBrtrue(out _),
+                x => x.MatchLdarg(0),
+                x => x.MatchLdcI4(0)
+                );
+            c.Index--;
+            c.Remove();
+            c.Emit(OpCodes.Ldarg_0);
+            c.Emit(OpCodes.Ldfld, typeof(RoR2.SceneDirector).GetField("monsterCredit", BindingFlags.NonPublic | BindingFlags.Instance));
+            c.Emit(OpCodes.Ldc_I4_2);
+            c.Emit(OpCodes.Mul);
         }
     }
 }

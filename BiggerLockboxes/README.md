@@ -13,7 +13,11 @@ Place in your Bepinex/Plugins folder.
 * Works for Host if host has installed.
 * Might work for Client if client has installed (let me know!)
 
+### RC1 Compatibility:
+This mod IL hooks `RoR2.SceneDirector.PopulateScene`.
+
 ## Changelog:
+- 2.0.0 Improved the IL Hook to not rely on hardcoded local variables. Integrated First Stage Spawns compatability.
 - 1.1.4 Dependency changed to better work with modmananagers.
 - 1.1.2 and 1.1.3 Now baited, hooked and R2API'd.
 - 1.1.1 Now baited.
