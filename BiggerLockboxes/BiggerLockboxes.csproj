@@ -21,9 +21,6 @@
     <Reference Include="Facepunch.Steamworks">
       <HintPath>..\libs\Facepunch.Steamworks.dll</HintPath>
     </Reference>
-    <Reference Include="FirstStageSpawns">
-      <HintPath>..\FirstStageSpawns\bin\Debug\netstandard2.0\FirstStageSpawns.dll</HintPath>
-    </Reference>
     <Reference Include="KdTreeLib">
       <HintPath>..\libs\KdTreeLib.dll</HintPath>
     </Reference>
@@ -271,5 +268,9 @@
       <HintPath>..\libs\Zio.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /y $(TargetPath) $(ProjectDir)..\builds\" />
+  </Target>
 
 </Project>

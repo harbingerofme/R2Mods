@@ -269,4 +269,8 @@
     </Reference>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /y $(TargetPath) $(ProjectDir)..\builds\" />
+  </Target>
+
 </Project>
