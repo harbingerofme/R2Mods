@@ -1,4 +1,4 @@
-﻿*This mod also runs on [MMBAIT](https://thunderstore.io/package/varstyx/MMBAIT/) instead of R2API.*
+﻿While still available, this mod is superceded by HarbTweaks.
 
 Makes the rusted lockbox spawned from rusted keys increase in size as you acquire more keys.
 
@@ -15,8 +15,10 @@ Place in your Bepinex/Plugins folder.
 
 ### RC1 Compatibility:
 This mod IL hooks `RoR2.SceneDirector.PopulateScene`.
+The release of this update should coincide with the release of a new Bepinex version, so this section should be moot.
 
 ## Changelog:
+- 2.1.0 No longer contains the entirity of First Stage Spawns.
 - 2.0.0 Improved the IL Hook to not rely on hardcoded local variables. Integrated First Stage Spawns compatability.
 - 1.1.4 Dependency changed to better work with modmananagers.
 - 1.1.2 and 1.1.3 Now baited, hooked and R2API'd.

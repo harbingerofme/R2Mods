@@ -2,35 +2,39 @@
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System.Reflection;
+using BepInEx.Configuration;
 
 /*
     Code By Guido "Harb". 
      */
 
-namespace HarbMods
+namespace HarbTweaks
 {
-    [BepInPlugin("com.harbingerofme.firststagespawns", "FirstStageSpawns", "2.0.0")]
-    [BepInDependency("com.harbingerofme.biggerlockboxes", BepInDependency.DependencyFlags.SoftDependency)]
+
+    [BepInPlugin("com.harbingerofme.firststagespawns", "FirstStageSpawns", "2.1.0")]
+    [BepInDependency("community.mmbait", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("community.mmhook", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInIncompatibility("com.harbingerofme.harbtweaks")]
     public class FirstStageSpawns : BaseUnityPlugin
     {
+        private ConfigEntry<float> scaling;
 
         public void Awake()
         {
-            var LoadedMods = BepInEx.Bootstrap.Chainloader.Plugins;
-            if(LoadedMods.Exists((plugin) => { return MetadataHelper.GetMetadata(plugin).GUID == "com.harbingerofme.biggerlockboxes"; }))
-            {
-                Logger.LogInfo("Detected BiggerLockboxes. Delegating my hooks!");
-            }
-            else
-            {
-                IL.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
-            }
-            
+            scaling =  Config.AddSetting<float>(
+                "",
+                "First stage scaling",
+                2f,
+                new ConfigDescription("Vanilla gameplay is 0. But since you have this tweak to start quicker anyway, I've doubled it by default.")
+                ) ;
+            IL.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
         }
 
         private void SceneDirector_PopulateScene(ILContext il)
         {
             ILCursor c = new ILCursor(il);
+            float val = scaling.Value;
             c.GotoNext(
                 MoveType.After,
                 x => x.MatchCall(out _),
@@ -43,8 +47,10 @@ namespace HarbMods
             c.Remove();
             c.Emit(OpCodes.Ldarg_0);
             c.Emit(OpCodes.Ldfld, typeof(RoR2.SceneDirector).GetField("monsterCredit", BindingFlags.NonPublic | BindingFlags.Instance));
-            c.Emit(OpCodes.Ldc_I4_2);
+            c.Emit(OpCodes.Conv_R4);
+            c.Emit(OpCodes.Ldc_R4,val);
             c.Emit(OpCodes.Mul);
+            c.Emit(OpCodes.Conv_I4);
         }
     }
 }
