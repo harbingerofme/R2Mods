@@ -10,7 +10,8 @@ using RoR2;
 namespace NoMoreTripleQuestion
 {
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("com.harbingerofme.noMoreTripleQuestion", "NoMoreTripleQuestion", "1.1.0")]
+    [BepInPlugin("com.harbingerofme.noMoreTripleQuestion", "NoMoreTripleQuestion", "1.1.1")]
+    [BepInIncompatibility("com.harbingerofme.harbtweaks")]
     public class NoMoreTripleQuestion : BaseUnityPlugin
     {
 

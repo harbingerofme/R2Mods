@@ -4,10 +4,11 @@
     Code By Guido "Harb". 
      */
 
-namespace GreedyLockbox
+namespace HarbTweaks
 {
-    [BepInPlugin("com.harbingerofme.noforwardsaw", "NoForwardSaw", "1.0.0")]
-    public class NoMoreTripleQuestion : BaseUnityPlugin
+    [BepInPlugin("com.harbingerofme.noforwardsaw", "NoForwardSaw", "1.0.1")]
+    [BepInIncompatibility("com.harbingerofme.harbtweaks")]
+    public class NoForwardSaw : BaseUnityPlugin
     {
 
         public void Awake()
