@@ -1,6 +1,6 @@
 {
   "name": "ShorterMedkits",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/ShorterMedkits",
   "description": "Halves the time for medkits.",
   "dependencies": [
