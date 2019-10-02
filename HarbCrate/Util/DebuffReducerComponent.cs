@@ -24,7 +24,7 @@ namespace HarbCrate
                         int amount = body.inventory.GetItemCount(GreenShield);
                         if (amount > 0)
                         {
-                            reductionMulti = DebuffReducer.GetMulti(amount);
+                            reductionMulti = Util.ConvertAmplificationPercentageIntoReductionPercentage(amount * TimePiece.Scaling);
                         }
                         if (body.inventory.GetItemCount(BrawnOverBrain) > 0 && body.healthComponent.shield > 0)
                         {
@@ -47,7 +47,7 @@ namespace HarbCrate
         }
 
 
-        public static void Hooks(ItemIndex Brawn,ItemIndex GreenShield)
+        public static void Hooks(ItemIndex GreenShield, ItemIndex Brawn)
         {
             On.RoR2.CharacterBody.AddTimedBuff += CharacterBody_AddTimedBuff;
             On.RoR2.DotController.AddDot += DotController_AddDot;
@@ -60,7 +60,7 @@ namespace HarbCrate
                 {
                     if (self.inventory.GetItemCount(Brawn) + self.inventory.GetItemCount(GreenShield) > 0)
                     {
-                        if (self.GetComponent<DebuffReducer>() == null)
+                        if (self.GetComponent<TimePiece>() == null)
                         {
                             var a = self.gameObject.AddComponent<DebuffStatReducerComponent>();
                             a.BrawnOverBrain = Brawn;

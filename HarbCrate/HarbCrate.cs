@@ -21,13 +21,8 @@ namespace HarbCrate
         private EquipmentIndex[] myEquipmentIDs;
         private ItemIndex[] myItemIds;
 
-
-        BepInEx.Logging.ManualLogSource log;
-
         public void Awake()
         {
-            log = base.Logger;
-
             myEquipmentIDs = new EquipmentIndex[4];
 
             myEquipmentIDs[0] = (EquipmentIndex)ItemLib.ItemLib.GetEquipmentId(ColdSnap.Name);
@@ -38,7 +33,7 @@ namespace HarbCrate
 
             myItemIds = new ItemIndex[2];
 
-            myItemIds[0] = (ItemIndex)ItemLib.ItemLib.GetItemId(DebuffReducer.Name);
+            myItemIds[0] = (ItemIndex)ItemLib.ItemLib.GetItemId(TimePiece.Name);
             myItemIds[1] = (ItemIndex)ItemLib.ItemLib.GetItemId(BrawnOverBrain.Name);
 
             On.RoR2.EquipmentSlot.PerformEquipmentAction += (orig, equipSlot, equipIndex) =>
@@ -55,14 +50,15 @@ namespace HarbCrate
             };
 
             On.RoR2.GlobalEventManager.OnCharacterDeath += DivinationDistillate.DistillateQuantEffect;
-            DebuffStatReducerComponent.Hooks(myItemIds[1],myItemIds[0]);
+            DebuffStatReducerComponent.Hooks(myItemIds[0],myItemIds[1]);
             BrawnOverBrain.Hooks();
+            TimePiece.Hooks(myItemIds[0]);
 
-//TODO: wait for Ghor to make luck easier to access            IL.RoR2.CharacterMaster.get_luck
+            //TODO: wait for Ghor to make luck easier to access            IL.RoR2.CharacterMaster.get_luck
 
-            log.LogError("BRIGHT RED SO YOU CAN FIND IT:");
-            log.LogError("\t Equipment: coldsnap=" + (int)myEquipmentIDs[0] + ", distillate=" + (int)myEquipmentIDs[1] + ", writhing jar=" + (int)myEquipmentIDs[2] + ", gravnade=" + (int)myEquipmentIDs[3]);
-            log.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1]);
+            Logger.LogError("BRIGHT RED SO YOU CAN FIND IT:");
+            Logger.LogError("\t Equipment: coldsnap=" + (int)myEquipmentIDs[0] + ", distillate=" + (int)myEquipmentIDs[1] + ", writhing jar=" + (int)myEquipmentIDs[2] + ", gravnade=" + (int)myEquipmentIDs[3]);
+            Logger.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1]);
         }
         
 
@@ -101,7 +97,7 @@ namespace HarbCrate
         [Item(ItemAttribute.ItemType.Item)]
         public static CustomItem ReduceDebuffs()
         {
-            return DebuffReducer.Build();
+            return TimePiece.Build();
         }
 
         [Item(ItemAttribute.ItemType.Item)]
