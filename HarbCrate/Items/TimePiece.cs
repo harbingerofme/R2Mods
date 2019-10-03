@@ -11,7 +11,7 @@ namespace HarbCrate.Items
     class TimePiece
     {
         public readonly static string Name = "Perfect Timepiece";
-        public static float Scaling = 2.5f;//Scaling in percent.
+        public static float Scaling = 10f;//Scaling in percent.
         public static float ShieldFrac = 0.08f;//shield fraction in actual numbers.
 
         public static CustomItem Build()

@@ -5,6 +5,10 @@ using ItemLib;
 using RoR2;
 using HarbCrate.Equipment;
 using HarbCrate.Items;
+using MonoMod.RuntimeDetour;
+using System;
+using UnityEngine;
+using MonoMod.Cil;
 
 
 /*
@@ -36,6 +40,9 @@ namespace HarbCrate
             myItemIds[0] = (ItemIndex)ItemLib.ItemLib.GetItemId(TimePiece.Name);
             myItemIds[1] = (ItemIndex)ItemLib.ItemLib.GetItemId(BrawnOverBrain.Name);
 
+
+
+
             On.RoR2.EquipmentSlot.PerformEquipmentAction += (orig, equipSlot, equipIndex) =>
             {
                 if (equipIndex == myEquipmentIDs[0])
@@ -50,9 +57,9 @@ namespace HarbCrate
             };
 
             On.RoR2.GlobalEventManager.OnCharacterDeath += DivinationDistillate.DistillateQuantEffect;
-            DebuffStatReducerComponent.Hooks(myItemIds[0],myItemIds[1]);
-            BrawnOverBrain.Hooks();
             TimePiece.Hooks(myItemIds[0]);
+            DebuffStatComponent.Hooks(myItemIds[0],myItemIds[1]);
+            BrawnOverBrain.Hooks();
 
             //TODO: wait for Ghor to make luck easier to access            IL.RoR2.CharacterMaster.get_luck
 
@@ -97,7 +104,7 @@ namespace HarbCrate
         [Item(ItemAttribute.ItemType.Item)]
         public static CustomItem ReduceDebuffs()
         {
-            return TimePiece.Build();
+            return Items.TimePiece.Build();
         }
 
         [Item(ItemAttribute.ItemType.Item)]

@@ -1,15 +1,35 @@
 ﻿using RoR2;
 using UnityEngine;
 using HarbCrate.Items;
+using MonoMod.RuntimeDetour;
 using R2API.Utils;
+using System;
+
 
 namespace HarbCrate
 {
-    [DisallowMultipleComponent]
     [RequireComponent(typeof(CharacterBody))]
-    public class DebuffStatReducerComponent : MonoBehaviour 
+    public class DebuffStatComponent : MonoBehaviour 
     {
         public ItemIndex BrawnOverBrain, GreenShield;
+        public CharacterBody cb;
+
+        private int GS;
+        private bool BoB;
+
+
+        public void Start()
+        {
+            Debug.Log("I AM HERE");
+            cb.onInventoryChanged += Cb_onInventoryChanged;
+        }
+
+        private void Cb_onInventoryChanged()
+        {
+            Debug.Log("CHANGES! HOW EXCITING");
+            BoB = cb.inventory.GetItemCount(BrawnOverBrain)>0;
+            GS = cb.inventory.GetItemCount(GreenShield);
+        }
 
         public float Reduction
         {
@@ -18,19 +38,18 @@ namespace HarbCrate
                 float reductionMulti = 1;
                 if (isReady)
                 {
-                    var body = GetComponent<CharacterBody>();
-                    if (body && body.inventory)
+                    if (cb && cb.inventory)
                     {
-                        int amount = body.inventory.GetItemCount(GreenShield);
-                        if (amount > 0)
+                        if (GS > 0)
                         {
-                            reductionMulti = Util.ConvertAmplificationPercentageIntoReductionPercentage(amount * TimePiece.Scaling);
+                            reductionMulti = Util.ConvertAmplificationPercentageIntoReductionPercentage(GS * Items.TimePiece.Scaling);
+                            Debug.Log(reductionMulti);
                         }
-                        if (body.inventory.GetItemCount(BrawnOverBrain) > 0 && body.healthComponent.shield > 0)
+                        if (BoB && cb.healthComponent.shield > 0)
                         {
                             reductionMulti *= 0.5f;
+                            Debug.Log(reductionMulti);
                         }
-
                     }
                 }
                 else
@@ -49,6 +68,7 @@ namespace HarbCrate
 
         public static void Hooks(ItemIndex GreenShield, ItemIndex Brawn)
         {
+            Debug.Log("cccc");
             On.RoR2.CharacterBody.AddTimedBuff += CharacterBody_AddTimedBuff;
             On.RoR2.DotController.AddDot += DotController_AddDot;
             On.RoR2.SetStateOnHurt.SetFrozen += SetStateOnHurt_SetFrozen;
@@ -58,14 +78,13 @@ namespace HarbCrate
                 orig(self);
                 if (self.inventory)
                 {
-                    if (self.inventory.GetItemCount(Brawn) + self.inventory.GetItemCount(GreenShield) > 0)
+                    var a = self.GetComponent<DebuffStatComponent>();
+                    if (!a)
                     {
-                        if (self.GetComponent<TimePiece>() == null)
-                        {
-                            var a = self.gameObject.AddComponent<DebuffStatReducerComponent>();
-                            a.BrawnOverBrain = Brawn;
-                            a.GreenShield = GreenShield;
-                        }
+                        a = self.gameObject.AddComponent<DebuffStatComponent>();
+                        a.BrawnOverBrain = Brawn;
+                        a.GreenShield = GreenShield;
+                        a.cb = self;
                     }
                 }
             };
@@ -74,7 +93,7 @@ namespace HarbCrate
         private static void SetStateOnHurt_SetFrozen(On.RoR2.SetStateOnHurt.orig_SetFrozen orig, SetStateOnHurt self, float duration)
         {
             float newduration = duration;
-            var component = self.GetComponentInChildren<DebuffStatReducerComponent>();
+            var component = self.GetComponentInChildren<DebuffStatComponent>();
             if (component)
                 newduration *= component.Reduction;
             orig(self, newduration);
@@ -83,7 +102,7 @@ namespace HarbCrate
         private static void SetStateOnHurt_SetStun(On.RoR2.SetStateOnHurt.orig_SetStun orig, SetStateOnHurt self, float duration)
         {
             float newduration = duration;
-            var component = self.GetComponentInChildren<DebuffStatReducerComponent>();
+            var component = self.GetComponentInChildren<DebuffStatComponent>();
             if (component)
                 newduration *= component.Reduction;
             orig(self, newduration);
@@ -93,7 +112,7 @@ namespace HarbCrate
         {
             var cb = self.GetPropertyValue<CharacterBody>("victimBody");
             float newduration = duration;
-            var component = cb.GetComponent<DebuffStatReducerComponent>();
+            var component = cb.GetComponent<DebuffStatComponent>();
             if (component)
                 newduration *= component.Reduction;
             orig(self, attackerObject, newduration, dotIndex, damageMultiplier);
@@ -102,7 +121,7 @@ namespace HarbCrate
         private static void CharacterBody_AddTimedBuff(On.RoR2.CharacterBody.orig_AddTimedBuff orig, CharacterBody self, BuffIndex buffType, float duration)
         {
             float newduration = duration;
-            var component = self.GetComponent<DebuffStatReducerComponent>();
+            var component = self.GetComponent<DebuffStatComponent>();
             if (component)
             {
                 var buffDef = BuffCatalog.GetBuffDef(buffType);
