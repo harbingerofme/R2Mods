@@ -16,8 +16,8 @@ namespace HarbCrate.Equipment
                 pickupModelPath = "Prefabs/PickupModels/PickupWilloWisp",
                 pickupIconPath = "Textures/ItemIcons/texWilloWispIcon",
                 nameToken = Name,
-                pickupToken = "Overconfidence is a screeching and static killer.",
-                descriptionToken = "Summons a HOSTILE Overloading Magma Worm.",
+                pickupToken = "Inside of you there's two worms. One is a friend, the other a monster. You are a monster.",
+                descriptionToken = "Summons a friendly Magma Worm and a HOSTILE Overloading Magma Worm.",
                 canDrop = true,
                 isLunar = true,
                 colorIndex = ColorCatalog.ColorIndex.LunarItem,
@@ -27,7 +27,7 @@ namespace HarbCrate.Equipment
         }
         public new static bool Effect(EquipmentSlot equipmentSlot)
         {
-            var card = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscElectricWorm");
+            
             var transform = equipmentSlot.transform;
             var placementRules = new DirectorPlacementRule
             {
@@ -36,14 +36,27 @@ namespace HarbCrate.Equipment
                 maxDistance = 100f,
                 spawnOnTarget = transform
             };
-            var request = new DirectorSpawnRequest(card, placementRules, RoR2Application.rng)
+            var hostileCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscElectricWorm");
+            var hateRequest = new DirectorSpawnRequest(hostileCard, placementRules, RoR2Application.rng)
             {
                 ignoreTeamMemberLimit = false,
                 teamIndexOverride = TeamIndex.Monster
             };
-            var spawn = DirectorCore.instance.TrySpawnObject(request);
+            var spawn = DirectorCore.instance.TrySpawnObject(hateRequest);
             spawn.transform.TransformDirection(0, 100, 0);
-            if (spawn)
+            CharacterMaster cm = spawn.GetComponent<CharacterMaster>();
+            cm.inventory.GiveItem(ItemIndex.BoostDamage, 20);
+            cm.inventory.GiveItem(ItemIndex.BoostHp, 47);
+            var friendCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscMagmaWorm");
+            var friendRequest = new DirectorSpawnRequest(friendCard, placementRules, RoR2Application.rng)
+            {
+                ignoreTeamMemberLimit = false,
+                teamIndexOverride = TeamIndex.Player,
+                summonerBodyObject = equipmentSlot.GetComponent<CharacterBody>().gameObject
+            };
+            var spawn2 = DirectorCore.instance.TrySpawnObject(friendRequest);
+            spawn2.transform.TransformDirection(0, 100, 0);
+            if (spawn || spawn2)
                 return true;
             return false;
         }
