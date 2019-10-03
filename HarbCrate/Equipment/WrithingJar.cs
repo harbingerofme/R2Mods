@@ -44,9 +44,15 @@ namespace HarbCrate.Equipment
             };
             var spawn = DirectorCore.instance.TrySpawnObject(hateRequest);
             spawn.transform.TransformDirection(0, 100, 0);
-            CharacterMaster cm = spawn.GetComponent<CharacterMaster>();
-            cm.inventory.GiveItem(ItemIndex.BoostDamage, 20);
-            cm.inventory.GiveItem(ItemIndex.BoostHp, 47);
+            if (spawn)
+            {
+                CharacterMaster cm = spawn.GetComponent<CharacterMaster>();
+                if (cm)
+                {
+                    cm.inventory.GiveItem(ItemIndex.BoostDamage, 20);
+                    cm.inventory.GiveItem(ItemIndex.BoostHp, 47);
+                }
+            }
             var friendCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscMagmaWorm");
             var friendRequest = new DirectorSpawnRequest(friendCard, placementRules, RoR2Application.rng)
             {
