@@ -35,10 +35,11 @@ namespace HarbCrate
             myEquipmentIDs[3] = (EquipmentIndex)ItemLib.ItemLib.GetEquipmentId(GravityDisplacement.Name);
 
 
-            myItemIds = new ItemIndex[2];
+            myItemIds = new ItemIndex[3];
 
             myItemIds[0] = (ItemIndex)ItemLib.ItemLib.GetItemId(TimePiece.Name);
             myItemIds[1] = (ItemIndex)ItemLib.ItemLib.GetItemId(BrawnOverBrain.Name);
+            myItemIds[2] = (ItemIndex)ItemLib.ItemLib.GetItemId(SpikedArmor.Name);
 
 
 
@@ -60,12 +61,13 @@ namespace HarbCrate
             TimePiece.Hooks(myItemIds[0]);
             DebuffStatComponent.Hooks(myItemIds[0],myItemIds[1]);
             BrawnOverBrain.Hooks();
+            SpikedArmor.Hooks(myItemIds[2]);
 
             //TODO: wait for Ghor to make luck easier to access            IL.RoR2.CharacterMaster.get_luck
 
             Logger.LogError("BRIGHT RED SO YOU CAN FIND IT:");
             Logger.LogError("\t Equipment: coldsnap=" + (int)myEquipmentIDs[0] + ", distillate=" + (int)myEquipmentIDs[1] + ", writhing jar=" + (int)myEquipmentIDs[2] + ", gravnade=" + (int)myEquipmentIDs[3]);
-            Logger.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1]);
+            Logger.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1] + ", SpikedArmor=" + (int)myItemIds[2]);
         }
         
 
@@ -111,6 +113,12 @@ namespace HarbCrate
         public static CustomItem Brawnoverbrain()
         {
             return BrawnOverBrain.Build();
+        }
+
+        [Item(ItemAttribute.ItemType.Item)]
+        public static CustomItem ReflectDamage()
+        {
+            return SpikedArmor.Build();
         }
         #endregion
     }
