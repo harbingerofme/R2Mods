@@ -33,7 +33,7 @@ namespace HarbTweaks
             new ShorterMedkits();
             foreach (string tweakName in configs.Keys)
             {
-                Logger.LogMessage("Added Tweak: \"" + tweakName + "\"");    
+                Logger.LogMessage("Added: \"" + tweakName + "\"");    
             }
         }
 

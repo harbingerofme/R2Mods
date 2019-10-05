@@ -20,13 +20,11 @@ namespace HarbCrate
 
         public void Start()
         {
-            Debug.Log("I AM HERE");
             cb.onInventoryChanged += Cb_onInventoryChanged;
         }
 
         private void Cb_onInventoryChanged()
         {
-            Debug.Log("CHANGES! HOW EXCITING");
             BoB = cb.inventory.GetItemCount(BrawnOverBrain)>0;
             GS = cb.inventory.GetItemCount(GreenShield);
         }
@@ -36,7 +34,7 @@ namespace HarbCrate
             get
             {
                 float reductionMulti = 1;
-                if (isReady)
+                if (IsReady)
                 {
                     if (cb && cb.inventory)
                     {
@@ -60,7 +58,7 @@ namespace HarbCrate
             }
         }
 
-        private bool isReady
+        private bool IsReady
         {
             get { return (BrawnOverBrain != ItemIndex.None && GreenShield != ItemIndex.None); }
         }
@@ -68,7 +66,6 @@ namespace HarbCrate
 
         public static void Hooks(ItemIndex GreenShield, ItemIndex Brawn)
         {
-            Debug.Log("cccc");
             On.RoR2.CharacterBody.AddTimedBuff += CharacterBody_AddTimedBuff;
             On.RoR2.DotController.AddDot += DotController_AddDot;
             On.RoR2.SetStateOnHurt.SetFrozen += SetStateOnHurt_SetFrozen;
