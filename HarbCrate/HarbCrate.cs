@@ -67,7 +67,7 @@ namespace HarbCrate
 
             Logger.LogError("BRIGHT RED SO YOU CAN FIND IT:");
             Logger.LogError("\t Equipment: coldsnap=" + (int)myEquipmentIDs[0] + ", distillate=" + (int)myEquipmentIDs[1] + ", writhing jar=" + (int)myEquipmentIDs[2] + ", gravnade=" + (int)myEquipmentIDs[3]);
-            Logger.LogError("\t Items: reduceDebuffs=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1] + ", SpikedArmor=" + (int)myItemIds[2]);
+            Logger.LogError("\t Items: greenShield=" + (int)myItemIds[0]+ ", brawnbrains="+(int)myItemIds[1] + ", SpikedArmor=" + (int)myItemIds[2]);
         }
         
 

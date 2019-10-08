@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -70,19 +70,16 @@ namespace HarbCrate
             On.RoR2.DotController.AddDot += DotController_AddDot;
             On.RoR2.SetStateOnHurt.SetFrozen += SetStateOnHurt_SetFrozen;
             On.RoR2.SetStateOnHurt.SetStun += SetStateOnHurt_SetStun;
-            On.RoR2.CharacterBody.RecalculateStats += (orig, self) =>
+            On.RoR2.CharacterBody.OnInventoryChanged += (orig, self) =>
             {
                 orig(self);
-                if (self.inventory)
+                var a = self.GetComponent<DebuffStatComponent>();
+                if (!a)
                 {
-                    var a = self.GetComponent<DebuffStatComponent>();
-                    if (!a)
-                    {
-                        a = self.gameObject.AddComponent<DebuffStatComponent>();
-                        a.BrawnOverBrain = Brawn;
-                        a.GreenShield = GreenShield;
-                        a.cb = self;
-                    }
+                    a = self.gameObject.AddComponent<DebuffStatComponent>();
+                    a.BrawnOverBrain = Brawn;
+                    a.GreenShield = GreenShield;
+                    a.cb = self;
                 }
             };
         }
