@@ -7,44 +7,33 @@ using BepInEx.Configuration;
 
 namespace HarbTweaks
 {
-    public class NoMoreTripleQuestion
+    [HarbTweak(TweakName, DefaultEnabled, Description)]
+    internal sealed class MultiShopImprovements : Tweak
     {
-        private bool Enabled { get { return enabled.Value; } }
-        private readonly ConfigEntry<bool> enabled;
-        private readonly ConfigEntry<int> maxQuestions;
-        private readonly ConfigEntry<int> maxSame;
-        private bool prevEnabled = false;
+        private const string TweakName = "Multishop Improvements";
+        private const bool DefaultEnabled = true;
+        private const string Description = "This tweak aims to always leave a choice when interacting with a multishop.";
 
-        private readonly string name = "Multishop Improvements";
+        private ConfigEntry<int> maxQuestions;
+        private ConfigEntry<int> maxSame;
 
-        public NoMoreTripleQuestion()
+        public MultiShopImprovements(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
+        { }
+
+        protected override void MakeConfig()
         {
-            enabled = HarbTweaks.Instance.AddConfig(name, "Actually use the config below?", true, "This tweak aims to always leave a choice when interacting with a multishop.", ReloadHook);
-            maxQuestions = HarbTweaks.Instance.AddConfig(name, "Max amount of question marks.", 2, new ConfigDescription("Amount of question marks that can appear at once on a multishop. Vanilla is 3.",new AcceptableValueRange<int>(0,3)), ReloadHook);
-            maxSame = HarbTweaks.Instance.AddConfig(name, "Max amount of duplicates.", 1, new ConfigDescription("Max amount of duplicates in a shop. Vanilla is 2.", new AcceptableValueRange<int>(0, 2)), ReloadHook);
-            if (Enabled)
-                MakeHook();
+            maxQuestions = AddConfig("Max amount of question marks.", 2, new ConfigDescription("Amount of question marks that can appear at once on a multishop. Vanilla is 3.",new AcceptableValueRange<int>(0,3)));
+            maxSame = AddConfig("Max amount of duplicates.", 1, new ConfigDescription("Max amount of duplicates in a shop. Vanilla is 2.", new AcceptableValueRange<int>(0, 2)));
         }
 
-        public void ReloadHook(object o, System.EventArgs args)
-        {
-            if (prevEnabled)
-                RemoveHook();
-            if (Enabled)
-                MakeHook();
-        }
-
-
-        public void MakeHook()
+        protected override void Hook()
         {
             On.RoR2.MultiShopController.CreateTerminals += MultiShopController_on_CreateTerminals1;
-            prevEnabled = true;
         }
 
-        public void RemoveHook()
+        protected override void UnHook()
         {
             On.RoR2.MultiShopController.CreateTerminals -= MultiShopController_on_CreateTerminals1;
-            prevEnabled = false;
         }
 
         private void MultiShopController_on_CreateTerminals1(On.RoR2.MultiShopController.orig_CreateTerminals orig, RoR2.MultiShopController self)
@@ -73,7 +62,7 @@ namespace HarbTweaks
                 }
                 else
                 {
-                    HarbTweaks.Instance.Log.LogError("Something was wrong with a terminal, aborting.");
+                    TweakLogger.LogWarning("MultiShopImprovements", "Something was wrong with a terminal, aborting.");
                     return;
                 }
             }

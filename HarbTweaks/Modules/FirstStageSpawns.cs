@@ -1,9 +1,7 @@
-﻿using BepInEx;
-using MonoMod.Cil;
+﻿using MonoMod.Cil;
 using Mono.Cecil.Cil;
-using System.Reflection;
 using BepInEx.Configuration;
-using System;
+using R2API.Utils;
 
 /*
     Code By Guido "Harb". 
@@ -12,57 +10,41 @@ using System;
 namespace HarbTweaks
 {
 
-    public class FirstStageSpawns
+    [HarbTweak(TweakName,DefaultEnabled,Description)]
+    internal sealed class FirstStageSpawns : Tweak
     {
-        private readonly ConfigEntry<float> scaling;
-        private bool Enabled { get { return enabled.Value; } }
-        private readonly ConfigEntry<bool> enabled;
-        private bool prevEnabled = false;
+        private const string TweakName = "First Stage Spawns";
+        private const bool DefaultEnabled = true;
+        private const string Description = "This tweak aims to get you going quicker by adding enemies to the first stage.";
 
-        private readonly string name = "First Stage Spawns";
-
+        private ConfigEntry<float> scaling;
         
+        public FirstStageSpawns(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
+        { }
 
-        public FirstStageSpawns()
+        protected override void MakeConfig()
         {
-            enabled = HarbTweaks.Instance.AddConfig(name,"Enabled",true,"This tweak aims to get you going quicker by adding enemies to the first stage.",ReloadHook);
-            scaling =  HarbTweaks.Instance.AddConfig(
-                name,
+            scaling =  AddConfig(
                 "First stage scaling",
                 2f,
-                "Vanilla gameplay is 0. But since you have this tweak to start quicker anyway, I've doubled it by default.",
-                ReloadHook
-                ) ;
-            if (Enabled)
-            {
-                MakeHook();
-            }
+                "Vanilla gameplay is 0. But since you have this tweak to start quicker anyway, I've doubled it by default."
+                );
         }
 
-        public void ReloadHook(object e, EventArgs args)
-        {
-            if(prevEnabled)
-                RemoveHook();
-            if (Enabled)
-                MakeHook();
-        }
-        
-        public void RemoveHook()
+        protected override void UnHook()
         {
             IL.RoR2.SceneDirector.PopulateScene -= SceneDirector_PopulateScene;
-            prevEnabled = false;
         }
 
-        public void MakeHook()
+        protected override void Hook()
         {
             IL.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
-            prevEnabled = true;
+            TweakLogger.LogInfo("FirstStageSpawns", $"Monstercredit for first stage multiplied by: {scaling.Value}");
         }
 
         private void SceneDirector_PopulateScene(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            float val = scaling.Value;
             c.GotoNext(
                 MoveType.After,
                 x => x.MatchCall(out _),
@@ -74,9 +56,9 @@ namespace HarbTweaks
             c.Index--;
             c.Remove();
             c.Emit(OpCodes.Ldarg_0);
-            c.Emit(OpCodes.Ldfld, typeof(RoR2.SceneDirector).GetField("monsterCredit", BindingFlags.NonPublic | BindingFlags.Instance));
+            c.Emit(OpCodes.Ldfld, typeof(RoR2.SceneDirector).GetFieldCached("monsterCredit"));
             c.Emit(OpCodes.Conv_R4);
-            c.Emit(OpCodes.Ldc_R4,val);
+            c.Emit(OpCodes.Ldc_R4, scaling.Value);
             c.Emit(OpCodes.Mul);
             c.Emit(OpCodes.Conv_I4);
         }
