@@ -5,14 +5,20 @@ using System.Collections.Generic;
 
 namespace HarbTweaks
 {
+    
 
     [BepInDependency("community.mmbait", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("community.mmhook", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.SoftDependency)]
-
-    [BepInPlugin("com.harbingerofme.harbtweaks", "HarbTweaks", "1.0.0")]
+    [BepInPlugin(GUID, modname, version)]
     public class HarbTweaks : BaseUnityPlugin
     {
+        public const string GUID = "com.harbingerofme.harbtweaks";
+        public const string modname = "HarbTweaks";
+        public const string version = "1.0.0";
+
+        internal ConfigEntry<int> LogLevel;
+
         public HarbTweaks()
         {
             Instance = this;
@@ -25,6 +31,18 @@ namespace HarbTweaks
 
         public void Awake()
         {
+            Config.AddSetting<int>(
+                new ConfigDefinition(
+                    "",
+                    "Log Level"
+                    ),
+                1,
+                new ConfigDescription(
+                    TweakLogger.LogLevelDescription,
+                    new AcceptableValueRange<int>(0, 2),
+                    new ConfigurationManagerAttributes { IsAdvanced = true }
+                    )
+                );
             new BiggerLockboxes();
             new FirstStageSpawns();
             new NoForwardSaw();
