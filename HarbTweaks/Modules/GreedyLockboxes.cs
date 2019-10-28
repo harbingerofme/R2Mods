@@ -10,7 +10,7 @@ namespace HarbTweaks
     {
 
         private const string TweakName = "Greedy Lockboxes";
-        private const bool DefaultEnabled = true;
+        private const bool DefaultEnabled = false;
         private const string Description = "When active, only people with rusted keys can open rusted lockboxes. Not recommended.";
 
 
