@@ -17,9 +17,7 @@ namespace HarbTweaks
         private const bool DefaultEnabled = true;
         private const string Description = "This tweak aims to get you going quicker by adding enemies to the first stage.";
 
-
         private ConfigEntry<float> scaling;
-
         
         public FirstStageSpawns(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
         { }

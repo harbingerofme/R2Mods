@@ -11,7 +11,6 @@ namespace HarbTweaks
     [HarbTweak(TweakName, DefaultEnabled, Description)]
     internal sealed class NoForwardSaw : Tweak
     {
-
         private const string TweakName = "No Forward Saw";
         private const bool DefaultEnabled = false;
         private const string Description = "Makes MUL-T's Powersaw no longer push you forward.";

@@ -21,7 +21,6 @@ namespace HarbTweaks
         private ConfigEntry<float> AScaleConfig;
         private ConfigEntry<float> MScaleConfig;
 
-
         public BiggerLockboxes(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
         { }
 

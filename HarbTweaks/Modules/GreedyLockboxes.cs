@@ -8,11 +8,9 @@ namespace HarbTweaks
     [HarbTweak(TweakName, DefaultEnabled, Description)]
     internal sealed class GreedyLockBoxes : Tweak
     {
-
         private const string TweakName = "Greedy Lockboxes";
         private const bool DefaultEnabled = false;
         private const string Description = "When active, only people with rusted keys can open rusted lockboxes. Not recommended.";
-
 
         public GreedyLockBoxes(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
         { }
