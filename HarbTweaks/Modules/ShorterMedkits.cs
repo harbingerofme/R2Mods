@@ -1,6 +1,5 @@
-﻿using System;
-using BepInEx;
-using BepInEx.Configuration;
+﻿using BepInEx.Configuration;
+using RoR2;
 
 /*
     Code By Guido "Harb". 
@@ -8,49 +7,50 @@ using BepInEx.Configuration;
 
 namespace HarbTweaks
 {
-    public class ShorterMedkits
+    [HarbTweak(TweakName, DefaultEnabled, Description)]
+    internal sealed class ShorterMedkits : Tweak
     {
-        public readonly ConfigEntry<float> NewTime;
-        private bool Enabled { get { return enabled.Value; } }
-        private readonly ConfigEntry<bool> enabled;
-        private readonly string name = "Shorter Medkits";
-        private bool prevEnabled = false;
+        private const string TweakName = "Shorter Medkits";
+        private const bool DefaultEnabled = false;
+        private const string Description = "Some people complain that medkits take too long to act.";
 
-        public ShorterMedkits()
+        private readonly BuffDef MedkitDef;
+        private readonly bool VanillaDebuffVal;
+
+        private ConfigEntry<float> NewTime;
+        private ConfigEntry<bool> IsDebuff;
+
+
+        public ShorterMedkits(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
         {
-            enabled = HarbTweaks.Instance.AddConfig(name, "Change the medkit behaviour?", false, "Some people complain that medkits take too long to act.", ReloadHook);
-            NewTime = HarbTweaks.Instance.AddConfig(name, "Medkit delay in seconds.", 0.9f , new ConfigDescription("The new time for the medkits. In multiplayer, this is fixed to 0.9 seconds to prevent desyncs from different configs.", new AcceptableValueRange<float>(1f/60f,2.2f)),ReloadHook);
-            if(Enabled)
-                MakeHook();
+            MedkitDef = BuffCatalog.GetBuffDef(BuffIndex.MedkitHeal);
+            VanillaDebuffVal = MedkitDef.isDebuff;
         }
 
-        private void ReloadHook(object sender, EventArgs e)
+        protected override void MakeConfig()
         {
-            if (prevEnabled)
-                RemoveHook();
-            if(Enabled)
-                MakeHook();
+            NewTime = AddConfig("Medkit delay in seconds.", 1.1f, new ConfigDescription("The new time for the medkits. In multiplayer, this is fixed to 0.9 seconds to prevent desyncs from different configs.", new AcceptableValueRange<float>(1f / 60f, 2.2f)));
+            IsDebuff = AddConfig("Medkit buff is a debuff", true, "By making it a debuff, it makes debuff removing effects apply the medkit heal instantly. Like Blast Shower.");
         }
 
-        private void MakeHook()
+
+        protected override void Hook()
         {
             On.RoR2.CharacterBody.AddTimedBuff += CharacterBody_AddTimedBuff;
-            prevEnabled = true;
+            MedkitDef.isDebuff = IsDebuff.Value;
         }
-        private void RemoveHook()
+
+        protected override void UnHook()
         {
             On.RoR2.CharacterBody.AddTimedBuff -= CharacterBody_AddTimedBuff;
-            prevEnabled = false;
+            MedkitDef.isDebuff = VanillaDebuffVal;
         }
 
         private void CharacterBody_AddTimedBuff(On.RoR2.CharacterBody.orig_AddTimedBuff orig, RoR2.CharacterBody self, RoR2.BuffIndex buffType, float duration)
         {
-            if (buffType == RoR2.BuffIndex.MedkitHeal)
+            if (buffType == BuffIndex.MedkitHeal)
             {
-                if (RoR2.Run.instance.participatingPlayerCount > 1)
-                    duration = 0.9f;
-                else
-                    duration = NewTime.Value;
+                duration = NewTime.Value;
             }
             orig(self, buffType, duration);
         }
