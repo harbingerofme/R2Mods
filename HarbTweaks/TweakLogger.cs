@@ -37,5 +37,10 @@ namespace HarbTweaks
         {
             Log($"[{module}] {message}",3);
         }
+
+        public static void LogWarning(string module, string message)
+        {
+            Log($"[{module}] {message}", 0);
+        }
     }
 }
