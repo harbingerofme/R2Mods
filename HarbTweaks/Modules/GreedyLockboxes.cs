@@ -4,43 +4,31 @@ using UnityEngine;
 using BepInEx.Configuration;
 
 namespace HarbTweaks
-{ 
-    public class GreedyLockBoxes
+{
+    [HarbTweak(TweakName, DefaultEnabled, Description)]
+    internal sealed class GreedyLockBoxes : Tweak
     {
-        private bool Enabled { get { return enabled.Value; } }
-        private readonly ConfigEntry<bool> enabled;
-        private bool prevEnabled = false;
 
-        private readonly string name = "Greedy Lockboxes";
+        private const string TweakName = "Greedy Lockboxes";
+        private const bool DefaultEnabled = true;
+        private const string Description = "When active, only people with rusted keys can open rusted lockboxes. Not recommended.";
 
-        public GreedyLockBoxes()
-        {
-            enabled = HarbTweaks.Instance.AddConfig(name, "Enabled", false, "When active, only people with rusted keys can open rusted lockboxes. Not recommended.", ReloadHook);
-            if(Enabled)
-                MakeHook();
-        }
 
-        public void ReloadHook(object o, EventArgs args) 
-        {
-            if (prevEnabled)
-                RemoveHook();
-            if (Enabled)
-                MakeHook();
+        public GreedyLockBoxes(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
+        { }
 
-        }
 
-        public void MakeHook()
+        protected override void MakeConfig() { }
+        protected override void Hook()
         {
             On.RoR2.PurchaseInteraction.GetInteractability += PurchaseInteraction_GetInteractability;
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
-            prevEnabled = true;
         }
 
-        public void RemoveHook()
+        protected override void UnHook()
         {
             On.RoR2.PurchaseInteraction.GetInteractability -= PurchaseInteraction_GetInteractability;
             On.RoR2.Interactor.PerformInteraction -= Interactor_PerformInteraction;
-            prevEnabled = false;
         }
 
         private void Interactor_PerformInteraction(On.RoR2.Interactor.orig_PerformInteraction orig, Interactor self, GameObject interactableObject)
