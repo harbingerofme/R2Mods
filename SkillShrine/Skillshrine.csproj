@@ -278,9 +278,4 @@
     <Exec Command="copy /y $(TargetPath) $(ProjectDir)..\builds\" />
   </Target>
 
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="(powershell" />
-  </Target>
-  
 </Project>
