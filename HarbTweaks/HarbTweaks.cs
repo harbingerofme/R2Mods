@@ -20,6 +20,8 @@ namespace HarbTweaks
 
         internal ConfigEntry<int> LogLevel;
 
+        private Queue<Type> startTweaks;
+        private static readonly Type[] constructorParameters = new Type[] { typeof(ConfigFile), typeof(string), typeof(bool), typeof(string) };
 
         public HarbTweaks()
         {
@@ -38,12 +40,18 @@ namespace HarbTweaks
                 );
             LogLevel.SettingChanged += LogLevel_SettingChanged;
             LogLevel_SettingChanged(null, null);
+            startTweaks = new Queue<Type>();
         }
 
 
         public void Awake()
         {
-            EnableAllTweaks();
+              EnableAllTweaks();
+        }
+
+        public void Start()
+        {
+            LateEnableTweaks();
         }
 
         /// <summary>
@@ -52,16 +60,37 @@ namespace HarbTweaks
         private void EnableAllTweaks()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes();
-            Type[] constructorParameters = new Type[] { typeof(ConfigFile), typeof(string), typeof(bool), typeof(string) };
+
             foreach (Type type in types)
             {
                 var customAttr = (HarbTweak)type.GetCustomAttribute(typeof(HarbTweak), false);
                 if (customAttr != null)
                 {
-                    var ctor = type.GetConstructor(constructorParameters);
-                    ctor.Invoke(new object[4] { Config, customAttr.Name, customAttr.DefaultEnabled, customAttr.Description }); //Init this array outside the loop if making this a lib or you just have a lot of tweaks.
+                    if(customAttr.target == HarbTweak.Target.Start)
+                    {
+                        startTweaks.Enqueue(type);
+                    }
+                    else
+                    {
+                        EnableTweak(type, customAttr);
+                    }
                 }
             }
+        }
+
+        private void LateEnableTweaks()
+        {
+            while (startTweaks.Count > 0)
+            {
+                Type tweak = startTweaks.Dequeue();
+                EnableTweak(tweak, (HarbTweak)tweak.GetCustomAttribute(typeof(HarbTweak), false));
+            }
+        }
+
+        private void EnableTweak(Type type, HarbTweak customAttr)
+        {
+            var ctor = type.GetConstructor(constructorParameters);
+            ctor.Invoke(new object[4] { Config, customAttr.Name, customAttr.DefaultEnabled, customAttr.Description }); //Init this array outside the loop if making this a lib or you just have a lot of tweaks.
         }
 
         private void LogLevel_SettingChanged(object _, EventArgs __)

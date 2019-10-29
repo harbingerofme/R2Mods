@@ -86,11 +86,19 @@ namespace HarbTweaks
         public readonly string Name;
         public readonly bool DefaultEnabled;
         public readonly string Description;
-        public HarbTweak(string name, bool defaultEnabled, string description)
+        public Target target;
+        public HarbTweak(string name, bool defaultEnabled, string description, Target target = Target.Awake)
         {
             Name = name;
             DefaultEnabled = defaultEnabled;
             Description = description;
+            this.target = target;
+        }
+
+        public enum Target
+        {
+            Awake,
+            Start
         }
     }
 }
