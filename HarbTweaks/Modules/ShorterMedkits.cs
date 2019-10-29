@@ -23,6 +23,8 @@ namespace HarbTweaks
 
         public ShorterMedkits(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
         {
+            MedkitDef = BuffCatalog.GetBuffDef(BuffIndex.MedkitHeal);
+            VanillaDebuffVal = MedkitDef.isDebuff;
         }
 
         
