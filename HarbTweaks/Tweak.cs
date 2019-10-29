@@ -30,7 +30,7 @@ namespace HarbTweaks
             Enabled.SettingChanged += Enabled_SettingChanged;
             MakeConfig();
             ReloadHooks(null, null);
-            TweakLogger.Log($"\tLoaded Tweak: {Name}.");
+            TweakLogger.Log($"Loaded Tweak: {Name}.");
         }
 
         private void Enabled_SettingChanged(object sender, EventArgs e)
