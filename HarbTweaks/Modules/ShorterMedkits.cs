@@ -7,15 +7,15 @@ using RoR2;
 
 namespace HarbTweaks
 {
-    [HarbTweak(TweakName, DefaultEnabled, Description)]
+    [HarbTweak(TweakName, DefaultEnabled, Description, HarbTweak.Target.Start)]
     internal sealed class ShorterMedkits : Tweak
     {
         private const string TweakName = "Shorter Medkits";
         private const bool DefaultEnabled = false;
         private const string Description = "Some people complain that medkits take too long to act.";
 
-        private readonly BuffDef MedkitDef;
-        private readonly bool VanillaDebuffVal;
+        private BuffDef MedkitDef;
+        private bool VanillaDebuffVal;
 
         private ConfigEntry<float> NewTime;
         private ConfigEntry<bool> IsDebuff;
@@ -23,9 +23,9 @@ namespace HarbTweaks
 
         public ShorterMedkits(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
         {
-            MedkitDef = BuffCatalog.GetBuffDef(BuffIndex.MedkitHeal);
-            VanillaDebuffVal = MedkitDef.isDebuff;
         }
+
+        
 
         protected override void MakeConfig()
         {
@@ -38,6 +38,7 @@ namespace HarbTweaks
         {
             On.RoR2.CharacterBody.AddTimedBuff += CharacterBody_AddTimedBuff;
             MedkitDef.isDebuff = IsDebuff.Value;
+
         }
 
         protected override void UnHook()
