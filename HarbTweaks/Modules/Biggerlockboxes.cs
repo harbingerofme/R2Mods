@@ -21,8 +21,18 @@ namespace HarbTweaks
         private ConfigEntry<float> AScaleConfig;
         private ConfigEntry<float> MScaleConfig;
 
-        public BiggerLockboxes(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
-        { }
+        private readonly Vector3 vanillaScale;
+        private readonly GameObject lockboxPrefab;
+
+        private bool hookSet;
+
+        public BiggerLockboxes(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description, false)
+        {
+            lockboxPrefab = Resources.Load<GameObject>("prefabs/networkedobjects/lockbox");
+            vanillaScale = lockboxPrefab.transform.localScale;
+            hookSet = false;
+            ReloadHooks(null, null);
+        }
 
         protected override void MakeConfig()
         {
@@ -35,12 +45,74 @@ namespace HarbTweaks
 
         protected override void UnHook()
         {
-            IL.RoR2.SceneDirector.PopulateScene -= SceneDirector_PopulateScene;
+            TweakLogger.LogInfo("BiggerLockboxes","Unhooking.");
+            lockboxPrefab.transform.localScale = vanillaScale;
+            if(hookSet)
+            {
+                On.RoR2.Stage.ctor -= Stage_ctor;
+                hookSet = false;
+            }
+            //IL.RoR2.SceneDirector.PopulateScene -= SceneDirector_PopulateScene;
         }
 
         protected override void Hook()
         {
-            IL.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
+            if (DoNotScaleConfig.Value)
+            {
+                TweakLogger.LogInfo("BiggerLockboxes","doNotScale");
+                ApplyTransform(GetScaleAmount());
+            }
+            else
+            {
+                TweakLogger.LogInfo("BiggerLockboxes","Hooked");
+                hookSet = true;
+                On.RoR2.Stage.ctor += Stage_ctor;
+
+            }
+           //IL.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
+        }
+
+        private void Stage_ctor(On.RoR2.Stage.orig_ctor orig, Stage self)
+        {
+            orig(self);
+            int keys = 0;
+            foreach (CharacterMaster master in CharacterMaster.readOnlyInstancesList)
+            {
+                keys += master.inventory.GetItemCount(ItemIndex.TreasureCache);
+            }
+            TweakLogger.LogInfo("BiggerLockboxes","stage_ctor");
+            ApplyTransform(GetScaleAmount(keys,FirstConfig.Value));
+        }
+
+        private float GetScaleAmount(int keys = 1, bool ignoreFirst = false)
+        {
+            if (ignoreFirst)
+            {
+                keys -= 1;
+            }
+
+            if (ModeConfig.Value)
+            {
+                return ((float)keys) * AScaleConfig.Value;
+            }
+            else
+            {
+                return 1 + ((float)keys) * MScaleConfig.Value;
+            }
+        }
+
+        private void ApplyTransform(float scale)
+        {
+            lockboxPrefab.transform.localScale = vanillaScale;
+            if (ModeConfig.Value)
+            {
+                lockboxPrefab.transform.localScale += new Vector3(scale, scale, scale);
+            }
+            else
+            {
+                lockboxPrefab.transform.localScale *= scale;
+            }
+            TweakLogger.LogInfo("BiggerLockboxes",$"Apply transform: {vanillaScale}->{lockboxPrefab.transform.localScale}");
         }
 
         public void SceneDirector_PopulateScene(ILContext il)
@@ -71,18 +143,7 @@ namespace HarbTweaks
                 (box, keycount) =>
                 {
                     TweakLogger.LogInfo("BiggerLockboxes", "Scaling Lockbox.");
-                    float amount = keycount - (FirstConfig.Value ? 1 : 0);
-                    amount = DoNotScaleConfig.Value ? 1 : amount;
-                    if (ModeConfig.Value)
-                    {
-                        float a = amount * AScaleConfig.Value;
-                        box.transform.localScale += new Vector3(a, a, a);
-                    }
-                    else
-                    {
-                        float a = 1 + amount * MScaleConfig.Value;
-                        box.transform.localScale *= a;
-                    }
+
 
                 }
             );
