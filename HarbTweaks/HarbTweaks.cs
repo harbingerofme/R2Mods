@@ -20,7 +20,7 @@ namespace HarbTweaks
 
         internal ConfigEntry<int> LogLevel;
 
-        private Queue<Type> startTweaks;
+        private readonly Queue<Type> startTweaks;
         private static readonly Type[] constructorParameters = new Type[] { typeof(ConfigFile), typeof(string), typeof(bool), typeof(string) };
 
         public HarbTweaks()
