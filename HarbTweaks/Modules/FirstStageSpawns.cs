@@ -39,7 +39,7 @@ namespace HarbTweaks
         protected override void Hook()
         {
             IL.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
-            TweakLogger.LogInfo("FirstStageSpawns", $"Monstercredit for first stage multiplied by: {scaling.Value}");
+            LogInfo( $"Monstercredit for first stage multiplied by: {scaling.Value}");
         }
 
         private void SceneDirector_PopulateScene(ILContext il)
