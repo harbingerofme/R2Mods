@@ -75,7 +75,7 @@ namespace HarbTweaks
         public ConfigEntry<T> AddConfig<T>(string settingShortDescr, T value, ConfigDescription configDescription)
         {
             ConfigDescription orderedConfigDescription = new ConfigDescription(configDescription.Description, configDescription.AcceptableValues, new ConfigurationManagerAttributes { Order = --ConfigOrder });
-            ConfigEntry<T> entry = Config.AddSetting(Name,settingShortDescr, value, orderedConfigDescription);
+            ConfigEntry<T> entry = Config.Bind(Name,settingShortDescr, value, orderedConfigDescription);
             entry.SettingChanged += ReloadHooks;
             return entry;
         }
