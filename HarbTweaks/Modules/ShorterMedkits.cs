@@ -14,8 +14,8 @@ namespace HarbTweaks
         private const bool DefaultEnabled = false;
         private const string Description = "Some people complain that medkits take too long to act.";
 
-        private BuffDef MedkitDef;
-        private bool VanillaDebuffVal;
+        private readonly BuffDef MedkitDef;
+        private readonly bool VanillaDebuffVal;
 
         private ConfigEntry<float> NewTime;
         private ConfigEntry<bool> IsDebuff;
