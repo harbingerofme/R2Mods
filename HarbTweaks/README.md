@@ -33,4 +33,5 @@ These are niche features asked for by a small subset of people.
 This will also appear on Thunderstore because I will not write two READMEs.
 
 All stuff outside /Modules may be and is intended to be reused without attribution.
+
 Stuff inside /Modules must be clearly attributed.
