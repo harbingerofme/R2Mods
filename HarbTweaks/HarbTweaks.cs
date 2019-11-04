@@ -63,10 +63,10 @@ namespace HarbTweaks
 
             foreach (Type type in types)
             {
-                var customAttr = (HarbTweak)type.GetCustomAttribute(typeof(HarbTweak), false);
+                var customAttr = (TweakAttribute)type.GetCustomAttribute(typeof(TweakAttribute), false);
                 if (customAttr != null)
                 {
-                    if(customAttr.target == HarbTweak.Target.Start)
+                    if(customAttr.target == TweakStartupTarget.Start)
                     {
                         startTweaks.Enqueue(type);
                     }
@@ -83,11 +83,11 @@ namespace HarbTweaks
             while (startTweaks.Count > 0)
             {
                 Type tweak = startTweaks.Dequeue();
-                EnableTweak(tweak, (HarbTweak)tweak.GetCustomAttribute(typeof(HarbTweak), false));
+                EnableTweak(tweak, (TweakAttribute)tweak.GetCustomAttribute(typeof(TweakAttribute), false));
             }
         }
 
-        private void EnableTweak(Type type, HarbTweak customAttr)
+        private void EnableTweak(Type type, TweakAttribute customAttr)
         {
             var ctor = type.GetConstructor(constructorParameters);
             Tweak tweak = (Tweak) ctor.Invoke(new object[4] { Config, customAttr.Name, customAttr.DefaultEnabled, customAttr.Description }); //Init this array outside the loop if making this a lib or you just have a lot of tweaks.

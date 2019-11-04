@@ -8,7 +8,7 @@ using System;
 
 namespace HarbTweaks
 {
-    [HarbTweak(TweakName, DefaultEnabled, Description)]
+    [TweakAttribute(TweakName, DefaultEnabled, Description)]
     internal sealed class NoForwardSaw : Tweak
     {
         private const string TweakName = "No Forward Saw";

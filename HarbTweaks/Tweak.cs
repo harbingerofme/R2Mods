@@ -88,13 +88,13 @@ namespace HarbTweaks
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    internal class HarbTweak : Attribute
+    internal class TweakAttribute : Attribute
     {
         public readonly string Name;
         public readonly bool DefaultEnabled;
         public readonly string Description;
-        public Target target;
-        public HarbTweak(string name, bool defaultEnabled, string description, Target target = Target.Awake)
+        public TweakStartupTarget target;
+        public TweakAttribute(string name, bool defaultEnabled, string description, TweakStartupTarget target = TweakStartupTarget.Awake)
         {
             Name = name;
             DefaultEnabled = defaultEnabled;
@@ -102,10 +102,12 @@ namespace HarbTweaks
             this.target = target;
         }
 
-        public enum Target
-        {
-            Awake,
-            Start
-        }
+
+    }
+
+    public enum TweakStartupTarget
+    {
+        Awake,
+        Start
     }
 }

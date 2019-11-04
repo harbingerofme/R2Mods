@@ -5,7 +5,7 @@ using BepInEx.Configuration;
 
 namespace HarbTweaks
 {
-    [HarbTweak(TweakName, DefaultEnabled, Description)]
+    [TweakAttribute(TweakName, DefaultEnabled, Description)]
     internal sealed class GreedyLockBoxes : Tweak
     {
         private const string TweakName = "Greedy Lockboxes";

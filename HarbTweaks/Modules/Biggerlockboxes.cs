@@ -8,7 +8,7 @@ using R2API.Utils;
 
 namespace HarbTweaks
 {
-    [HarbTweak(TweakName, DefaultEnabled, Description)]
+    [TweakAttribute(TweakName, DefaultEnabled, Description)]
     internal sealed class BiggerLockboxes : Tweak
     {
         private const string TweakName = "Bigger Lockboxes";
