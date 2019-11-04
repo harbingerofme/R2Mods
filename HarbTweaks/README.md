@@ -10,7 +10,7 @@ Recommend that you use [Configuration Manager](https://github.com/BepInEx/BepInE
 
 --- 
 
-## Enabled by default:
+## Enabled by default: ##
 
 * **Bigger Lockboxes** makes the rusted lockbox spawned from rusted keys  increase in size as you acquire more keys. It can be configured to just all scale up all boxes in the first place and not scale with keys. **Multiplayer:** entirely clientside.
 * **First Stage Spawns** aims to improves the pace of the game's start. Enemies appear prespawned on the first stage, at twice the density of a normal prespawn. Can be configured for different densities. **Multiplayer:** entirely hostside
@@ -18,7 +18,7 @@ Recommend that you use [Configuration Manager](https://github.com/BepInEx/BepInE
 
 ---
 
-## Disabled by default:
+## Disabled by default: ##
 
 These are niche features asked for by a small subset of people.
 
@@ -28,7 +28,7 @@ These are niche features asked for by a small subset of people.
 
 ---
 
-##License, github stuff:## 
+## License github stuff ## 
 
 This will also appear on Thunderstore because I will not write two READMEs.
 
