@@ -44,7 +44,7 @@ namespace HarbTweaks
 
         protected override void UnHook()
         {
-            TweakLogger.LogInfo("BiggerLockboxes","Unhooking.");
+            LogInfo("Unhooking.");
             lockboxPrefab.transform.localScale = vanillaScale;
             if(hookSet)
             {
@@ -58,12 +58,12 @@ namespace HarbTweaks
         {
             if (DoNotScaleConfig.Value)
             {
-                TweakLogger.LogInfo("BiggerLockboxes","doNotScale");
+                LogInfo("doNotScale");
                 ApplyTransform(GetScaleAmount());
             }
             else
             {
-                TweakLogger.LogInfo("BiggerLockboxes","Hooked");
+                LogInfo("Hooked");
                 hookSet = true;
                 On.RoR2.Stage.ctor += Stage_ctor;
 
@@ -79,7 +79,7 @@ namespace HarbTweaks
             {
                 keys += master.inventory.GetItemCount(ItemIndex.TreasureCache);
             }
-            TweakLogger.LogInfo("BiggerLockboxes","stage_ctor");
+            LogInfo("stage_ctor");
             ApplyTransform(GetScaleAmount(keys,FirstConfig.Value));
         }
 
@@ -111,7 +111,7 @@ namespace HarbTweaks
             {
                 lockboxPrefab.transform.localScale *= scale;
             }
-            TweakLogger.LogInfo("BiggerLockboxes",$"Apply transform: {vanillaScale}->{lockboxPrefab.transform.localScale}");
+            LogInfo($"Apply transform: {vanillaScale}->{lockboxPrefab.transform.localScale}");
         }
 
         public void SceneDirector_PopulateScene(ILContext il)
@@ -141,7 +141,7 @@ namespace HarbTweaks
             c.EmitDelegate<Action<GameObject, int>>(//
                 (box, keycount) =>
                 {
-                    TweakLogger.LogInfo("BiggerLockboxes", "Scaling Lockbox.");
+                    LogInfo("Scaling Lockbox.");
 
 
                 }

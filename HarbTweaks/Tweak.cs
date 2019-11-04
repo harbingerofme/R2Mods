@@ -80,6 +80,11 @@ namespace HarbTweaks
             return entry;
         }
 
+        protected void LogInfo(string text)
+        {
+            TweakLogger.LogInfo(Name, text);
+        }
+
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
