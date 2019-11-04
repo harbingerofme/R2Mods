@@ -22,16 +22,17 @@ namespace HarbTweaks
         /// <param name="name">The name of this tweak, should be identical to the HarbTweak attribute name.</param>
         /// <param name="defaultEnabled">If this tweak is enabled by default.</param>
         /// <param name="description">If this tweak is enabled by default.</param>
-        public Tweak(ConfigFile config, string name, bool defaultEnabled, string description, bool CanStartAuto = true)
+        public Tweak(ConfigFile config, string name, bool defaultEnabled, string description)
         {
             Config = config;
             Name = name;
             Enabled = AddConfig("Enabled", defaultEnabled, description);
             Enabled.SettingChanged += Enabled_SettingChanged;
             MakeConfig();
-            if(CanStartAuto)
-                ReloadHooks(null, null);
-            TweakLogger.Log($"Loaded Tweak: {Name}.");
+            if (Enabled.Value)
+                TweakLogger.Log($"Loaded Tweak: {Name}.");
+            else
+                TweakLogger.Log($"Prepared Tweak: {Name}.");
         }
 
         private void Enabled_SettingChanged(object sender, EventArgs e)
@@ -46,7 +47,7 @@ namespace HarbTweaks
             }
         }
 
-        public void ReloadHooks(object _, EventArgs __)
+        public void ReloadHooks(object _ = null, EventArgs __ = null)
         {
             if (PreviouslyEnabled)
             {

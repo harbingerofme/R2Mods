@@ -26,12 +26,11 @@ namespace HarbTweaks
 
         private bool hookSet;
 
-        public BiggerLockboxes(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description, false)
+        public BiggerLockboxes(ConfigFile config, string name, bool defaultEnabled, string description) : base(config, name, defaultEnabled, description)
         {
             lockboxPrefab = Resources.Load<GameObject>("prefabs/networkedobjects/lockbox");
             vanillaScale = lockboxPrefab.transform.localScale;
             hookSet = false;
-            ReloadHooks(null, null);
         }
 
         protected override void MakeConfig()

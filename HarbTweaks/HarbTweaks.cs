@@ -90,7 +90,8 @@ namespace HarbTweaks
         private void EnableTweak(Type type, HarbTweak customAttr)
         {
             var ctor = type.GetConstructor(constructorParameters);
-            ctor.Invoke(new object[4] { Config, customAttr.Name, customAttr.DefaultEnabled, customAttr.Description }); //Init this array outside the loop if making this a lib or you just have a lot of tweaks.
+            Tweak tweak = (Tweak) ctor.Invoke(new object[4] { Config, customAttr.Name, customAttr.DefaultEnabled, customAttr.Description }); //Init this array outside the loop if making this a lib or you just have a lot of tweaks.
+            tweak.ReloadHooks();
         }
 
         private void LogLevel_SettingChanged(object _, EventArgs __)
