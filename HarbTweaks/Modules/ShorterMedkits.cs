@@ -7,7 +7,7 @@ using RoR2;
 
 namespace HarbTweaks
 {
-    [TweakAttribute(TweakName, DefaultEnabled, Description, TweakAttribute.Target.Start)]
+    [TweakAttribute(TweakName, DefaultEnabled, Description, TweakStartupTarget.Start)]
     internal sealed class ShorterMedkits : Tweak
     {
         private const string TweakName = "Shorter Medkits";
