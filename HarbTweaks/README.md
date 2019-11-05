@@ -6,7 +6,7 @@
 
 Recommend that you use [Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager) *[(download page)](https://github.com/BepInEx/BepInEx.ConfigurationManager/releases)* to modify these values in game.
 
-**Installation:** Drop into your Bepinex/plugins/ folder.
+**Installation:** Drop into your `Bepinex/plugins/` folder.
 
 --- 
 
@@ -30,8 +30,4 @@ These are niche features asked for by a small subset of people.
 
 ## License github stuff ## 
 
-This will also appear on Thunderstore because I will not write two READMEs.
-
-All stuff outside /Modules may be and is intended to be reused without attribution.
-
-Stuff inside /Modules must be clearly attributed.
+You can have the tweak template at: https://github.com/harbingerofme/RoR2-Tweak-Template, where it may be reused attribution-free. However, if you do use it, let me know, I wanna see what you do with it!
