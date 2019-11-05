@@ -41,6 +41,7 @@ namespace HarbTweaks
             LogLevel.SettingChanged += LogLevel_SettingChanged;
             LogLevel_SettingChanged(null, null);
             startTweaks = new Queue<Type>();
+            R2API.Utils.CommandHelper.AddToConsoleWhenReady();
         }
 
 
