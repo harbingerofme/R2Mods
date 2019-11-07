@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{86C61259
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skillshrine", "SkillShrine\Skillshrine.csproj", "{A817997D-0C02-4467-9A89-CD31EB4A192F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "emptyPlugin", "emptyPlugin\emptyPlugin.csproj", "{65D92568-0A5A-47C7-8A5A-FD7E148C6379}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
