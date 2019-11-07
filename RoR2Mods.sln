@@ -32,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skillshrine", "SkillShrine\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "emptyPlugin", "emptyPlugin\emptyPlugin.csproj", "{65D92568-0A5A-47C7-8A5A-FD7E148C6379}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HarbTweaks", "HarbTweaks\HarbTweaks.csproj", "{CDC4D0A8-2269-4D35-B82E-DF403221BB86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{65D92568-0A5A-47C7-8A5A-FD7E148C6379}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65D92568-0A5A-47C7-8A5A-FD7E148C6379}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65D92568-0A5A-47C7-8A5A-FD7E148C6379}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDC4D0A8-2269-4D35-B82E-DF403221BB86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDC4D0A8-2269-4D35-B82E-DF403221BB86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDC4D0A8-2269-4D35-B82E-DF403221BB86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDC4D0A8-2269-4D35-B82E-DF403221BB86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
