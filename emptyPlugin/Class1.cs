@@ -3,8 +3,8 @@
 
 namespace testPlugin
 {
-    [PluginMetadata(GUID,NAME,VERSION)]
-    public class emptyPlugin : BaseUnityPlugin
+    [BepInPlugin(GUID,NAME,VERSION)]
+    public class EmptyPlugin : BaseUnityPlugin
     {
         public const string
             NAME = "emptyPlugin",
