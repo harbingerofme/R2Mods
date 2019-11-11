@@ -9,26 +9,26 @@ using System.Reflection;
 using EliteDef = RoR2.CombatDirector.EliteTierDef;
 using System.Collections.Generic;
 
-namespace Deluge
+namespace Diluvian
 {
 
     [BepInDependency(R2API.R2API.PluginGUID,BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.jarlyk.eso", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(GUID,NAME,VERSION)]
-    public class Deluge : BaseUnityPlugin
+    public class Diluvian : BaseUnityPlugin
     {
         public const string
-            NAME = "Deluge",
+            NAME = "Diluvian",
             GUID = "com.harbingerofme." + NAME,
             VERSION = "0.0.5";
 
-        private readonly Color DelugeColor;
-        private readonly DifficultyDef DelugeDef;
+        private readonly Color DiluvianColor;
+        private readonly DifficultyDef DiluvianDef;
         private DifficultyIndex DelugeIndex;
         private bool HooksApplied = false;
 
-        private const string assetPrefix = "@HarbDeluge";
-        private const string assetString = assetPrefix+":Assets/DelugeFolder/DelugeIcon.png";
+        private const string assetPrefix = "@HarbDiluvian";
+        private const string assetString = assetPrefix+ ":Assets/Diluvian/DiluvianIcon.png";
 
         private bool ESOenabled = false;
         private float[] vanillaEliteMultipliers;
@@ -37,28 +37,29 @@ namespace Deluge
 
         private Dictionary<string, string> defaultLanguage;
 
-        private Deluge()
+        private Diluvian()
         {
-            DelugeColor = new Color(0.61f, 0.07f, 0.93f);
-            DelugeDef = new DifficultyDef(
+            DiluvianColor = new Color(0.61f, 0.07f, 0.93f);
+            DiluvianDef = new DifficultyDef(
                             3.5f,
-                            "DIFFICULTY_DELUGE_NAME",
+                            "DIFFICULTY_DILUVIAN_NAME",
                             assetString,
-                            "DIFFICULTY_DELUGE_DESCRIPTION",
-                            DelugeColor
+                            "DIFFICULTY_DILUVIAN_DESCRIPTION",
+                            DiluvianColor
                             );
-
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Deluge.delugeicon"))
-            {
-                var bundle = AssetBundle.LoadFromStream(stream);
-                var provider = new R2API.AssetBundleResourcesProvider(assetPrefix, bundle);
-                R2API.ResourcesAPI.AddProvider(provider);
-            }
             defaultLanguage = new Dictionary<string, string>();
         }
 
         public void Awake()
         {
+
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Diluvian.diluvian"))
+            {
+                var bundle = AssetBundle.LoadFromStream(stream);
+                var provider = new R2API.AssetBundleResourcesProvider(assetPrefix, bundle);
+                R2API.ResourcesAPI.AddProvider(provider);
+            }
+
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.jarlyk.eso")){
                 ESOenabled = true;
                 Logger.LogWarning("ESO detected: Delegating Elite modifications to them. Future support planned.");
@@ -69,22 +70,22 @@ namespace Deluge
             CombatDirectorTierDefs = (EliteDef[]) typeof(CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
             vanillaEliteMultipliers = new float[CombatDirectorTierDefs.Length];
 
-            DelugeIndex = R2API.DifficultyAPI.AddDifficulty(DelugeDef);
+            DelugeIndex = R2API.DifficultyAPI.AddDifficulty(DiluvianDef);
 
-            R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DELUGE_NAME", "Deluge");
-            string description = "For the players who want even more. N'Kuhana herself watches over you.<style=cStack>\n";
+            R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DILUVIAN_NAME", "Diluvian");
+            string description = "For those found wanting. <style=cDeath>N'Kuhana</style> watches with interest.<style=cStack>\n";
             description = string.Join("\n",
                 description,
-                $">Difficulty Scaling: +{DelugeDef.scalingValue*50-100}%",
+                $">Difficulty Scaling: +{DiluvianDef.scalingValue*50-100}%",
                 ">Player Health Regeneration: -50%",
                 ">Monster Health Regeneration: +1% of MaxHP per second",
                 ">Oneshot Protection: Also applies to monsters",
                 ">Oneshot Protection: Hits do a maximum of 99%",
-                ">Teleporter: Enemies don't stop spawning after charge finish",
+                ">Teleporter: Enemies don't stop after charge completion",
                 $">Elites: {(1- DelugeEliteModifier)*100}% cheaper."
                 );
             description += "</style>";
-            R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DELUGE_DESCRIPTION", description);
+            R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DILUVIAN_DESCRIPTION", description);
 
 
             Run.onRunStartGlobal += Run_onRunStartGlobal;
@@ -93,10 +94,16 @@ namespace Deluge
         }
 
 
+        private void replaceString(string token, string newText)
+        {
+            defaultLanguage[token] = Language.GetString(token);
+            R2API.AssetPlus.Languages.AddToken(token, newText);
+        }
+
 
         private void Run_onRunStartGlobal(Run run)
         {
-            ChatMessage.SendColored("A storm is brewing...", DelugeColor);
+            ChatMessage.SendColored("A storm is brewing...", DiluvianColor);
             if (run.selectedDifficulty == DelugeIndex && HooksApplied == false)
             {
                 HooksApplied = true;
@@ -113,17 +120,15 @@ namespace Deluge
                         tierDef.costMultiplier *= DelugeEliteModifier;
                     }
                 }
-                defaultLanguage["PAUSE_RESUME"] = Language.GetString("PAUSE_RESUME");
-                defaultLanguage["PAUSE_SETTINGS"] = Language.GetString("PAUSE_SETTINGS");
-                defaultLanguage["PAUSE_QUIT_TO_MENU"] = Language.GetString("PAUSE_QUIT_TO_MENU");
-                defaultLanguage["PAUSE_QUIT_TO_DESKTOP"] = Language.GetString("PAUSE_QUIT_TO_DESKTOP");
-                R2API.AssetPlus.Languages.AddToken("PAUSE_RESUME", "Entertain me");
-                R2API.AssetPlus.Languages.AddToken("PAUSE_SETTINGS", "Change your view.");
-                R2API.AssetPlus.Languages.AddToken("PAUSE_QUIT_TO_MENU", "Give up");
-                R2API.AssetPlus.Languages.AddToken("PAUSE_QUIT_TO_DESKTOP", "Don't come back");
+                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
+
+
+                replaceString("PAUSE_RESUME", "Entertain me");
+                replaceString("PAUSE_SETTINGS", "Change your view.");
+                replaceString("PAUSE_QUIT_TO_MENU", "Give up");
+                replaceString("PAUSE_QUIT_TO_DESKTOP", "Don't come back");
             }
         }
-
 
 
         private void Run_onRunDestroyGlobal(Run obj)
@@ -142,6 +147,7 @@ namespace Deluge
                         tierDef.costMultiplier = vanillaEliteMultipliers[i];
                     }
                 }
+                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
                 defaultLanguage.ForEachTry((pair) =>
                 {
                     //Debug.Log($"Restoring {pair.Key}:{pair.Value} from {Language.GetString(pair.Key)}");
@@ -152,6 +158,13 @@ namespace Deluge
                 HooksApplied = false;
             }
         }
+
+        private void BloodShrinesCost99Percent(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
+        {
+            orig(self);
+            self.GetFieldValue<PurchaseInteraction>("purchaseInteraction").Networkcost = 99;
+        }
+
 
         private void MakeSureBonusDirectorDiesOnStageFinish(TeleporterInteraction obj)
         {

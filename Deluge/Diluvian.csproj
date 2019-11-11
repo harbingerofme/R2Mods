@@ -2,15 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Diluvian</AssemblyName>
+    <RootNamespace>Diluvian</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="delugeicon" />
     <None Remove="delugeicon.assets" />
+    <None Remove="diluvian" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="delugeicon" />
+    <EmbeddedResource Include="diluvian" />
   </ItemGroup>
 
 

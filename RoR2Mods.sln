@@ -34,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "emptyPlugin", "emptyPlugin\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HarbTweaks", "HarbTweaks\HarbTweaks.csproj", "{CDC4D0A8-2269-4D35-B82E-DF403221BB86}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deluge", "Deluge\Deluge.csproj", "{FDEB682E-BE80-4AFE-BB42-7D79EEAB3E96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diluvian", "Deluge\Diluvian.csproj", "{FDEB682E-BE80-4AFE-BB42-7D79EEAB3E96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
