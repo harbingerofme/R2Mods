@@ -7,6 +7,7 @@ using R2API.Utils;
 using System;
 using System.Reflection;
 using EliteDef = RoR2.CombatDirector.EliteTierDef;
+using System.Collections.Generic;
 
 namespace Deluge
 {
@@ -32,7 +33,9 @@ namespace Deluge
         private bool ESOenabled = false;
         private float[] vanillaEliteMultipliers;
         private EliteDef[] CombatDirectorTierDefs;
-        private float DelugeEliteModifier = 0.8f;
+        private readonly float DelugeEliteModifier = 0.8f;
+
+        private Dictionary<string, string> defaultLanguage;
 
         private Deluge()
         {
@@ -51,6 +54,7 @@ namespace Deluge
                 var provider = new R2API.AssetBundleResourcesProvider(assetPrefix, bundle);
                 R2API.ResourcesAPI.AddProvider(provider);
             }
+            defaultLanguage = new Dictionary<string, string>();
         }
 
         public void Awake()
@@ -92,7 +96,7 @@ namespace Deluge
 
         private void Run_onRunStartGlobal(Run run)
         {
-            ChatMessage.SendColored("A storm is brewing.", DelugeColor);
+            ChatMessage.SendColored("A storm is brewing...", DelugeColor);
             if (run.selectedDifficulty == DelugeIndex && HooksApplied == false)
             {
                 HooksApplied = true;
@@ -109,6 +113,14 @@ namespace Deluge
                         tierDef.costMultiplier *= DelugeEliteModifier;
                     }
                 }
+                defaultLanguage["PAUSE_RESUME"] = Language.GetString("PAUSE_RESUME");
+                defaultLanguage["PAUSE_SETTINGS"] = Language.GetString("PAUSE_SETTINGS");
+                defaultLanguage["PAUSE_QUIT_TO_MENU"] = Language.GetString("PAUSE_QUIT_TO_MENU");
+                defaultLanguage["PAUSE_QUIT_TO_DESKTOP"] = Language.GetString("PAUSE_QUIT_TO_DESKTOP");
+                R2API.AssetPlus.Languages.AddToken("PAUSE_RESUME", "Entertain me");
+                R2API.AssetPlus.Languages.AddToken("PAUSE_SETTINGS", "Change your view.");
+                R2API.AssetPlus.Languages.AddToken("PAUSE_QUIT_TO_MENU", "Give up");
+                R2API.AssetPlus.Languages.AddToken("PAUSE_QUIT_TO_DESKTOP", "Don't come back");
             }
         }
 
@@ -130,6 +142,13 @@ namespace Deluge
                         tierDef.costMultiplier = vanillaEliteMultipliers[i];
                     }
                 }
+                defaultLanguage.ForEachTry((pair) =>
+                {
+                    //Debug.Log($"Restoring {pair.Key}:{pair.Value} from {Language.GetString(pair.Key)}");
+                    R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value);
+                    
+                });
+
                 HooksApplied = false;
             }
         }
