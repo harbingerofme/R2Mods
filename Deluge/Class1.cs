@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using R2API.Utils;
 using System;
+using System.Reflection;
 using EliteDef = RoR2.CombatDirector.EliteTierDef;
 
 namespace Deluge
@@ -25,6 +26,8 @@ namespace Deluge
         private DifficultyIndex DelugeIndex;
         private bool HooksApplied = false;
 
+        private const string assetPrefix = "@HarbDeluge";
+        private const string assetString = assetPrefix+":Assets/DelugeFolder/DelugeIcon.png";
 
         private bool ESOenabled = false;
         private float[] vanillaEliteMultipliers;
@@ -37,10 +40,17 @@ namespace Deluge
             DelugeDef = new DifficultyDef(
                             3.5f,
                             "DIFFICULTY_DELUGE_NAME",
-                            "Textures/ItemIcons/texdevilhornsicon",
+                            assetString,
                             "DIFFICULTY_DELUGE_DESCRIPTION",
                             DelugeColor
                             );
+
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Deluge.delugeicon"))
+            {
+                var bundle = AssetBundle.LoadFromStream(stream);
+                var provider = new R2API.AssetBundleResourcesProvider(assetPrefix, bundle);
+                R2API.ResourcesAPI.AddProvider(provider);
+            }
         }
 
         public void Awake()

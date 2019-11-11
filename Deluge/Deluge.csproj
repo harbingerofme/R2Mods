@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <None Remove="delugeicon" />
+    <None Remove="delugeicon.assets" />
   </ItemGroup>
 
   <ItemGroup>
@@ -373,6 +374,9 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="copy /y $(TargetPath) $(ProjectDir)..\builds\" />
   </Target>
