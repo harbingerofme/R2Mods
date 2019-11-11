@@ -22,8 +22,8 @@ namespace Deluge
 
         private Deluge()
         {
-            DelugeDef = new DifficultyDef(3.5f, "DIFFICULTY_DELUGE_NAME", "Textures/DifficultyIcons/texDifficultyHardIcon", "DIFFICULTY_DELUGE_DESCRIPTION", new Color(0.6f, 1, 0.2f));
-            RiskOfRain2DiscordDef = new DifficultyDef(0.5f, "DIFFICULTY_RISKOFRAIN2DISCORD_NAME", "Textures/DifficultyIcons/texDifficultyHardIcon", "DIFFICULTY_RISKOFRAIN2DISCORD_DESCRIPTION", new Color(0.6f, 0.4f, 1f));
+            DelugeDef = new DifficultyDef(2.5f, "DIFFICULTY_DELUGE_NAME", "Textures/AchievementIcons/texLoaderClearGameMonsoonIcon", "DIFFICULTY_DELUGE_DESCRIPTION", new Color(0.1f, 1, 0.2f));
+            RiskOfRain2DiscordDef = new DifficultyDef(0.5f, "DIFFICULTY_RISKOFRAIN2DISCORD_NAME", "Textures/AchievementIcons/texCommandoClearGameMonsoonIcon", "DIFFICULTY_RISKOFRAIN2DISCORD_DESCRIPTION", new Color(0.6f, 0.4f, 1f));
         }
 
         public void Awake()
