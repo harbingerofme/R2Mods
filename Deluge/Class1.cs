@@ -17,8 +17,8 @@ namespace Deluge
     {
         public const string
             NAME = "Deluge",
-            GUID = "test.harbingerofme." + NAME,
-            VERSION = "0.0.1";
+            GUID = "com.harbingerofme." + NAME,
+            VERSION = "0.0.5";
 
         private readonly Color DelugeColor;
         private readonly DifficultyDef DelugeDef;
@@ -49,6 +49,8 @@ namespace Deluge
                 ESOenabled = true;
                 Logger.LogWarning("ESO detected: Delegating Elite modifications to them. Future support planned.");
             }
+
+            Logger.LogWarning("This is a prerelease!");
 
             CombatDirectorTierDefs = (EliteDef[]) typeof(CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
             vanillaEliteMultipliers = new float[CombatDirectorTierDefs.Length];

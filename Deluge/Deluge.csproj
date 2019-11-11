@@ -4,6 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="delugeicon" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="delugeicon" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
