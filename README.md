@@ -5,6 +5,7 @@
 
 ## New Content
 These mods add new content, and as a result might significantly affect gameplay.
+* [Diluvian](https://github.com/harbingerofme/R2Mods/tree/master/Diluvian)
 * [Harb Crate](https://github.com/harbingerofme/R2Mods/tree/master/HarbCrate) adds several new items and equipment to the game. *Release Pending.*
 
 ## Information:
@@ -22,8 +23,6 @@ These mods are created with part 4 of the EULA of RoR2 in mind.
 
 Some images used in these mods are deratives of images of which the copyright is held by Hopoo Games, this usage is considered 'Fair Use'.
 Other images have been created specifically for these mods, these are not meant for commercial use.
-
-All code is licenced under the  [MIT](https://spdx.org/licenses/MIT.html) license. 
 
 *If you end up using stuff out of here, let me know. I'd love to see what you do with it.*
 
