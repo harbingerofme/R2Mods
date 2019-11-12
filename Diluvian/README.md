@@ -31,7 +31,7 @@ Couldn't do it if I tried.
 
 Should work if everyone has the same difficulty mods installed.
 
---
+---
 
 ## Compatibility ##
 
