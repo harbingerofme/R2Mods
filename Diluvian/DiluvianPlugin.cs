@@ -106,9 +106,9 @@ namespace Diluvian
 
         private void Run_onRunStartGlobal(Run run)
         {
-            ChatMessage.SendColored("A storm is brewing...", DiluvianColor);
             if (run.selectedDifficulty == DelugeIndex && HooksApplied == false)
             {
+                ChatMessage.SendColored("A storm is brewing...", DiluvianColor);
                 HooksApplied = true;
                 IL.RoR2.HealthComponent.TakeDamage += ChangeOSP;
                 IL.RoR2.CharacterBody.RecalculateStats += AdjustRegen;
