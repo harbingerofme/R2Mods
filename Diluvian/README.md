@@ -1,6 +1,6 @@
 ﻿# Diluvian #
 
-*You have impressed me. Beating the mighty legions of the over and over again. Perhaps you are looking for a challenge? Perhaps, you are looking for more? I'm watching, Survivor, do not dissapoint.*
+*You have impressed me. Beating the mighty legions of the over and over again. Perhaps you are looking for a challenge? Perhaps, you are looking for more? I'm watching, Survivor, do not disappoint.*
 
 ---
 
