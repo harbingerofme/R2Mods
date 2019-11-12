@@ -1,0 +1,10 @@
+﻿{
+  "name": "DiluvianDifficulty",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/Diluvian",
+  "description": "Adds a new harder difficulty to the game.",
+  "dependencies": [
+    "bbepis-BepInExPack-3.0.0",
+	"tristanmcpherson-R2API-2.2.43"
+  ]
+}
