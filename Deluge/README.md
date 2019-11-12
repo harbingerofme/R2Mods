@@ -6,7 +6,7 @@
 
 ### Diluvian ###
 
-Diluvian is a difficulty mod. It adds a harder than Monsoon difficulty to the game, with various unique modifiers. All but one of them are outlined in the hover-over ingame.
+Diluvian is a difficulty mod. It adds a harder than Monsoon difficulty to the game, with various unique modifiers.
 
 * Difficulty Scaling: +75%
 * Player Health Regeneration: -50%
@@ -36,3 +36,4 @@ Should work if everyone has the same difficulty mods installed.
 ## Compatibility ##
 
 All hooks are only placed when the difficulty is ran, there are no effects outside the difficulty.
+If you want me to add compatibility with a specific mod, ask me in the modding discord and I'll make an attempt.
