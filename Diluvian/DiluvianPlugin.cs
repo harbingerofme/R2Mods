@@ -151,7 +151,7 @@ namespace Diluvian
                         tierDef.costMultiplier = vanillaEliteMultipliers[i];
                     }
                 }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
+                On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinesCost99Percent;
                 DefaultLanguage.ForEachTry((pair) =>
                 {
                     //Debug.Log($"Restoring {pair.Key}:{pair.Value} from {Language.GetString(pair.Key)}");
