@@ -1,20 +1,20 @@
 ﻿using BepInEx;
-using RoR2;
-using UnityEngine;
-using MonoMod.Cil;
 using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using R2API.Utils;
+using RoR2;
 using System;
-using System.Reflection;
-using EliteDef = RoR2.CombatDirector.EliteTierDef;
 using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
+using EliteDef = RoR2.CombatDirector.EliteTierDef;
 
 namespace Diluvian
 {
 
-    [BepInDependency(R2API.R2API.PluginGUID,BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency(R2API.R2API.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.jarlyk.eso", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin(GUID,NAME,VERSION)]
+    [BepInPlugin(GUID, NAME, VERSION)]
     public class Diluvian : BaseUnityPlugin
     {
         public const string
@@ -28,7 +28,7 @@ namespace Diluvian
         private bool HooksApplied = false;
 
         private const string assetPrefix = "@HarbDiluvian";
-        private const string assetString = assetPrefix+ ":Assets/Diluvian/DiluvianIcon.png";
+        private const string assetString = assetPrefix + ":Assets/Diluvian/DiluvianIcon.png";
 
         private bool ESOenabled = false;
         private float[] vanillaEliteMultipliers;
@@ -60,14 +60,15 @@ namespace Diluvian
                 R2API.ResourcesAPI.AddProvider(provider);
             }
 
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.jarlyk.eso")){
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.jarlyk.eso"))
+            {
                 ESOenabled = true;
                 Logger.LogWarning("ESO detected: Delegating Elite modifications to them. Future support planned.");
             }
 
             Logger.LogWarning("This is a prerelease!");
 
-            CombatDirectorTierDefs = (EliteDef[]) typeof(CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
+            CombatDirectorTierDefs = (EliteDef[])typeof(CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
             vanillaEliteMultipliers = new float[CombatDirectorTierDefs.Length];
 
             DelugeIndex = R2API.DifficultyAPI.AddDifficulty(DiluvianDef);
@@ -76,25 +77,27 @@ namespace Diluvian
             string description = "For those found wanting. <style=cDeath>N'Kuhana</style> watches with interest.<style=cStack>\n";
             description = string.Join("\n",
                 description,
-                $">Difficulty Scaling: +{DiluvianDef.scalingValue*50-100}%",
+                $">Difficulty Scaling: +{DiluvianDef.scalingValue * 50 - 100}%",
                 ">Player Health Regeneration: -50%",
                 ">Monster Health Regeneration: +1% of MaxHP per second",
                 ">Oneshot Protection: Also applies to monsters",
                 ">Oneshot Protection: Hits do a maximum of 99%",
                 ">Teleporter: Enemies don't stop after charge completion",
-                $">Elites: {(1- DelugeEliteModifier)*100}% cheaper."
+                $">Elites: {(1 - DelugeEliteModifier) * 100}% cheaper.",
+                ">Shrine of Blood: Always 99%."
                 );
             description += "</style>";
             R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DILUVIAN_DESCRIPTION", description);
 
 
+
             Run.onRunStartGlobal += Run_onRunStartGlobal;
             Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
-            
+
         }
 
 
-        private void replaceString(string token, string newText)
+        private void ReplaceString(string token, string newText)
         {
             defaultLanguage[token] = Language.GetString(token);
             R2API.AssetPlus.Languages.AddToken(token, newText);
@@ -122,13 +125,14 @@ namespace Diluvian
                 }
                 On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
 
-
-                replaceString("PAUSE_RESUME", "Entertain me");
-                replaceString("PAUSE_SETTINGS", "Change your view.");
-                replaceString("PAUSE_QUIT_TO_MENU", "Give up");
-                replaceString("PAUSE_QUIT_TO_DESKTOP", "Don't come back");
+                ReplaceInteractibles();
+                ReplaceObjectives();
+                ReplacePause();
+                ReplaceStats();
+                RoR2.Console.instance.SubmitCmd(null, "language_reload");
             }
         }
+
 
 
         private void Run_onRunDestroyGlobal(Run obj)
@@ -152,11 +156,60 @@ namespace Diluvian
                 {
                     //Debug.Log($"Restoring {pair.Key}:{pair.Value} from {Language.GetString(pair.Key)}");
                     R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value);
-                    
                 });
-
+                RoR2.Console.instance.SubmitCmd(null, "language_reload");
                 HooksApplied = false;
             }
+        }
+
+        private void ReplaceInteractibles()
+        {
+            ReplaceString("MSOBELISK_CONTEXT", "Hide from your troubles");
+            ReplaceString("MSOBELISK_CONTEXT_CONFIRMATION", "There's no going back");
+            ReplaceString("SHRINE_BLOOD_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: This pleases me.<style=cShrine>({1})</color>");
+            ReplaceString("SHRINE_BLOOD_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: {0} has paid their respects. Will you do the same?<style=cShrine>({1})</color>");
+            ReplaceString("SHRINE_HEALING_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
+            ReplaceString("SHRINE_HEALING_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
+            ReplaceString("SHRINE_BOSS_BEGIN_TRIAL", "<style=cShrine>Show me your courage.</style>");
+            ReplaceString("SHRINE_BOSS_END_TRIAL", "<style=cShrine>Your effort entertains me.</style>");
+            ReplaceString("PORTAL_MYSTERYSPACE_CONTEXT", "Hide in another realm.");
+            ReplaceString("COST_PERCENTHEALTH_FORMAT", "ALL OF IT.");
+        }
+
+        private void ReplaceObjectives()
+        {
+            ReplaceString("OBJECTIVE_FIND_TELEPORTER", "Flee");
+            ReplaceString("OBJECTIVE_DEFEAT_BOSS", "Defeat the <style=cDeath>Anchor</style>");
+        }
+        private void ReplacePause()
+        {
+            ReplaceString("PAUSE_RESUME", "Entertain me");
+            ReplaceString("PAUSE_SETTINGS", "Change your perspective");
+            ReplaceString("PAUSE_QUIT_TO_MENU", "Give up");
+            ReplaceString("PAUSE_QUIT_TO_DESKTOP", "Don't come back");
+        }
+        private void ReplaceStats()
+        {
+            ReplaceString("STAT_KILLER_NAME_FORMAT", "Released by: <color=#FFFF7F>{0}</color>");
+            ReplaceString("STAT_POINTS_FORMAT", "");
+            ReplaceString("STAT_TOTAL", "");
+            ReplaceString("STAT_CONTINUE", "Try again");
+
+            ReplaceString("STATNAME_TOTALTIMEALIVE", "Wasted time");
+            ReplaceString("STATNAME_TOTALDEATHS", "Times Blessed");
+            ReplaceString("STATNAME_HIGHESTLEVEL", "Strength Acquired");
+            ReplaceString("STATNAME_TOTALGOLDCOLLECTED", "Greed");
+            ReplaceString("STATNAME_TOTALDISTANCETRAVELED", "Ground laid to waste");
+            ReplaceString("STATNAME_TOTALITEMSCOLLECTED", "Trash cleaned up");
+            ReplaceString("STATNAME_HIGHESTITEMSCOLLECTED", "Most trash held");
+            ReplaceString("STATNAME_TOTALSTAGESCOMPLETED", "Times fled");
+            ReplaceString("STATNAME_HIGHESTSTAGESCOMPLETED", "Times fled");
+            ReplaceString("STATNAME_TOTALPURCHASES", "Offered");
+            ReplaceString("STATNAME_HIGHESTPURCHASES", "Offered");
+
+            ReplaceString("GAME_RESULT_LOST", "PATHETHIC");
+            ReplaceString("GAME_RESULT_WON", "IMPRESSIVE");
+            ReplaceString("GAME_RESULT_UNKNOWN", "where are you?");
         }
 
         private void BloodShrinesCost99Percent(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
@@ -168,7 +221,7 @@ namespace Diluvian
 
         private void MakeSureBonusDirectorDiesOnStageFinish(TeleporterInteraction obj)
         {
-            if(obj.bonusDirector && obj.bonusDirector.enabled)
+            if (obj.bonusDirector && obj.bonusDirector.enabled)
             {
                 obj.bonusDirector.enabled = false;
             }
@@ -184,7 +237,7 @@ namespace Diluvian
                 x => x.MatchLdfld<TeleporterInteraction>("bonusDirector"),
                 x => x.MatchLdcI4(0)
                 );
-            c.Index +=1;
+            c.Index += 1;
             c.RemoveRange(2);
             c.EmitDelegate<Action<CombatDirector>>((director) =>
             {
@@ -231,7 +284,8 @@ namespace Diluvian
             c.Emit(OpCodes.Ldloc, regenIndex);
             c.EmitDelegate<Func<CharacterBody, float, float>>((self, regen) =>
             {
-                if (self.teamComponent.teamIndex == TeamIndex.Monster){
+                if (self.teamComponent.teamIndex == TeamIndex.Monster)
+                {
                     regen += self.maxHealth * 0.01f;
                 }
                 return regen;
@@ -252,8 +306,8 @@ namespace Diluvian
                         x => x.MatchLdcR4(0.9f)
                         );
                 c.Remove();
-                c.Emit(OpCodes.Ldc_R4,0.99f);
-                    }
+                c.Emit(OpCodes.Ldc_R4, 0.99f);
+            }
             catch (Exception e)
             {
                 Logger.LogWarning("Couldn't modify OneShotProtection. Maybe you have a mod interfering. Game might act weird.");
