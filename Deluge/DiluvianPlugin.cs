@@ -20,7 +20,7 @@ namespace Diluvian
         public const string
             NAME = "Diluvian",
             GUID = "com.harbingerofme." + NAME,
-            VERSION = "0.0.5";
+            VERSION = "1.0.0";
 
         private readonly Color DiluvianColor;
         private readonly DifficultyDef DiluvianDef;
@@ -35,7 +35,7 @@ namespace Diluvian
         private EliteDef[] CombatDirectorTierDefs;
         private readonly float DelugeEliteModifier = 0.8f;
 
-        private Dictionary<string, string> defaultLanguage;
+        private Dictionary<string, string> DefaultLanguage;
 
         private Diluvian()
         {
@@ -47,7 +47,7 @@ namespace Diluvian
                             "DIFFICULTY_DILUVIAN_DESCRIPTION",
                             DiluvianColor
                             );
-            defaultLanguage = new Dictionary<string, string>();
+            DefaultLanguage = new Dictionary<string, string>();
         }
 
         public void Awake()
@@ -99,7 +99,7 @@ namespace Diluvian
 
         private void ReplaceString(string token, string newText)
         {
-            defaultLanguage[token] = Language.GetString(token);
+            DefaultLanguage[token] = Language.GetString(token);
             R2API.AssetPlus.Languages.AddToken(token, newText);
         }
 
@@ -152,7 +152,7 @@ namespace Diluvian
                     }
                 }
                 On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
-                defaultLanguage.ForEachTry((pair) =>
+                DefaultLanguage.ForEachTry((pair) =>
                 {
                     //Debug.Log($"Restoring {pair.Key}:{pair.Value} from {Language.GetString(pair.Key)}");
                     R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value);
@@ -166,14 +166,13 @@ namespace Diluvian
         {
             ReplaceString("MSOBELISK_CONTEXT", "Hide from your troubles");
             ReplaceString("MSOBELISK_CONTEXT_CONFIRMATION", "There's no going back");
-            ReplaceString("SHRINE_BLOOD_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: This pleases me.<style=cShrine>({1})</color>");
-            ReplaceString("SHRINE_BLOOD_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: {0} has paid their respects. Will you do the same?<style=cShrine>({1})</color>");
+            ReplaceString("SHRINE_BLOOD_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: This pleases me. <style=cShrine>({1})</color>");
+            ReplaceString("SHRINE_BLOOD_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: {0} has paid their respects. Will you do the same? <style=cShrine>({1})</color>");
             ReplaceString("SHRINE_HEALING_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
             ReplaceString("SHRINE_HEALING_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
             ReplaceString("SHRINE_BOSS_BEGIN_TRIAL", "<style=cShrine>Show me your courage.</style>");
             ReplaceString("SHRINE_BOSS_END_TRIAL", "<style=cShrine>Your effort entertains me.</style>");
             ReplaceString("PORTAL_MYSTERYSPACE_CONTEXT", "Hide in another realm.");
-            ReplaceString("COST_PERCENTHEALTH_FORMAT", "ALL OF IT.");
         }
 
         private void ReplaceObjectives()
