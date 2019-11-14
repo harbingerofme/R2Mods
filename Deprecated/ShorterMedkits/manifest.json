@@ -1,9 +1,9 @@
 {
   "name": "ShorterMedkits",
-  "version_number": "1.0.1",
-  "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/ShorterMedkits",
+  "version_number": "1.1.0",
+  "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/Deprecated/ShorterMedkits",
   "description": "Halves the time for medkits.",
   "dependencies": [
-    "bbepis-BepInExPack-2.0.0"
+    "bbepis-BepInExPack-3.0.0"
   ]
 }

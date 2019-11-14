@@ -1,4 +1,4 @@
-﻿While still available, this mod is superceded by HarbTweaks.
+﻿While still available, this mod is superceded by [HarbTweaks](https://thunderstore.io/package/Harb/HarbTweaks/).
 
 When you normally spawn in on the first stage, there are no enemies in the area and you have to wait for the enmies to spawn. This is often rather annoying, because you just want to get going.
 
@@ -15,7 +15,7 @@ This mod IL hooks `RoR2.SceneDirector.PopulateScene`.
 The release of this update should coincide with the release of a new Bepinex version, so this section should be moot.
 
 ## Changelog:
-- 2.1.0 Removed explicit BiggerLockbox compatibility. Added Config.
+- 2.1.0 Removed explicit BiggerLockbox compatibility. Added Config. Deprecated it. Was a wild ride.
 - 2.0.0 Now uses an IL Hook to prevent unwanted sideeffects from occuring.
 - 1.1.0 Fixed Nullreference exception that could happen when entering a special stage such as the Bazaar between time.
 - 1.0.1 Updated Readme as it was unclear.

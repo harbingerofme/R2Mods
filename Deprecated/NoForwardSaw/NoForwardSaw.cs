@@ -6,7 +6,7 @@
 
 namespace HarbTweaks
 {
-    [BepInPlugin("com.harbingerofme.noforwardsaw", "NoForwardSaw", "1.0.1")]
+    [BepInPlugin("com.harbingerofme.noforwardsaw", "NoForwardSaw", "1.1.0")]
     [BepInIncompatibility("com.harbingerofme.harbtweaks")]
     public class NoForwardSaw : BaseUnityPlugin
     {

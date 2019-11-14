@@ -1,10 +1,10 @@
 {
   "name": "NoMoreThreeQuestions",
-  "version_number": "1.1.0",
-  "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/NoMoreTripleQuestion",
+  "version_number": "1.2.0",
+  "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/Deprecated/NoMoreTripleQuestion",
   "description": "Prevents triple terminals from rolling three question marks.",
   "dependencies": [
-	"tristanmcpherson-R2API-2.1.16",
-  "bbepis-BepInExPack-2.0.0"
+	"tristanmcpherson-R2API-2.2.54",
+	"bbepis-BepInExPack-3.0.0"
   ]
 }
