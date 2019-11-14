@@ -5,7 +5,6 @@ using R2API.Utils;
 using RoR2;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using EliteDef = RoR2.CombatDirector.EliteTierDef;
 
@@ -125,9 +124,9 @@ namespace Diluvian
                         tierDef.costMultiplier *= DelugeEliteModifier;
                     }
                 }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost100Percent;
+                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
 
-                escapeCounter = 0;
+                Debug.LogWarning("If R2API yells at you for editing the same token, this is expected.");
                 ReplaceInteractibles();
                 ReplaceObjectives();
                 ReplacePause();
@@ -152,7 +151,8 @@ namespace Diluvian
                         tierDef.costMultiplier = vanillaEliteMultipliers[i];
                     }
                 }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinesCost100Percent;
+                On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinesCost99Percent;
+                Debug.LogWarning("If R2API yells at you for editing the same token, this is expected.");
                 DefaultLanguage.ForEachTry((pair) =>
                 {
                     //Debug.Log($"Restoring {pair.Key}:{pair.Value} from {Language.GetString(pair.Key)}");
@@ -212,10 +212,10 @@ namespace Diluvian
             ReplaceString("GAME_RESULT_UNKNOWN", "where are you?");
         }
 
-        private void BloodShrinesCost100Percent(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
+        private void BloodShrinesCost99Percent(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
         {
             orig(self);
-            self.GetFieldValue<PurchaseInteraction>("purchaseInteraction").Networkcost = 100;
+            self.GetFieldValue<PurchaseInteraction>("purchaseInteraction").Networkcost = 99;
         }
 
 
@@ -260,7 +260,7 @@ namespace Diluvian
                 x => x.MatchStloc(out regenMultiIndex),
                 x => x.MatchLdloc(monsoonPlayerHelperCountIndex)
                 );
-            c.Index += 1;
+            c.Index += 2;
             c.Emit(OpCodes.Ldarg_0);
             c.Emit(OpCodes.Ldloc, regenMultiIndex);
             c.EmitDelegate<Func<CharacterBody, float, float>>((self, regenMulti) =>
@@ -268,7 +268,6 @@ namespace Diluvian
                 if (self.isPlayerControlled)
                 {
                     regenMulti -= 0.5f;
-                    Debug.Log("Reduced RegenMulti to: " + regenMulti);
                 }
                 return regenMulti;
             });
