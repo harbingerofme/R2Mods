@@ -5,13 +5,14 @@ using R2API.Utils;
 using RoR2;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using EliteDef = RoR2.CombatDirector.EliteTierDef;
 
 namespace Diluvian
 {
 
-    //[R2APISubmoduleDependency("DifficultyAPI", "ResourcesAPI", "AssetPlus")]
+    [R2APISubmoduleDependency("DifficultyAPI", "ResourcesAPI", "AssetPlus")]
 
     [BepInDependency(R2API.R2API.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.jarlyk.eso", BepInDependency.DependencyFlags.SoftDependency)]
@@ -66,8 +67,6 @@ namespace Diluvian
                 ESOenabled = true;
                 Logger.LogWarning("ESO detected: Delegating Elite modifications to them. Future support planned.");
             }
-
-            Logger.LogWarning("This is a prerelease!");
 
             CombatDirectorTierDefs = (EliteDef[])typeof(CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
             vanillaEliteMultipliers = new float[CombatDirectorTierDefs.Length];
@@ -126,12 +125,10 @@ namespace Diluvian
                 }
                 On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
 
-                Debug.LogWarning("If R2API yells at you for editing the same token, this is expected.");
                 ReplaceInteractibles();
                 ReplaceObjectives();
                 ReplacePause();
                 ReplaceStats();
-                RoR2.Console.instance.SubmitCmd(null, "language_reload");
             }
         }
 
@@ -152,13 +149,10 @@ namespace Diluvian
                     }
                 }
                 On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinesCost99Percent;
-                Debug.LogWarning("If R2API yells at you for editing the same token, this is expected.");
                 DefaultLanguage.ForEachTry((pair) =>
                 {
-                    //Debug.Log($"Restoring {pair.Key}:{pair.Value} from {Language.GetString(pair.Key)}");
                     R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value);
                 });
-                RoR2.Console.instance.SubmitCmd(null, "language_reload");
                 HooksApplied = false;
             }
         }
