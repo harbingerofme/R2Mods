@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API.Utils;
@@ -11,6 +11,8 @@ using EliteDef = RoR2.CombatDirector.EliteTierDef;
 
 namespace Diluvian
 {
+
+    //[R2APISubmoduleDependency("DifficultyAPI", "ResourcesAPI", "AssetPlus")]
 
     [BepInDependency(R2API.R2API.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.jarlyk.eso", BepInDependency.DependencyFlags.SoftDependency)]
@@ -25,17 +27,17 @@ namespace Diluvian
         private readonly Color DiluvianColor;
         private readonly DifficultyDef DiluvianDef;
         private DifficultyIndex DelugeIndex;
-        private bool HooksApplied = false;
+        private readonly float DelugeEliteModifier = 0.8f;
+
 
         private const string assetPrefix = "@HarbDiluvian";
         private const string assetString = assetPrefix + ":Assets/Diluvian/DiluvianIcon.png";
 
+        private Dictionary<string, string> DefaultLanguage;
         private bool ESOenabled = false;
+        private bool HooksApplied = false;
         private float[] vanillaEliteMultipliers;
         private EliteDef[] CombatDirectorTierDefs;
-        private readonly float DelugeEliteModifier = 0.8f;
-
-        private Dictionary<string, string> DefaultLanguage;
 
         private Diluvian()
         {
@@ -123,8 +125,9 @@ namespace Diluvian
                         tierDef.costMultiplier *= DelugeEliteModifier;
                     }
                 }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
+                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost100Percent;
 
+                escapeCounter = 0;
                 ReplaceInteractibles();
                 ReplaceObjectives();
                 ReplacePause();
@@ -132,8 +135,6 @@ namespace Diluvian
                 RoR2.Console.instance.SubmitCmd(null, "language_reload");
             }
         }
-
-
 
         private void Run_onRunDestroyGlobal(Run obj)
         {
@@ -151,7 +152,7 @@ namespace Diluvian
                         tierDef.costMultiplier = vanillaEliteMultipliers[i];
                     }
                 }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinesCost99Percent;
+                On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinesCost100Percent;
                 DefaultLanguage.ForEachTry((pair) =>
                 {
                     //Debug.Log($"Restoring {pair.Key}:{pair.Value} from {Language.GetString(pair.Key)}");
@@ -164,8 +165,8 @@ namespace Diluvian
 
         private void ReplaceInteractibles()
         {
-            ReplaceString("MSOBELISK_CONTEXT", "Hide from your troubles");
-            ReplaceString("MSOBELISK_CONTEXT_CONFIRMATION", "There's no going back");
+            ReplaceString("MSOBELISK_CONTEXT", "Escape the madness");
+            ReplaceString("MSOBELISK_CONTEXT_CONFIRMATION", "Take the cowards way out");
             ReplaceString("SHRINE_BLOOD_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: This pleases me. <style=cShrine>({1})</color>");
             ReplaceString("SHRINE_BLOOD_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: {0} has paid their respects. Will you do the same? <style=cShrine>({1})</color>");
             ReplaceString("SHRINE_HEALING_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
@@ -211,10 +212,10 @@ namespace Diluvian
             ReplaceString("GAME_RESULT_UNKNOWN", "where are you?");
         }
 
-        private void BloodShrinesCost99Percent(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
+        private void BloodShrinesCost100Percent(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
         {
             orig(self);
-            self.GetFieldValue<PurchaseInteraction>("purchaseInteraction").Networkcost = 99;
+            self.GetFieldValue<PurchaseInteraction>("purchaseInteraction").Networkcost = 100;
         }
 
 
