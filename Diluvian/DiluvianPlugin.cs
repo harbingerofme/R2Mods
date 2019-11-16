@@ -277,9 +277,9 @@ namespace Diluvian
             c.Emit(OpCodes.Ldloc, regenIndex);
             c.EmitDelegate<Func<CharacterBody, float, float>>((self, regen) =>
             {
-                if (self.teamComponent.teamIndex == TeamIndex.Monster)
+                if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger)
                 {
-                    regen += self.maxHealth * 0.01f;
+                    regen += self.maxHealth * 0.015f;
                 }
                 return regen;
             });
