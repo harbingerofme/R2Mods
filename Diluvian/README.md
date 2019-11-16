@@ -33,6 +33,13 @@ Should work if everyone has the same difficulty mods installed.
 
 ---
 
+## Changelog ##
+
+* **1.0.1**: Regen for monster now activates only when they are out of danger. To compensate for this nerf, they've been buffed from 1% regen to 1.5% regen. *While the regen did make things harder, it did so at the cost of being really annoying to downright impossible if your damage was falling behind.*
+
+---
+
+
 ## Compatibility ##
 
 All hooks are only placed when the difficulty is ran, there are no effects outside the difficulty.

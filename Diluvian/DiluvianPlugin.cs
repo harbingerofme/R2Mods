@@ -79,7 +79,7 @@ namespace Diluvian
                 description,
                 $">Difficulty Scaling: +{DiluvianDef.scalingValue * 50 - 100}%",
                 ">Player Health Regeneration: -50%",
-                ">Monster Health Regeneration: +1% of MaxHP per second",
+                ">Monster Health Regeneration: +1.5% of MaxHP per second (out of danger)",
                 ">Oneshot Protection: Also applies to monsters",
                 ">Oneshot Protection: Hits do a maximum of 99%",
                 ">Teleporter: Enemies don't stop after charge completion",
