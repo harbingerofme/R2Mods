@@ -9,33 +9,31 @@
 Diluvian is a difficulty mod. It adds a harder than Monsoon difficulty to the game, with various unique modifiers.
 
 * Difficulty Scaling: +75%
-* Player Health Regeneration: -50%
+* Player Health Regeneration: -60%
 * Monster Health Regeneration: +1.5% of MaxHP per second out of combat
 * Oneshot Protection: Also applies to monsters
-* Oneshot Protection: Hits do a maximum of 99%
+* Oneshot Protection: Protects only 1%
 * Teleporter: Enemies don't stop after charge completion
 * Elites: 20% cheaper.
-* Shrine of Blood: Always 99%.
-
----
-
-**Is this balanced?**
-No.
-
-**Have you ever obliterated on your own difficulty?**
-Couldn't do it if I tried.
+* Shrine of Blood: Cost hidden.
 
 ---
 
 ## Multiplayer ##
 
-Should work if everyone has the same difficulty mods installed.
+If all players have the mod, it works perfectly. Host needs the mod for most changes, but regen is on the client side. Why? Ask ghor. 
+
+* Regen changes aren't synced over the network, so clients without the mod will have rainstorm regen.
+* The icon is also not synced over the network, so clients without the mod will probably have a weird difficulty indication.
 
 ---
 
 ## Changelog ##
 
-* **1.0.1**: Regen for monster now activates only when they are out of danger. To compensate for this nerf, they've been buffed from 1% regen to 1.5% regen. *While the regen did make things harder, it did so at the cost of being really annoying to downright impossible if your damage was falling behind.*
+* **1.0.2**: `   ` -> `Player Luck: Reduced in some places.`. *Get off your high horse, lucky boy.*
+* **1.0.2**: `Player  Health Regeneration: -50%` -> `Player  Health Regeneration: -60%` . *Was worried regen changes would screw with mine. They don't, but make it a bit more easier. We can't have that.*
+* **1.0.2**: `Shrine of Blood: Always 99%` -> `Shrine of Blood: Cost hidden`. *The blood shrine cost was always intended to be a flavor thing. But you know what's more fun? Not knowing how much life you're going to pay. *
+* **1.0.1**: `Monster  Health Regeneration: 1% of maxHP` -> `Monster  Health Regeneration: 1.5% of maxHP out of combat`. *While the regen did make things harder, it did so at the cost of being really annoying to downright impossible if your damage was falling behind. To compensate for this nerf, they've been buffed.*
 
 ---
 
