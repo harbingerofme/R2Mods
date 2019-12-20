@@ -1,6 +1,9 @@
 ﻿using BepInEx;
 using RoR2;
 using UnityEngine.Networking;
+using MonoMod.Cil;
+using static MonoMod.Cil.RuntimeILReferenceBag.FastDelegateInvokers;
+using Mono.Cecil.Cil;
 
 namespace MotD
 {
@@ -16,32 +19,37 @@ namespace MotD
 
         public void Awake()
         {
-
-            On.RoR2.Chat.SendPlayerConnectedMessage += Chat_SendPlayerConnectedMessage;
+            On.RoR2.RoR2Application.UnitySystemConsoleRedirector.Redirect += orig => { };
+            IL.RoR2.Networking.GameNetworkManager.OnServerAddPlayerInternal += GameNetworkManager_OnServerAddPlayerInternal1;
         }
 
-        private void Chat_SendPlayerConnectedMessage(On.RoR2.Chat.orig_SendPlayerConnectedMessage orig, RoR2.NetworkUser user)
+        private void GameNetworkManager_OnServerAddPlayerInternal1(ILContext il)
         {
-            orig(user);
-            var message = new Chat.SimpleChatMessage() { baseToken = "{0}", paramTokens = new[] { $"Hello, {user.userName}" } };
-            MotD.SendPrivateMessage(message, user);
+            ILCursor c = new ILCursor(il);
+            c.GotoNext(MoveType.After,
+                x => x.MatchCallOrCallvirt(typeof(UnityEngine.Debug), "LogFormat"));
+            c.GotoNext(MoveType.Before,
+                x => x.MatchRet());
+            c.Emit(OpCodes.Ldarg_1);
+            c.EmitDelegate<Action<NetworkConnection>>((conn) =>
+            {
+                var steam = RoR2.Networking.ServerAuthManager.FindAuthData(conn).steamId;
+                var message = new Chat.SimpleChatMessage() { baseToken = "{0}", paramTokens = new[] { $"Hello user with steamid: {steam}" } };
+                MotD.SendPrivateMessage(message, conn);
+            });
         }
     }
 
     public static class MotD
     {
-        public static void SendPrivateMessage(Chat.ChatMessageBase message, NetworkUser reciever)
+        public static void SendPrivateMessage(Chat.ChatMessageBase message, NetworkConnection connection)
         {
             NetworkWriter writer = new NetworkWriter();
             writer.StartMessage((short)59);
             writer.Write(message.GetTypeIndex());
             writer.Write((MessageBase)message);
             writer.FinishMessage();
-            foreach (NetworkConnection connection in NetworkServer.connections)
-            {
-                if(connection != null && connection == reciever.connectionToClient)
-                    connection.SendWriter(writer, RoR2.Networking.QosChannelIndex.chat.intVal);
-            }
+            connection.SendWriter(writer, RoR2.Networking.QosChannelIndex.chat.intVal);
         }
     }
 }

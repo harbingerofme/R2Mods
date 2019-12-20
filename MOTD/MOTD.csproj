@@ -7,8 +7,7 @@
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\libs\Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
+      <HintPath>D:\SteamLibrary\steamapps\common\Risk of Rain 2 Dedicated Server\Risk of Rain 2_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp.R2API.mm">
       <HintPath>..\libs\Assembly-CSharp.R2API.mm.dll</HintPath>
