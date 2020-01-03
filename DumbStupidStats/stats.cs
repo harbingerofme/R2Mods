@@ -75,6 +75,20 @@ namespace DumbStupidStats.Stats
                 PlayerStatsComponent.FindBodyStatSheet(self.characterMaster.GetBody()).PushStatValue(Definition, UnityEngine.Time.fixedDeltaTime);
         }
     }
+    [DumbStatDef]
+    class DamageBlocked : DumbStat{
+        private const string token = "dss_DamageBlocked";
+        private const string fullText = "Damage instances blocked";
+        public DamageBlocked(){
+            Definition = StatDef.Register(token, StatRecordType.Sum, StatDataType.ULong, 0, null);
+            FullText = fullText;
+            On.RoR2.HealthComponent.TakeDamage += (orig, self, damageInfo) =>{
+                orig(self, damageInfo);
+                if (damageInfo.rejected)
+                {
+                    PlayerStatsComponent.FindBodyStatSheet(self.body).PushStatValue(Definition, 1);
+                }
+            };
         }
     }
 }
