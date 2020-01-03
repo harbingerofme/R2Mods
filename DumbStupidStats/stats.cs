@@ -2,7 +2,7 @@
 using RoR2;
 using RoR2.Stats;
 
-namespace DumbStupidStats
+namespace DumbStupidStats.Stats
 {
 
     [DumbStatDef]
