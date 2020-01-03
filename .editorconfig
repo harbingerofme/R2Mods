@@ -1,0 +1,4 @@
+﻿[stats.cs]
+
+# IDE0055: Fix formatting; Justification: Classes should be approached with an effort to reduce size.
+dotnet_diagnostic.IDE0055.severity = silent
