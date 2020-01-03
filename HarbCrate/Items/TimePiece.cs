@@ -1,5 +1,4 @@
-﻿using ItemLib;
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 using MonoMod.Cil;
 using R2API.Utils;

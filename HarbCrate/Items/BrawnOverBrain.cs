@@ -1,5 +1,4 @@
-﻿using ItemLib;
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -7,22 +6,28 @@ using System;
 
 namespace HarbCrate.Items
 {
-    class BrawnOverBrain
+    [Item]
+    class BrawnOverBrain : ItemDef
     {
+        public static BrawnOverBrain instance;
         public readonly static string Name = "Brawn over Brain";
-        public static CustomItem Build()
+        public readonly static string PickupText = "A percentage of damage is taken from health before shield. 50% debuff reduction whilst you have shield.";
+        public readonly static string Description = "50%  (+0% per stack) debuff reduction whilst you have shield. 40%(+15% per stack)* of damage taken is taken from health before shield. This damage cannot kill while you have enough shield.";
+        public BrawnOverBrain()
         {
-            var myDef = new ItemDef
-            {
-                tier = ItemTier.Tier3,
-                pickupModelPath = "Prefabs/PickupModels/PickupMystery",
-                pickupIconPath = "Textures/AchievementIcons/texLoaderClearGameMonsoonIcon",
-                nameToken = Name,
-                pickupToken = "A percentage of damage is taken from health before shield. 50% debuff reduction whilst you have shield.",
-                descriptionToken = "50%  (+0% per stack) debuff reduction whilst you have shield. 40%(+15% per stack)* of damage taken is taken from health before shield. This damage cannot kill while you have enough shield."
-            };
+            tier = ItemTier.Tier3;
+            pickupModelPath = "Prefabs/PickupModels/PickupMystery";
+            pickupIconPath = "Textures/AchievementIcons/texLoaderClearGameMonsoonIcon";
+            nameToken = "BOB_NAME_TOKEN";
+            pickupToken = "BOB_PICKUP_TOKEN";
+            descriptionToken = "BOB_DESCRIPTION_TOKEN";
 
-            return new CustomItem(myDef, null, null, null);
+            R2API.AssetPlus.Languages.AddToken(nameToken, Name);
+            R2API.AssetPlus.Languages.AddToken(pickupToken, PickupText);
+            R2API.AssetPlus.Languages.AddToken(descriptionToken, Description);
+            instance = this;
+
+            R2API.ItemAPI.AddCustomItem(new R2API.CustomItem(this, null));
         }
 
         public static void Hooks()

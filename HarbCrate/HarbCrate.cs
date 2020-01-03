@@ -1,14 +1,10 @@
 ﻿
 
 using BepInEx;
-using ItemLib;
 using RoR2;
 using HarbCrate.Equipment;
 using HarbCrate.Items;
-using MonoMod.RuntimeDetour;
-using System;
-using UnityEngine;
-using MonoMod.Cil;
+using R2API.Utils;
 
 
 /*
@@ -17,8 +13,8 @@ using MonoMod.Cil;
 
 namespace HarbCrate
 {
-    [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency(ItemLibPlugin.ModGuid, BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency(R2API.R2API.PluginGUID)]
+    [R2APISubmoduleDependency(nameof(AssetPlus), nameof(R2API.ItemAPI))]
     [BepInPlugin("com.harbingerofme.HarbCrate", "HarbCrate", "0.0.0")]
     public class HarbCratePlugin : BaseUnityPlugin
     {
