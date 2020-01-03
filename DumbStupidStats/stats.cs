@@ -43,7 +43,23 @@ namespace DumbStupidStats.Stats
         }
     }
 
+    [DumbStatDef]
+    class AbsoluteTime : DumbStat
+    {
+        private const string token = "dss_AbsoluteTime";
+        private const string fullText = "Real Time";
+        public AbsoluteTime(){
+            Definition = StatDef.Register(token, StatRecordType.Sum, StatDataType.Double, 0, new StatDef.DisplayValueFormatterDelegate(StatDef.TimeMMSSDisplayValueFormatter));
+            FullText = fullText;
+            On.RoR2.Stats.PlayerStatsComponent.ServerFixedUpdate += PlayerStatsComponent_ServerFixedUpdate;
+        }
+        private void PlayerStatsComponent_ServerFixedUpdate(On.RoR2.Stats.PlayerStatsComponent.orig_ServerFixedUpdate orig, PlayerStatsComponent self)
         {
+            orig(self);
+            if (Run.instance && self.characterMaster && self.characterMaster.GetBody())
+                PlayerStatsComponent.FindBodyStatSheet(self.characterMaster.GetBody()).PushStatValue(Definition, UnityEngine.Time.fixedDeltaTime);
+        }
+    }
         }
     }
 }
