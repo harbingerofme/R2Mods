@@ -6,26 +6,26 @@ namespace DumbStupidStats.Stats
 {
 
     [DumbStatDef]
-    class Healed : DumbStat
-    {
+    class Healed : DumbStat{
         private const string token = "dss_healed";
         private const string fullText = "Amount Healed";
         private const StatRecordType recordType = StatRecordType.Sum;
         private const StatDataType dataType = StatDataType.Double;
-        public Healed()
-        {
+        public Healed(){
             Definition = StatDef.Register(token, recordType, dataType, 0, null);
             FullText = fullText;
-            HealthComponent.onCharacterHealServer += HealthComponent_onCharacterHealServer;
-        }
-
-        private void HealthComponent_onCharacterHealServer(HealthComponent healthComponent, float amount)
-        {
-            var body = healthComponent.body;
-            if (body.isPlayerControlled)
+            HealthComponent.onCharacterHealServer += (healthComponent, amount)=>
             {
-                PlayerStatsComponent.FindBodyStatSheet(body).PushStatValue(Definition, Convert.ToDouble(amount));
-            }
+                var body = healthComponent.body;
+                if (body.isPlayerControlled)
+                {
+                    PlayerStatsComponent.FindBodyStatSheet(body).PushStatValue(Definition, Convert.ToDouble(amount));
+                }
+            };
+        }
+    }
+
+        {
         }
     }
 }
