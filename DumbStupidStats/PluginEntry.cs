@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using R2API.AssetPlus;
+using System.Text;
+using RoR2;
 
 namespace DumbStupidStats
 {
@@ -19,17 +21,27 @@ namespace DumbStupidStats
             VERSION = "0.0.0";
 
         private readonly ConfigEntry<bool> disablePoints;
+        private ConfigEntry<string> blackList;
+        private readonly string[] BlackList;
+        private readonly ConfigEntry<int> StatsToAdd;
 
         private readonly List<DumbStat> statDefs;
+        private List<DumbStat> statsToAdd;
+        private readonly List<DumberStat> additionalStatDefs;
+
+        private Random rng;
 
         PluginEntry()
         {
 #if DEBUG
-            Logger.LogWarning("This is an expiremental build!");
+            Logger.LogWarning("This is an experimental build!");
 #endif
+            rng = new Random();
             statDefs = new List<DumbStat>();
-            disablePoints = Config.Bind("", "Disable points in the end screen?", false);
+            StatsToAdd = Config.Bind("main", "amount", 5, "How many stats to add to the end screen.");
+            disablePoints = Config.Bind("miscellaneous", "Disable points in the end screen?", false);
 
+            List<string> stringBuilder = new List<string>();
             var types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (Type tInfo in types)
             {
@@ -39,9 +51,25 @@ namespace DumbStupidStats
                     {
                         var stat = (DumbStat)Activator.CreateInstance(tInfo);
                         statDefs.Add(stat);
+                        stringBuilder.Add(stat.Definition.displayToken);
                     }
                 }
             }
+            ConfigDefinition bl = new ConfigDefinition("main", "blacklist");
+            ConfigDescription bld = new ConfigDescription("Possible values: " + string.Join(";", stringBuilder));
+            blackList = Config.Bind<string>(bl,"",bld);
+            var version = Config.Bind<string>("miscellaneous", "config version", VERSION);
+            if(Version.Parse(VERSION).CompareTo(Version.Parse(version.Value)) != 0)
+            {
+                blackList = null;
+                Config.Remove(bl);
+                Config.Save();
+                version.Value = VERSION;
+                string hold = blackList.Value;
+                blackList = Config.Bind<string>(bl, "", bld);
+                blackList.Value = hold; 
+            }
+            BlackList = blackList.Value.Split(';',',',' ');
         }
 
         void Awake()
@@ -57,6 +85,23 @@ namespace DumbStupidStats
             {
                 Languages.AddToken(stat.Definition.displayToken, stat.FullText);
             }
+            RoR2.Run.onRunStartGlobal += PickRunStats;
+
+        }
+
+        private void PickRunStats(Run obj)
+        {
+            statsToAdd = new List<DumbStat>();
+            while(statsToAdd.Count < Math.Min(StatsToAdd.Value, statDefs.Count))
+            {
+                DumbStat stat = statDefs[(int)rng.Next ()* statDefs.Count];
+                if (!statsToAdd.Contains(stat))
+                {
+                    stat.Activate();
+                    statsToAdd.Add(stat);
+                }
+            }
+            statsToAdd.AddRange(additionalStatDefs);
             On.RoR2.UI.GameEndReportPanelController.Awake += GameEndReportPanelController_Awake;
         }
 
@@ -66,19 +111,21 @@ namespace DumbStupidStats
         /// <param name="yourDef"></param>
         public void AddStatDef(StatDef yourDef)
         {
-            statDefs.Add(new DumberStat(yourDef));
+            additionalStatDefs.Add(new DumberStat(yourDef));
         }
 
         private void GameEndReportPanelController_Awake(On.RoR2.UI.GameEndReportPanelController.orig_Awake orig, RoR2.UI.GameEndReportPanelController self)
         {
             orig(self);
-            string[] strArray = new string[self.statsToDisplay.Length + statDefs.Count];
+            string[] strArray = new string[self.statsToDisplay.Length + statsToAdd.Count];
             self.statsToDisplay.CopyTo(strArray, 0);
-            for (int i = 0; i < statDefs.Count; i++)
+            for (int i = 0; i < statsToAdd.Count; i++)
             {
-                strArray[self.statsToDisplay.Length + i] = statDefs[i].Definition.name;
+                statsToAdd[i].DeActivate();
+                strArray[self.statsToDisplay.Length + i] = statsToAdd[i].Definition.name;
             }
             self.statsToDisplay = strArray;
+            On.RoR2.UI.GameEndReportPanelController.Awake -= GameEndReportPanelController_Awake;
         }
     }
 
@@ -87,7 +134,8 @@ namespace DumbStupidStats
         public StatDef Definition { get; protected set; }
         public string FullText { get; protected set; }
 
-        public DumbStat() { }
+        public abstract void Activate();
+        public abstract void DeActivate();
     }
 
     /// <summary>
@@ -99,6 +147,14 @@ namespace DumbStupidStats
         public DumberStat(StatDef def)
         {
             Definition = def;
+        }
+
+        public override void Activate()
+        {
+        }
+
+        public override void DeActivate()
+        {
         }
     }
 
