@@ -61,11 +61,11 @@ namespace DumbStupidStats
             var version = Config.Bind<string>("miscellaneous", "config version", VERSION);
             if(Version.Parse(VERSION).CompareTo(Version.Parse(version.Value)) != 0)
             {
+                string hold = blackList.Value;
                 blackList = null;
                 Config.Remove(bl);
                 Config.Save();
                 version.Value = VERSION;
-                string hold = blackList.Value;
                 blackList = Config.Bind<string>(bl, "", bld);
                 blackList.Value = hold; 
             }
