@@ -1,4 +1,4 @@
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Configuration;
 using RoR2.Stats;
 using System;
@@ -114,7 +114,20 @@ namespace DumbStupidStats
             }
             statsToAdd.AddRange(additionalStatDefs);
             On.RoR2.UI.GameEndReportPanelController.Awake += GameEndReportPanelController_Awake;
+            RoR2.Run.onRunDestroyGlobal += RemoveHooks;
         }
+
+        void RemoveHooks(Run obj)
+        {
+            On.RoR2.UI.GameEndReportPanelController.Awake -= GameEndReportPanelController_Awake;
+            Run.onRunDestroyGlobal -= RemoveHooks;
+            foreach(DumbStat stat in statsToAdd)
+            {
+                stat.DeActivate();
+            }
+            statsToAdd.Clear();
+        }
+
 
         /// <summary>
         /// If you want to add your own statdef without worrying about how to get it on the endscreen, use this. You'll be appended to the bottom. Don't use before Awake!
@@ -132,11 +145,9 @@ namespace DumbStupidStats
             self.statsToDisplay.CopyTo(strArray, 0);
             for (int i = 0; i < statsToAdd.Count; i++)
             {
-                statsToAdd[i].DeActivate();
                 strArray[self.statsToDisplay.Length + i] = statsToAdd[i].Definition.name;
             }
             self.statsToDisplay = strArray;
-            On.RoR2.UI.GameEndReportPanelController.Awake -= GameEndReportPanelController_Awake;
         }
     }
 
