@@ -32,7 +32,23 @@ namespace DumbStupidStats.Stats
         { }
     }
 
+    [DumbStatDef]
+    class Seed : DumbStat
+    {
+        private const string fulltext = "Run Seed";
+        private const string token = "dss_seed";
+        public Seed()
+        {
+            Definition = StatDef.Register(token, StatRecordType.Newest, StatDataType.ULong, 0);
+            FullText = fulltext;
+        }
+
+        public override void Activate()
+        {
+            PushToAllPlayers(Definition, Run.instance.seed);
+        }
+
         public override void DeActivate()
-        { }
+        {}
     }
 }
