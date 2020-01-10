@@ -1,6 +1,7 @@
 using System;
 using RoR2;
 using RoR2.Stats;
+using static DumbStupidStats.Util;
 
 namespace DumbStupidStats.Stats
 {
@@ -20,18 +21,16 @@ namespace DumbStupidStats.Stats
 
         public override void Activate()
         {
-            foreach(NetworkUser user in NetworkUser.readOnlyInstancesList)
-            {
-                var body = user.GetCurrentBody();
-                if (body)
-                    PlayerStatsComponent.FindBodyStatSheet(body).PushStatValue(
-                    Definition,
+            PushToAllPlayers(Definition,
                         ((ulong)random.Next(int.MinValue, int.MaxValue))
                         +
                         int.MaxValue
                     );
-            }
         }
+
+        public override void DeActivate()
+        { }
+    }
 
         public override void DeActivate()
         { }
