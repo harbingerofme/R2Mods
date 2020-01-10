@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using RoR2;
 using RoR2.Stats;
 
@@ -15,6 +15,7 @@ namespace DumbStupidStats.Stats
         {
             random = new Random();
             Definition = StatDef.Register(token, StatRecordType.Newest, StatDataType.ULong, 0);
+            FullText = fulltext;
         }
 
         public override void Activate()
