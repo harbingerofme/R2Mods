@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using BepInEx.Configuration;
 using RoR2.Stats;
 using System;
@@ -22,7 +22,7 @@ namespace DumbStupidStats
 
         private readonly ConfigEntry<bool> disablePoints;
         private ConfigEntry<string> blackList;
-        private readonly string[] BlackList;
+        private readonly List<string> BlackList;
         private readonly ConfigEntry<int> StatsToAdd;
 
         private readonly List<DumbStat> statDefs;
@@ -69,7 +69,7 @@ namespace DumbStupidStats
                 blackList = Config.Bind<string>(bl, "", bld);
                 blackList.Value = hold; 
             }
-            BlackList = blackList.Value.Split(';',',',' ');
+            BlackList = new List<string>(blackList.Value.Split(';',',',' '));
         }
 
         void Awake()
@@ -92,14 +92,25 @@ namespace DumbStupidStats
         private void PickRunStats(Run obj)
         {
             statsToAdd = new List<DumbStat>();
-            while(statsToAdd.Count < Math.Min(StatsToAdd.Value, statDefs.Count))
+            int failcount = 0;const int MaxFails = 30;
+            int max = Math.Min(StatsToAdd.Value, statDefs.Count);
+            while (statsToAdd.Count < max && failcount < MaxFails)
             {
                 DumbStat stat = statDefs[(int)rng.Next ()* statDefs.Count];
-                if (!statsToAdd.Contains(stat))
+                if (!statsToAdd.Contains(stat) 
+                    && !BlackList.Contains(stat.Definition.displayToken))
                 {
                     stat.Activate();
                     statsToAdd.Add(stat);
                 }
+                else
+                {
+                    failcount++;
+                }
+            }
+            if(failcount==MaxFails)
+            {
+                Logger.LogWarning("Couln't find enough stats to add! Try reducing your blacklist or the amount of stats to be displayed.");
             }
             statsToAdd.AddRange(additionalStatDefs);
             On.RoR2.UI.GameEndReportPanelController.Awake += GameEndReportPanelController_Awake;
