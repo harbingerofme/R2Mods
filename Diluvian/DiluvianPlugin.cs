@@ -194,67 +194,6 @@ namespace Diluvian
             }
         }
 
-        private void ReplaceInteractibles()
-        {
-            ReplaceString("MSOBELISK_CONTEXT", "Escape the madness");
-            ReplaceString("MSOBELISK_CONTEXT_CONFIRMATION", "Take the cowards way out");
-            ReplaceString("COST_PERCENTHEALTH_FORMAT", "?");
-            ReplaceString("SHRINE_BLOOD_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: This pleases me. <style=cShrine>({1})</color>");
-            ReplaceString("SHRINE_BLOOD_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: {0} has paid their respects. Will you do the same? <style=cShrine>({1})</color>");
-            ReplaceString("SHRINE_HEALING_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
-            ReplaceString("SHRINE_HEALING_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
-            ReplaceString("SHRINE_BOSS_BEGIN_TRIAL", "<style=cShrine>Show me your courage.</style>");
-            ReplaceString("SHRINE_BOSS_END_TRIAL", "<style=cShrine>Your effort entertains me.</style>");
-            ReplaceString("PORTAL_MYSTERYSPACE_CONTEXT", "Hide in another realm.");
-            ReplaceString("SCAVLUNAR_BODY_SUBTITLE", "The weakling");
-            ReplaceString("MAP_LIMBO_SUBTITLE", "Hideaway");
-        }
-
-        private void ReplaceItems()
-        {
-            ReplaceString("ITEM_BEAR_PICKUP", "Chance to block incoming damage. You are <style=cDeath>unlucky</style>.");
-        }
-
-        private void ReplaceObjectives()
-        {
-            ReplaceString("OBJECTIVE_FIND_TELEPORTER", "Flee");
-            ReplaceString("OBJECTIVE_DEFEAT_BOSS", "Defeat the <style=cDeath>Anchor</style>");
-        }
-        private void ReplacePause()
-        {
-            ReplaceString("PAUSE_RESUME", "Entertain me");
-            ReplaceString("PAUSE_SETTINGS", "Change your perspective");
-            ReplaceString("PAUSE_QUIT_TO_MENU", "Give up");
-            ReplaceString("PAUSE_QUIT_TO_DESKTOP", "Don't come back");
-            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_SINGLEPLAYER", "You are a disappointment.");
-            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_CLIENT", "Leave these weaklings with me?");
-            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_HOST", "You are my main interest, <style=cDeath>end the others?</style>");
-        }
-        private void ReplaceStats()
-        {
-            ReplaceString("STAT_KILLER_NAME_FORMAT", "Released by: <color=#FFFF7F>{0}</color>");
-            ReplaceString("STAT_POINTS_FORMAT", "");
-            ReplaceString("STAT_TOTAL", "");
-            ReplaceString("STAT_CONTINUE", "Try again");
-
-            ReplaceString("STATNAME_TOTALTIMEALIVE", "Wasted time");
-            ReplaceString("STATNAME_TOTALDEATHS", "Times Blessed");
-            ReplaceString("STATNAME_HIGHESTLEVEL", "Strength Acquired");
-            ReplaceString("STATNAME_TOTALGOLDCOLLECTED", "Greed");
-            ReplaceString("STATNAME_TOTALDISTANCETRAVELED", "Ground laid to waste");
-            ReplaceString("STATNAME_TOTALMINIONDAMAGEDEALT", "Pacification delegated");
-            ReplaceString("STATNAME_TOTALITEMSCOLLECTED", "Trash cleaned up");
-            ReplaceString("STATNAME_HIGHESTITEMSCOLLECTED", "Most trash held");
-            ReplaceString("STATNAME_TOTALSTAGESCOMPLETED", "Times fled");
-            ReplaceString("STATNAME_HIGHESTSTAGESCOMPLETED", "Times fled");
-            ReplaceString("STATNAME_TOTALPURCHASES", "Offered");
-            ReplaceString("STATNAME_HIGHESTPURCHASES", "Offered");
-
-            ReplaceString("GAME_RESULT_LOST", "PATHETHIC");
-            ReplaceString("GAME_RESULT_WON", "IMPRESSIVE");
-            ReplaceString("GAME_RESULT_UNKNOWN", "where are you?");
-        }
-
 
         private void BloodShrinesCost99Percent(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
         {
@@ -372,6 +311,70 @@ namespace Diluvian
                 Logger.LogWarning("Couldn't modify OneShotProtection. Maybe you have a mod interfering. Game might act weird.");
                 Logger.LogError(e);
             }
+        }
+
+
+        //Below here is only string replacement.
+
+        private void ReplaceInteractibles()
+        {
+            ReplaceString("MSOBELISK_CONTEXT", "Escape the madness");
+            ReplaceString("MSOBELISK_CONTEXT_CONFIRMATION", "Take the cowards way out");
+            ReplaceString("COST_PERCENTHEALTH_FORMAT", "?");
+            ReplaceString("SHRINE_BLOOD_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: This pleases me. <style=cShrine>({1})</color>");
+            ReplaceString("SHRINE_BLOOD_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: {0} has paid their respects. Will you do the same? <style=cShrine>({1})</color>");
+            ReplaceString("SHRINE_HEALING_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
+            ReplaceString("SHRINE_HEALING_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
+            ReplaceString("SHRINE_BOSS_BEGIN_TRIAL", "<style=cShrine>Show me your courage.</style>");
+            ReplaceString("SHRINE_BOSS_END_TRIAL", "<style=cShrine>Your effort entertains me.</style>");
+            ReplaceString("PORTAL_MYSTERYSPACE_CONTEXT", "Hide in another realm.");
+            ReplaceString("SCAVLUNAR_BODY_SUBTITLE", "The weakling");
+            ReplaceString("MAP_LIMBO_SUBTITLE", "Hideaway");
+        }
+
+        private void ReplaceItems()
+        {
+            ReplaceString("ITEM_BEAR_PICKUP", "Chance to block incoming damage. You are <style=cDeath>unlucky</style>.");
+        }
+
+        private void ReplaceObjectives()
+        {
+            ReplaceString("OBJECTIVE_FIND_TELEPORTER", "Flee");
+            ReplaceString("OBJECTIVE_DEFEAT_BOSS", "Defeat the <style=cDeath>Anchor</style>");
+        }
+        private void ReplacePause()
+        {
+            ReplaceString("PAUSE_RESUME", "Entertain me");
+            ReplaceString("PAUSE_SETTINGS", "Change your perspective");
+            ReplaceString("PAUSE_QUIT_TO_MENU", "Give up");
+            ReplaceString("PAUSE_QUIT_TO_DESKTOP", "Don't come back");
+            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_SINGLEPLAYER", "You are a disappointment.");
+            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_CLIENT", "Leave these weaklings with me?");
+            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_HOST", "You are my main interest, <style=cDeath>end the others?</style>");
+        }
+        private void ReplaceStats()
+        {
+            ReplaceString("STAT_KILLER_NAME_FORMAT", "Released by: <color=#FFFF7F>{0}</color>");
+            ReplaceString("STAT_POINTS_FORMAT", "");
+            ReplaceString("STAT_TOTAL", "");
+            ReplaceString("STAT_CONTINUE", "Try again");
+
+            ReplaceString("STATNAME_TOTALTIMEALIVE", "Wasted time");
+            ReplaceString("STATNAME_TOTALDEATHS", "Times Blessed");
+            ReplaceString("STATNAME_HIGHESTLEVEL", "Strength Acquired");
+            ReplaceString("STATNAME_TOTALGOLDCOLLECTED", "Greed");
+            ReplaceString("STATNAME_TOTALDISTANCETRAVELED", "Ground laid to waste");
+            ReplaceString("STATNAME_TOTALMINIONDAMAGEDEALT", "Pacification delegated");
+            ReplaceString("STATNAME_TOTALITEMSCOLLECTED", "Trash cleaned up");
+            ReplaceString("STATNAME_HIGHESTITEMSCOLLECTED", "Most trash held");
+            ReplaceString("STATNAME_TOTALSTAGESCOMPLETED", "Times fled");
+            ReplaceString("STATNAME_HIGHESTSTAGESCOMPLETED", "Times fled");
+            ReplaceString("STATNAME_TOTALPURCHASES", "Offered");
+            ReplaceString("STATNAME_HIGHESTPURCHASES", "Offered");
+
+            ReplaceString("GAME_RESULT_LOST", "PATHETHIC");
+            ReplaceString("GAME_RESULT_WON", "IMPRESSIVE");
+            ReplaceString("GAME_RESULT_UNKNOWN", "where are you?");
         }
     }
 }
