@@ -1,4 +1,6 @@
 ﻿using System;
+using RoR2.Stats;
+using RoR2;
 namespace DumbStupidStats.Stats
 {
     [DumbStatDef]
@@ -24,11 +26,7 @@ namespace DumbStupidStats.Stats
         {
             var newNow = DateTime.Now;
             var difference = newNow.Subtract(time);
-            foreach (var pcmc in PlayerCharacterMasterController.instances)
-            {
-                if (pcmc & pcmc.master && pcmc.master.GetBody())
-                    PlayerStatsComponent.FindBodyStatSheet(pcmc.master.GetBody()).PushStatValue(Definition, (float)difference.TotalSeconds);
-            }
+            Util.PushToAllPlayers(Definition, difference.TotalSeconds);
         }
     }
     [DumbStatDef]
