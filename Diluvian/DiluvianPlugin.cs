@@ -198,6 +198,7 @@ namespace Diluvian
         private void BloodShrinePriceRandom(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
         {
             orig(self);
+            //reflect to get the purchaseinteractioncomponent. I then get a random number to cange it's price. The price is hidden by the language modification.
             self.GetFieldValue<PurchaseInteraction>("purchaseInteraction").Networkcost = Run.instance.stageRng.RangeInt(50,100);
         }
 
@@ -213,18 +214,18 @@ namespace Diluvian
         private void NoSafetyAfterFinishCharging(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            c.GotoNext(MoveType.After,
+            c.GotoNext(MoveType.After,//Position our cursor far forward.
                 x => x.MatchLdfld<TeleporterInteraction>("bonusDirector")
                 );
             c.GotoNext(MoveType.Before,
                 x => x.MatchLdfld<TeleporterInteraction>("bonusDirector"),
                 x => x.MatchLdcI4(0)
                 );
-            c.Index += 1;
-            c.RemoveRange(2);
+            c.Index += 1;//Move our cursor between the instructions just matched.
+            c.RemoveRange(2);//remove the 'false' and the setting of the enabled of the bonusdirector
             c.EmitDelegate<Action<CombatDirector>>((director) =>
             {
-                director.expRewardCoefficient = 0f;
+                director.expRewardCoefficient = 0f;//make the monsters not worht anything after the teleporter has finished charging.
             }
             );
         }
@@ -232,47 +233,48 @@ namespace Diluvian
         private void AdjustRegen(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            int monsoonPlayerHelperCountIndex = 25;
-            c.GotoNext(
-                x => x.MatchLdcI4((int)ItemIndex.MonsoonPlayerHelper),
+            int monsoonPlayerHelperCountIndex = 25;//This value doesn't need to be set, but I set it to keep track of what it's expected to be.
+            c.GotoNext(//Since this is only to move the cursor, no explicit movetyp is given as I don't care.
+                x => x.MatchLdcI4((int)ItemIndex.MonsoonPlayerHelper),//Find where the itemcount of the monsoon regen modifier is called
                 x => x.MatchCallvirt<Inventory>("GetItemCount"),
-                x => x.MatchStloc(out monsoonPlayerHelperCountIndex)
+                x => x.MatchStloc(out monsoonPlayerHelperCountIndex)//Then use the `out` keyword to store the index of the local holding the count.
                 );
-            int regenMultiIndex = 44;
-            c.GotoNext(MoveType.Before,
-                x => x.MatchStloc(out regenMultiIndex),
-                x => x.MatchLdloc(monsoonPlayerHelperCountIndex)
+            int regenMultiIndex = 44;//Again this is the expected index,  but I'll be overwriting it.
+            c.GotoNext(MoveType.Before,//Movetype defaults to before, but I like to make it epxlicit.
+                x => x.MatchStloc(out regenMultiIndex),//The regen multiplier local field is stored right before...
+                x => x.MatchLdloc(monsoonPlayerHelperCountIndex)//the itemcount of the monsoonmultiplier item is checked.
                 );
-            c.Index += 2;
-            c.Emit(OpCodes.Ldarg_0);
-            c.Emit(OpCodes.Ldloc, regenMultiIndex);
-            c.EmitDelegate<Func<CharacterBody, float, float>>((self, regenMulti) =>
+            c.Index += 2;//Since the previous cursor location will get skipped over by if statements, we need to move into a slightly weird place that is always called
+            c.Emit(OpCodes.Ldarg_0);//emit the characterbody
+            c.Emit(OpCodes.Ldloc, regenMultiIndex);//emit the local regen multiplier
+            c.EmitDelegate<Func<CharacterBody, float, float>>((self, regenMulti) =>//emit a function taking a charbody and a float that returns a float.
             {
                 if (self.isPlayerControlled)
                 {
-                    regenMulti -= 0.6f;
+                    regenMulti = regenMulti + HealthRegenMultiplier;//note that a + -b == a - b;
                 }
                 return regenMulti;
             });
-            c.Emit(OpCodes.Stloc, regenMultiIndex);
-            int regenIndex = 36;
-            c.GotoPrev(MoveType.Before,
-                x => x.MatchStloc(out regenIndex),
-                x => x.MatchLdcR4(1),
+            c.Emit(OpCodes.Stloc, regenMultiIndex);//store the result.
+            int regenIndex = 36;//As usual with indexes, I overwrite this later with the 'out' keyword. I just put the expected value here
+            c.GotoPrev(MoveType.Before,//We need to go back, but I couldn't find these instructions earlier becase I hadn't found the regenMultiIndex yet.
+                x => x.MatchStloc(out regenIndex),//The base+level regen i stored with this instruction.
+                x => x.MatchLdcR4(1),//And the regen multiplier is initialised.
                 x => x.MatchStloc(regenMultiIndex)
                 ); ;
-            c.Index += 1;
-            c.Emit(OpCodes.Ldarg_0);
-            c.Emit(OpCodes.Ldloc, regenIndex);
-            c.EmitDelegate<Func<CharacterBody, float, float>>((self, regen) =>
+            c.Index += 1;//go to right before the init of the regen multi
+            c.Emit(OpCodes.Ldarg_0);//emit the characterbody
+            c.Emit(OpCodes.Ldloc, regenIndex);//emit the value of the regen
+            c.EmitDelegate<Func<CharacterBody, float, float>>((self, regen) =>//emit a function taking a characterbody an a float that returns a float
             {
+                //Check if this is a monster and if it's not been hit for 5 seconds.
                 if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger)
                 {
                     regen += self.maxHealth * MonsterRegen;
                 }
                 return regen;
             });
-            c.Emit(OpCodes.Stloc, regenIndex);
+            c.Emit(OpCodes.Stloc, regenIndex);//store the new regen.
         }
 
         private void UnluckyBears(ILContext il)
@@ -283,30 +285,31 @@ namespace Diluvian
                 x => x.MatchCallvirt<Inventory>("GetItemCount")
                 );
             c.GotoNext(MoveType.Before,
-                x => x.MatchLdcR4(0),
+                x => x.MatchLdcR4(0),//This is the luck value used in CheckRoll for toughertimes.
                 x => x.MatchLdnull(),
                 x => x.MatchCall("RoR2.Util", "CheckRoll")
                 ) ;
             c.Remove();
-            c.Emit(OpCodes.Ldc_R4, -1f);
+            c.Emit(OpCodes.Ldc_R4, -1f);//We replace it with -1. Because no mercy.
         }
+
         private void ChangeOSP(ILContext il)
         {
             try
             {
                 ILCursor c = new ILCursor(il);
-                c.GotoNext(MoveType.Before,
+                c.GotoNext(MoveType.Before,//move to right before the call to check if it's a player.
                     x => x.MatchCallvirt<HealthComponent>("get_hasOneshotProtection")
                     );
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Pop);
-                c.GotoNext(MoveType.Before,
+                c.RemoveRange(2);//remove the call and the following brfalse instruction
+                c.Emit(OpCodes.Pop);//remove unwanted variable from the stack
+                c.GotoNext(MoveType.Before,//go to right before the 0.9 from OSP
                         x => x.MatchLdcR4(0.9f)
                         );
                 c.Remove();
                 c.Emit(OpCodes.Ldc_R4, NewOSPTreshold);//Replace it with my value.
             }
-            catch (Exception e)
+            catch (Exception e) //probably pointless.
             {
                 Logger.LogWarning("Couldn't modify OneShotProtection. Maybe you have a mod interfering. Game might act weird.");
                 Logger.LogError(e);
@@ -320,7 +323,7 @@ namespace Diluvian
         {
             ReplaceString("MSOBELISK_CONTEXT", "Escape the madness");
             ReplaceString("MSOBELISK_CONTEXT_CONFIRMATION", "Take the cowards way out");
-            ReplaceString("COST_PERCENTHEALTH_FORMAT", "?");
+            ReplaceString("COST_PERCENTHEALTH_FORMAT", "?");//hide the cost for bloodshrines.
             ReplaceString("SHRINE_BLOOD_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: This pleases me. <style=cShrine>({1})</color>");
             ReplaceString("SHRINE_BLOOD_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: {0} has paid their respects. Will you do the same? <style=cShrine>({1})</color>");
             ReplaceString("SHRINE_HEALING_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
@@ -334,7 +337,7 @@ namespace Diluvian
 
         private void ReplaceItems()
         {
-            ReplaceString("ITEM_BEAR_PICKUP", "Chance to block incoming damage. You are <style=cDeath>unlucky</style>.");
+            ReplaceString("ITEM_BEAR_PICKUP", "Chance to block incoming damage. They think you are <style=cDeath>unlucky</style>.");
         }
 
         private void ReplaceObjectives()
@@ -355,8 +358,8 @@ namespace Diluvian
         private void ReplaceStats()
         {
             ReplaceString("STAT_KILLER_NAME_FORMAT", "Released by: <color=#FFFF7F>{0}</color>");
-            ReplaceString("STAT_POINTS_FORMAT", "");
-            ReplaceString("STAT_TOTAL", "");
+            ReplaceString("STAT_POINTS_FORMAT", "");//Delete points
+            ReplaceString("STAT_TOTAL", "");//delete more points
             ReplaceString("STAT_CONTINUE", "Try again");
 
             ReplaceString("STATNAME_TOTALTIMEALIVE", "Wasted time");
