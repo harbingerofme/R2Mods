@@ -99,7 +99,7 @@ namespace Diluvian
             description = string.Join("\n",
                 description,
                 $">Difficulty Scaling: +{DiluvianDef.scalingValue * 50 - 100}%",
-                $">Player Health Regeneration: -{(int) ((1-HealthRegenMultiplier)*100)}%",
+                $">Player Health Regeneration: -{(int) (HealthRegenMultiplier*100)}%",
                 ">Player luck: Reduced in some places.",
                 $">Monster Health Regeneration: +{MonsterRegen*100}% of MaxHP per second (out of danger)",
                 ">Oneshot Protection: Also applies to monsters",
@@ -149,7 +149,7 @@ namespace Diluvian
                         tierDef.costMultiplier *= EliteModifier;
                     }
                 }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinesCost99Percent;
+                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinePriceRandom;
 
                 //Complain @mister_name.
                 Debug.Log("Blame r2api for not providing Diluvian a way to mass replace text without this.");
@@ -182,7 +182,7 @@ namespace Diluvian
                         tierDef.costMultiplier = vanillaEliteMultipliers[i];
                     }
                 }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinesCost99Percent;
+                On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinePriceRandom;
 
                 Debug.Log("Blame r2api for not providing Diluvian a way to mass replace text without this.");
                 //Restore vanilla text.
@@ -195,7 +195,7 @@ namespace Diluvian
         }
 
 
-        private void BloodShrinesCost99Percent(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
+        private void BloodShrinePriceRandom(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
         {
             orig(self);
             self.GetFieldValue<PurchaseInteraction>("purchaseInteraction").Networkcost = Run.instance.stageRng.RangeInt(50,100);
@@ -268,7 +268,7 @@ namespace Diluvian
             {
                 if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger)
                 {
-                    regen += self.maxHealth * 0.015f;
+                    regen += self.maxHealth * MonsterRegen;
                 }
                 return regen;
             });
@@ -304,7 +304,7 @@ namespace Diluvian
                         x => x.MatchLdcR4(0.9f)
                         );
                 c.Remove();
-                c.Emit(OpCodes.Ldc_R4, 0.99f);
+                c.Emit(OpCodes.Ldc_R4, NewOSPTreshold);//Replace it with my value.
             }
             catch (Exception e)
             {
