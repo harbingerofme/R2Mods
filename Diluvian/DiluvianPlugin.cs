@@ -36,10 +36,10 @@ namespace Diluvian
         private DifficultyIndex DiluvianIndex;
 
         //DiluvianModifiers:
-        private readonly float EliteModifier = 0.8f;
-        private readonly float HealthRegenMultiplier = 0.4f;
-        private readonly float MonsterRegen = 0.015f;
-        private readonly float NewOSPTreshold = 0.99f;
+        private const float EliteModifier = 0.8f;
+        private const float HealthRegenMultiplier = -0.6f;
+        private const float MonsterRegen = 0.015f;
+        private const float NewOSPTreshold = 0.99f;
 
         //ResourceAPI stuff.
         private const string assetPrefix = "@HarbDiluvian";
