@@ -3,48 +3,59 @@ using UnityEngine;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using JetBrains.Annotations;
+using R2API;
 
 namespace HarbCrate.Items
 {
     [Item]
-    class BrawnOverBrain : ItemDef
+    internal sealed class BrawnOverBrain : IPickup,IItem
     {
-        public static BrawnOverBrain instance;
-        public readonly static string Name = "Brawn over Brain";
-        public readonly static string PickupText = "A percentage of damage is taken from health before shield. 50% debuff reduction whilst you have shield.";
-        public readonly static string Description = "50%  (+0% per stack) debuff reduction whilst you have shield. 40%(+15% per stack)* of damage taken is taken from health before shield. This damage cannot kill while you have enough shield.";
-        public BrawnOverBrain()
+        public TokenValue Name => new TokenValue
         {
-            tier = ItemTier.Tier3;
-            pickupModelPath = "Prefabs/PickupModels/PickupMystery";
-            pickupIconPath = "Textures/AchievementIcons/texLoaderClearGameMonsoonIcon";
-            nameToken = "BOB_NAME_TOKEN";
-            pickupToken = "BOB_PICKUP_TOKEN";
-            descriptionToken = "BOB_DESCRIPTION_TOKEN";
+            Token = "HC_BOB",
+            Value = "Brawn over Brain"
+        };
 
-            R2API.AssetPlus.Languages.AddToken(nameToken, Name);
-            R2API.AssetPlus.Languages.AddToken(pickupToken, PickupText);
-            R2API.AssetPlus.Languages.AddToken(descriptionToken, Description);
-            instance = this;
+        public TokenValue Description => new TokenValue
+        {
+            Token = "HC_BOB_DESC",
+            Value =
+                "50%(+0% per stack) debuff reduction whilst you have shield."
+                +" 40%(+15% per stack)* of damage taken is taken from health before shield."
+                +" This damage cannot kill while you have enough shield."
+        };
 
-            R2API.ItemAPI.AddCustomItem(new R2API.CustomItem(this, null));
-        }
+        public TokenValue PickupText => new TokenValue
+        {
+            Token = "HC_BOB_PICKUP",
+            Value = "A percentage of damage is taken from health before shield."
+                    + " 50% debuff reduction whilst you have shield."
+        };
 
-        public static void Hooks()
+        public string AssetPath => "";
+        public string SpritePath => "";
+
+        public ItemTier Tier => ItemTier.Tier3;
+
+        public CustomItem CustomDef { get; set; }
+        public ItemDef Definition { get; set; }
+        
+
+        public BrawnOverBrain()
         {
             IL.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
         }
 
-        private static void HealthComponent_TakeDamage(ILContext il)
+        private void HealthComponent_TakeDamage(ILContext il)
         {
-            ItemIndex myIndex = (ItemIndex)ItemLib.ItemLib.GetItemId(Name);
+            ItemIndex myIndex = CustomDef.ItemDef.itemIndex;
             ILCursor c = new ILCursor(il);
             int remainingDamage = 5;
 
-            float curve_a = 0.09f, curve_b = 2.13f, curve_c = 1f;
+            const float curveA = 0.09f, curveB = 2.13f, curveC = 1f;
 
-            c.GotoNext(
-                MoveType.After,
+            c.GotoNext(MoveType.After,
                 x => x.MatchStloc(out _),
                 x => x.MatchLdarg(0),
                 x => x.MatchLdcR4(0),
@@ -59,9 +70,9 @@ namespace HarbCrate.Items
                     int amount = self.body.inventory.GetItemCount(myIndex);
                     if (amount > 0)
                     {
-                        float passThroughAmount = damage * (curve_a+ (1-curve_a)*(1 - (curve_b / Mathf.Pow(amount + curve_b, curve_c))));
-                        float ReduceToAmount = Mathf.Min(self.health, 1);
-                        float finalHealth = Mathf.Max(self.health - passThroughAmount, ReduceToAmount);
+                        float passThroughAmount = damage * (curveA+ (1-curveA)*(1 - (curveB / Mathf.Pow(amount + curveB, curveC))));
+                        float reduceToAmount = Mathf.Min(self.health, 1);
+                        float finalHealth = Mathf.Max(self.health - passThroughAmount, reduceToAmount);
                         passThroughAmount = self.health - finalHealth;
                         self.Networkhealth = finalHealth;
                         damage -= passThroughAmount;
