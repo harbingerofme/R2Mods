@@ -4,45 +4,41 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using JetBrains.Annotations;
+using MonoMod.RuntimeDetour;
 using R2API;
 
 namespace HarbCrate.Items
 {
     [Item]
-    internal sealed class BrawnOverBrain : IPickup,IItem
+    internal sealed class BrawnOverBrain : Item
     {
-        public TokenValue Name => new TokenValue
+        public BrawnOverBrain() : base()
         {
-            Token = "HC_BOB",
-            Value = "Brawn over Brain"
-        };
+            Name = new TokenValue
+            {
+                Token = "HC_BOB",
+                Value = "Brawn over Brain"
+            };
+            Description = new TokenValue
+            {
+                Token = "HC_BOB_DESC",
+                Value =
+                    "50%(+0% per stack) debuff reduction whilst you have shield."
+                    +" 40%(+15% per stack)* of damage taken is taken from health before shield."
+                    +" This damage cannot kill while you have enough shield."
+            };
+            PickupText = new TokenValue
+            {
+                Token = "HC_BOB_PICKUP",
+                Value = "A percentage of damage is taken from health before shield."
+                        + " 50% debuff reduction whilst you have shield."
+            }; 
+            AssetPath = "";
+            SpritePath = "";
+            Tier = ItemTier.Tier3;
+        }
 
-        public TokenValue Description => new TokenValue
-        {
-            Token = "HC_BOB_DESC",
-            Value =
-                "50%(+0% per stack) debuff reduction whilst you have shield."
-                +" 40%(+15% per stack)* of damage taken is taken from health before shield."
-                +" This damage cannot kill while you have enough shield."
-        };
-
-        public TokenValue PickupText => new TokenValue
-        {
-            Token = "HC_BOB_PICKUP",
-            Value = "A percentage of damage is taken from health before shield."
-                    + " 50% debuff reduction whilst you have shield."
-        };
-
-        public string AssetPath => "";
-        public string SpritePath => "";
-
-        public ItemTier Tier => ItemTier.Tier3;
-
-        public CustomItem CustomDef { get; set; }
-        public ItemDef Definition { get; set; }
-        
-
-        public BrawnOverBrain()
+        public override void Hook()
         {
             IL.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
         }
