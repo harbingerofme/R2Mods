@@ -49,5 +49,7 @@ namespace HarbCrate
         CustomEquipment CustomDef { get; set; }
         float Cooldown { get; }
         bool IsLunar { get; }
+        bool IsEnigmaCompat { get; }
+        bool Effect(EquipmentSlot equipmentSlot);
     }
 }
