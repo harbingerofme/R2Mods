@@ -16,6 +16,9 @@ libs/*.dll
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+#Rider files
+.idea/
+
 # Mono auto generated files
 mono_crash.*
 
