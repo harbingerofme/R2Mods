@@ -1,5 +1,7 @@
 using R2API;
 using RoR2;
+using JetBrains.Annotations;
+
 
 namespace HarbCrate
 {
@@ -7,6 +9,22 @@ namespace HarbCrate
     {
         public string Token;
         public string Value;
+    }
+    
+    [MeansImplicitUse]
+    class EquipmentAttribute : System.Attribute
+    {
+        public EquipmentAttribute()
+        {
+        }
+    }
+    
+    [MeansImplicitUse]
+    class ItemAttribute : System.Attribute
+    {
+        public ItemAttribute()
+        {
+        }
     }
 
     public interface IPickup
