@@ -10,7 +10,7 @@ using UserProfile = On.RoR2.UserProfile;
 namespace HarbCrate.Items
 {
     [Item]
-    internal sealed class TimePiece : Item
+    internal sealed class ShieldOnMultiKill : Item
     {
         
         private const float ShieldPerMK = 10f;//Scaling in percent.
@@ -18,7 +18,7 @@ namespace HarbCrate.Items
         private const float MaxSize =100;//shield fraction in actual numbers.
         private const float PerStack = 100;
         
-        public TimePiece() : base()
+        public ShieldOnMultiKill() : base()
         {
             Tier = ItemTier.Tier2;
             Name = new TokenValue("HC_MAXSHIELDONMULTIKILL","Perfect Timepiece");
@@ -99,7 +99,7 @@ namespace HarbCrate.Items
             {
                 body.onInventoryChanged += () =>
                 {
-                    Count = body.inventory.GetItemCount(((TimePiece) Instance).Definition.itemIndex);
+                    Count = body.inventory.GetItemCount(((ShieldOnMultiKill) Instance).Definition.itemIndex);
                     ShieldCharge = shieldCharge;
                 };
                 
