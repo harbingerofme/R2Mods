@@ -4,55 +4,106 @@ using MonoMod.Cil;
 using R2API.Utils;
 using System;
 using Mono.Cecil.Cil;
+using R2API;
+using UserProfile = On.RoR2.UserProfile;
 
 namespace HarbCrate.Items
 {
-    class TimePiece
+    [Item]
+    internal sealed class TimePiece : Item
     {
-        public readonly static string Name = "Perfect Timepiece";
-        public static float Scaling = 10f;//Scaling in percent.
-        public static float ShieldFrac = 0.08f;//shield fraction in actual numbers.
-
-        public static CustomItem Build()
+        
+        private const float ShieldPerMK = 10f;//Scaling in percent.
+        private const int MultikillCountNeeded = 4;
+        private const float MaxSize =100;//shield fraction in actual numbers.
+        private const float PerStack = 100;
+        
+        public TimePiece() : base()
         {
-            ItemDef mydef = new ItemDef
-            {
-                tier = ItemTier.Tier2,
-                pickupModelPath = "Prefabs/PickupModels/PickupMystery",
-                pickupIconPath = "Textures/AchievementIcons/texHuntressClearGameMonsoonIcon",
-                nameToken = Name,
-                pickupToken = "Get some of your max health as shield. Reduces the duration of most negative effects.",
-                descriptionToken = "<style=cIsHealing>Shields</style> are increased by <style=cIsHealing>" + ShieldFrac*100+ "%</style> <style=cStack>(+" + ShieldFrac * 100 + "%)</style> of your <style=cIsHealing>maximum health</style>. Most <style=cIsUtility>negative durations</style> are reduced by <style=cIsUtility>" + Scaling+ "%</style> <style=cStack>(+" + Scaling+ "% per stack)</style>*."
-            };
-
-            return new CustomItem(mydef, null, null, null);
+            Tier = ItemTier.Tier2;
+            Name = new TokenValue("HC_MAXSHIELDONMULTIKILL","Perfect Timepiece");
+            Description = new TokenValue(
+                "HC_MAXSHIELDONMULTIKILL_DESC",
+                $" Gain {ShieldPerMK} additional maximum shield on multikill."
+                + $" Maximum shield tops of at an aditional {MaxSize}<style=cStack>(+{PerStack} per stack)</style>.");
+            PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum shield on multikill.");
+            AssetPath = "";
+            SpritePath = "";
         }
-        //Todo: Make it hook into shields and give some shield boost. 
 
-        public static void Hooks(ItemIndex id)
+        public override void Hook()
         {
-            IL.RoR2.CharacterBody.RecalculateStats += delegate(ILContext il)
+            IL.RoR2.CharacterBody.RecalculateStats += ModifyRecalcStats;
+            Inventory.onServerItemGiven += UpdateShieldInfusion;
+            On.RoR2.CharacterBody.AddMultiKill += CharacterBodyOnAddMultiKill;
+        }
+
+        private void CharacterBodyOnAddMultiKill(On.RoR2.CharacterBody.orig_AddMultiKill orig, CharacterBody self, int kills)
+        {
+            orig(self, kills);
+            if (self.inventory && self.multiKillCount % MultikillCountNeeded == 0 && self.inventory.GetItemCount(Definition.itemIndex) > 0 )
             {
-                ILCursor c = new ILCursor(il);
-                int shieldsLoc = 33;
-                c.GotoNext(
-                    MoveType.Before,
-                    x => x.MatchLdloc(out shieldsLoc),
-                    x => x.MatchCallvirt(typeof(CharacterBody).GetMethodCached("set_maxShield"))
-                    );
-                c.Emit(OpCodes.Ldloc, shieldsLoc);
-                c.EmitDelegate<Func<CharacterBody, float, float>>((self, shields) =>
+                self.inventory.GetComponent<ShieldInfusion>().ShieldCharge += ShieldPerMK;
+            }
+        }
+
+        private void ModifyRecalcStats(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            int shieldsLoc = 33;
+            c.GotoNext(
+                MoveType.Before,
+                x => x.MatchLdloc(out shieldsLoc),
+                x => x.MatchCallvirt(typeof(CharacterBody).GetMethodCached("set_maxShield"))
+            );
+            c.Emit(OpCodes.Ldloc, shieldsLoc);
+            c.EmitDelegate<Func<CharacterBody, float, float>>((self, shields) =>
+            {
+                ShieldInfusion si = self.inventory.GetComponent<ShieldInfusion>();
+                if (si)
                 {
-                    if (self.inventory)
-                    {
-                        int num = self.inventory.GetItemCount(id);
-                        shields += self.maxHealth * ShieldFrac * num;
-                    }
-                    return shields;
-                });
-                c.Emit(OpCodes.Stloc, shieldsLoc);
-                c.Emit(OpCodes.Ldarg_0);
-            };
+                    shields += si.ShieldCharge;
+                }
+                return shields;
+            });
+            c.Emit(OpCodes.Stloc, shieldsLoc);
+            c.Emit(OpCodes.Ldarg_0);
+        }
+        private void UpdateShieldInfusion(Inventory inventory,ItemIndex index,int count)
+        {
+            if (index != Definition.itemIndex)
+                return;
+
+            ShieldInfusion si = inventory.GetComponent<ShieldInfusion>();
+            if (si == null)
+            {
+                si = inventory.gameObject.AddComponent<ShieldInfusion>();
+            }
+
+            si.Count += count;
+        }
+
+        public class ShieldInfusion : MonoBehaviour
+        {
+            private float shieldCharge;
+            [NonSerialized] public int Count;
+            public CharacterBody body;
+
+            public float ShieldCharge
+            {
+                get => shieldCharge;
+                set => shieldCharge = Math.Min(value, (MaxSize * Math.Max(1,Count) + (Count-1)*PerStack));
+            }
+
+            private void Start()
+            {
+                body.onInventoryChanged += () =>
+                {
+                    Count = body.inventory.GetItemCount(((TimePiece) Instance).Definition.itemIndex);
+                    ShieldCharge = shieldCharge;
+                };
+                
+            }
         }
     }
 
