@@ -1,34 +1,45 @@
-﻿using RoR2;
+﻿using System;
+using R2API;
+using RoR2;
 using UnityEngine;
 
 
 namespace HarbCrate.Equipment
 {
-    public sealed class DivinationDistillate : HarbEquipment
+    [Equipment]
+    internal sealed class DivinationDistillate : Equip
     {
-        public new static readonly float Cooldown = 30;
-        public  new static readonly string Name = "Divination Distillate";
-        public static readonly string BuffName = "DistillateBuff";
-        public static readonly float DistillateChance = 5;
-        public static readonly float DistillateDuration = 5;
+        private const int DistillateLuckIncrease = 2;
+        private const float DistillateDuration = 7f;
+        private const float Interval = 0.2f;
+        private const float TotalHealthFraction = 0.2f;
+        private const float TotalShieldFraction = 0.5f;
+        private static BuffDef DistillateBuff;
 
-        public new static CustomEquipment Build()
+        DivinationDistillate() : base()
         {
-            EquipmentDef myDef = new EquipmentDef
+            Cooldown = 30;
+            Name = new TokenValue("HC_LUCKJUICE","Divination Distillate");
+            PickupText = new TokenValue("HC_LUCKJUICE_PICKUP","Heal both health and shield for a short period of time. Luk increased while active.");
+            Description = new TokenValue("HC_LUCKJUICE_DESC",
+                $"Heal both health and shields for {DistillateDuration} seconds. Effects stops at full health and full shields." +
+                $" While under effect, your luck is greatly increased.");
+            DistillateBuff = new BuffDef()
             {
-                cooldown = Cooldown,
-                pickupModelPath = "Prefabs/PickupModels/PickupSoda",
-                pickupIconPath = "Textures/ItemIcons/texSodaIcon",
-                nameToken = Name,
-                pickupToken = "Heal both health and shield for a short period. While healing, slain enemies can drop items.",
-                descriptionToken = "Heal both health and shields for " + DistillateDuration + " seconds. Effects stops at full health and full shields. While under effect, slain enemies have a " + DistillateChance + "% chance to drop an item.",
-                canDrop = true,
-                enigmaCompatible = true
+                buffColor = Color.Lerp(Color.red, Color.yellow, 0.5f),
+                canStack = false,
+                isDebuff = false,
+                name = "HC_LUCKJUICE_BUFF"
             };
-            return new CustomEquipment(myDef, null, null, null);
+            IsLunar = false;
+            IsEnigmaCompat = false;
+            AssetPath = "";
+            SpritePath = "";
+            CustomBuff buff = new CustomBuff(DistillateBuff.name, DistillateBuff);
+            ItemAPI.AddCustomBuff(buff);
         }
 
-        public new static bool Effect(EquipmentSlot slot)
+        public override bool Effect(EquipmentSlot slot)
         {
             var ownerBody = slot.GetComponent<CharacterBody>();
             if (!ownerBody)
@@ -39,42 +50,42 @@ namespace HarbCrate.Equipment
             var distillateComp = ownerBody.gameObject.AddComponent<DistillateBehaviour>();
             distillateComp.hc = ownerHealthComponent;
             distillateComp.cb = ownerBody;
-            ownerBody.AddBuff((BuffIndex)ItemLib.ItemLib.GetBuffId(BuffName));
+            ownerBody.AddBuff(DistillateBuff.buffIndex);
             return true;
-        }
-
-        public static CustomBuff Buff()
-        {
-            var buffDef = new BuffDef
-            {
-                buffColor = Color.Lerp(Color.red, Color.yellow, 0.5f),
-                canStack = false
-            };
-            return new CustomBuff(BuffName, buffDef, null);
         }
 
         public class DistillateBehaviour : MonoBehaviour
         {
             private float lifeTime = DistillateDuration;
-            private readonly float interval = 0.2f;
             private float nextHealIn = 0f;
-            private readonly float totalHealthFraction = 0.2f;
-            private readonly float totalShieldFraction = 0.5f;
+
 
             private float intervalFraction;
             public HealthComponent hc;
             public CharacterBody cb;
-
-#pragma warning disable IDE0051 // Remove unused private members
+            
             private void Awake()
             {
-                this.intervalFraction = interval / DistillateDuration;
+                this.intervalFraction = Interval / DistillateDuration;
+            }
+
+            private void Start()
+            {
+                if (cb && cb.master)
+                {
+                    cb.master.luck += DistillateLuckIncrease;
+                }
             }
 
             private void OnDestroy()
             {
                 if (this.cb)
-                    this.cb.RemoveBuff((BuffIndex)ItemLib.ItemLib.GetBuffId(BuffName));
+                {
+                    this.cb.RemoveBuff(DistillateBuff.buffIndex);
+                    if (cb.master)
+                        cb.master.luck -= DistillateLuckIncrease;
+                }
+
             }
 
             private void FixedUpdate()
@@ -83,11 +94,11 @@ namespace HarbCrate.Equipment
                 this.lifeTime -= Time.fixedDeltaTime;
                 if (this.nextHealIn < 0 || this.lifeTime < 0)
                 {
-                    this.nextHealIn += this.interval;
+                    this.nextHealIn += Interval;
                     if (this.hc)
                     {
-                        this.hc.RechargeShield(this.hc.fullShield * this.totalShieldFraction * this.intervalFraction);
-                        this.hc.Heal(this.hc.fullHealth * this.totalHealthFraction * this.intervalFraction, default, true);
+                        this.hc.RechargeShield(this.hc.fullShield * TotalShieldFraction * this.intervalFraction);
+                        this.hc.Heal(this.hc.fullHealth * TotalHealthFraction * this.intervalFraction, default, true);
                     }
                 }
                 if (this.lifeTime <= 0f || (this.hc.fullHealth == this.hc.health && this.hc.shield == this.hc.fullShield && this.hc.godMode == false))
@@ -95,32 +106,9 @@ namespace HarbCrate.Equipment
                     Destroy(this);
                 }
             }
-#pragma warning restore IDE0051 // Remove unused private members
         }
 
-        public static void DistillateQuantEffect(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
-        {
-            orig(self, damageReport);
-            CharacterBody attackerBody = damageReport.attackerBody;
-            CharacterMaster attackerMaster = damageReport.attackerMaster;
-            GameObject victim = damageReport.victim.gameObject;
-            if (attackerBody && attackerMaster)
-            {
-                if (attackerBody.GetComponent<DistillateBehaviour>())//We could also check for the DistillateBuff existing, however, the component is far more reliable.
-                {
-                    if (Util.CheckRoll(DistillateChance, attackerMaster))
-                    {
-                        PickupIndex[] list = Run.instance.smallChestDropTierSelector.Evaluate(UnityEngine.Random.value).ToArray();
-                        PickupIndex pickupIndex = PickupIndex.none;
-                        if (list.Length > 0)
-                        {
-                            pickupIndex = list[Random.Range(0, list.Length - 1)];
-                        }
-                        PickupDropletController.CreatePickupDroplet(pickupIndex, victim.transform.position, Vector3.up * 20f);
-                    }
-                }
-            }
-
-        }
+        public override void Hook()
+        { }
     }
 }
