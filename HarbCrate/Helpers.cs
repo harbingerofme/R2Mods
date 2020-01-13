@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Reflection;
 using R2API;
 using RoR2;
 using JetBrains.Annotations;
@@ -17,14 +19,14 @@ namespace HarbCrate
     }
     
     [MeansImplicitUse]
-    internal class EquipmentAttribute : System.Attribute
+    public class EquipmentAttribute : System.Attribute
     { }
     
     [MeansImplicitUse]
-    internal class ItemAttribute : System.Attribute
+    public class ItemAttribute : System.Attribute
     { }
-
-    internal abstract class Singleton
+    
+    public abstract class Singleton
     {
         public static Singleton Instance;
         public Singleton()
@@ -33,9 +35,11 @@ namespace HarbCrate
         }
         
     }
-    internal abstract class Pickup : Singleton
+    public abstract class Pickup : Singleton
     {
-        public Pickup():base() { }
+        public Pickup() : base()
+        {
+        }
         public TokenValue Name;
         public TokenValue Description;
         public TokenValue PickupText;
@@ -47,7 +51,7 @@ namespace HarbCrate
         public abstract void Hook();
     }
 
-    internal abstract class Item : Pickup
+    public abstract class Item : Pickup
     {
         public Item() : base()
         { }
@@ -94,7 +98,7 @@ namespace HarbCrate
         }
     }
 
-    internal  abstract  class Equip:  Pickup
+    public  abstract  class Equip:  Pickup
     {
         public Equip() : base()
         { }
