@@ -1,33 +1,40 @@
-﻿using ItemLib;
+﻿using R2API;
 using RoR2;
 using UnityEngine;
 
 namespace HarbCrate.Equipment
 {
-    public sealed class WrithingJar : HarbEquipment
+    [Equipment]
+    internal sealed class WrithingJar : Equip
     {
-        public new static readonly float Cooldown = 120;
-        public new static readonly string Name = "The Writhing Jar";
-
-        public new static CustomEquipment Build() {
-            EquipmentDef myDef = new EquipmentDef
-            {
-                cooldown = Cooldown,
-                pickupModelPath = "Prefabs/PickupModels/PickupWilloWisp",
-                pickupIconPath = "Textures/ItemIcons/texWilloWispIcon",
-                nameToken = Name,
-                pickupToken = "Inside of you there's two worms. One is a friend, the other a monster. You are a monster.",
-                descriptionToken = "Summons a friendly Magma Worm and a HOSTILE Overloading Magma Worm.",
-                canDrop = true,
-                isLunar = true,
-                colorIndex = ColorCatalog.ColorIndex.LunarItem,
-                enigmaCompatible = false
-            };
-            return new CustomEquipment(myDef, null, null, null);
-        }
-        public new static bool Effect(EquipmentSlot equipmentSlot)
+        WrithingJar() : base()
         {
+
+            Name = new TokenValue("HC_WORMJAR", "The Writhing Jar");
+            Description = new TokenValue("HC_WORMJAR_DESC",
+                "Summons a <style=cHealing>friendly</style> Magma Worm and a <style=cDeath>HOSTILE</cstyle> Overloading Magma Worm.");
+            PickupText = new TokenValue("HC_WORMJAR_DESC",
+                "Inside of you there's two worms. One is a friend, the other a monster. You are a <color=blue>monster</color>.");
+            AssetPath = "";
+            SpritePath = "";
+            Cooldown = 120f;
+            IsLunar = true;
+            IsEnigmaCompat = true;
             
+            hostileCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscElectricWorm");
+            friendCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscMagmaWorm"); 
+        }
+
+        private readonly SpawnCard hostileCard;
+        private readonly SpawnCard friendCard;
+        
+        private const float HostileDMG = 3;
+        private const float HostileHP = 4.7f;
+        private const float AllyDMG = 1.5f;
+        private const float AllyHP = 1;
+
+        public override bool Effect(EquipmentSlot equipmentSlot)
+        {
             var transform = equipmentSlot.transform;
             var placementRules = new DirectorPlacementRule
             {
@@ -36,7 +43,6 @@ namespace HarbCrate.Equipment
                 maxDistance = 100f,
                 spawnOnTarget = transform
             };
-            var hostileCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscElectricWorm");
             var hateRequest = new DirectorSpawnRequest(hostileCard, placementRules, RoR2Application.rng)
             {
                 ignoreTeamMemberLimit = false,
@@ -49,11 +55,10 @@ namespace HarbCrate.Equipment
                 CharacterMaster cm = spawn.GetComponent<CharacterMaster>();
                 if (cm)
                 {
-                    cm.inventory.GiveItem(ItemIndex.BoostDamage, 20);
-                    cm.inventory.GiveItem(ItemIndex.BoostHp, 47);
+                    cm.inventory.GiveItem(ItemIndex.BoostDamage, getItemCountFromMultiplier(HostileDMG));
+                    cm.inventory.GiveItem(ItemIndex.BoostHp, getItemCountFromMultiplier((HostileHP)));
                 }
             }
-            var friendCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscMagmaWorm");
             var friendRequest = new DirectorSpawnRequest(friendCard, placementRules, RoR2Application.rng)
             {
                 ignoreTeamMemberLimit = false,
@@ -62,9 +67,29 @@ namespace HarbCrate.Equipment
             };
             var spawn2 = DirectorCore.instance.TrySpawnObject(friendRequest);
             spawn2.transform.TransformDirection(0, 100, 0);
+            if (spawn2)
+            {
+                CharacterMaster cm = spawn2.GetComponent<CharacterMaster>();
+                if (cm)
+                {
+                    cm.inventory.GiveItem(ItemIndex.BoostDamage, getItemCountFromMultiplier(AllyDMG));
+                    cm.inventory.GiveItem(ItemIndex.BoostHp, getItemCountFromMultiplier((AllyHP)));
+                }   
+            }
             if (spawn || spawn2)
                 return true;
             return false;
         }
+
+
+        private int getItemCountFromMultiplier(float multiplier)
+        {
+            if (multiplier <= 1)
+                return 0;
+            return Mathf.CeilToInt((multiplier - 1) * 10);
+        }
+
+        public override void Hook()
+        { }
     }
 }

@@ -1,42 +1,40 @@
-﻿using ItemLib;
+﻿using R2API;
 using RoR2;
 using UnityEngine;
 
 namespace HarbCrate.Equipment
 {
-    public sealed class ColdSnap : HarbEquipment
+    [Equipment]
+    internal sealed class ColdSnap : Equip
     {
-        private new static readonly float Cooldown = 64;
-        private static readonly float Radius = 16;
-        private static readonly float Duration = 3;
-        public new static readonly string Name = "Coldsnap";
+        private const float Radius = 16;
+        private const float FreezeDuration = 3;
 
-        public new static CustomEquipment Build()
+
+        public ColdSnap():base()
         {
-
-            EquipmentDef myDef = new EquipmentDef
-            {
-                cooldown = Cooldown,
-                pickupModelPath = "Prefabs/PickupModels/PickupFrostRelic",
-                pickupIconPath = "Textures/ItemIcons/texFrostRelicIcon",
-                nameToken = Name,
-                pickupToken = "Freeze nearby enemies",
-                descriptionToken = "Freeze nearby enemies for " + Duration + " seconds. Frozen enemies can be executed.",
-                canDrop = true,
-                enigmaCompatible = true
-            };
-            return new CustomEquipment(myDef, null, null, null);
+            Cooldown = 64;
+            Name = new TokenValue("HC_COLDSNAP","Coldsnap");
+            PickupText = new TokenValue("HC_COLDSNAP_PICKUP","Freeze nearby enemies.");
+            Description = new TokenValue("HC_COLDSNAP_DESC",
+                $"Freeze nearby enemies for {FreezeDuration} seconds."
+                + " Frozen enemies can be executed."
+            );
+            IsLunar = false;
+            IsEnigmaCompat = true;
+            AssetPath = "";
+            SpritePath = "";
         }
-
-        public new static bool Effect(EquipmentSlot slot)
+        
+        public override bool Effect(EquipmentSlot slot)
         {
             var ownerBody = slot.GetComponent<CharacterBody>();
             Vector3 pos = Util.GetCorePosition(ownerBody);
-            for (TeamIndex teamindex = TeamIndex.Neutral; teamindex < TeamIndex.Count; teamindex++)
+            for (TeamIndex teamIndex = TeamIndex.Neutral; teamIndex < TeamIndex.Count; teamIndex++)
             {
-                if (teamindex != ownerBody.teamComponent.teamIndex)
+                if (teamIndex != ownerBody.teamComponent.teamIndex)
                 {
-                    foreach (TeamComponent teamComponent in TeamComponent.GetTeamMembers(teamindex))
+                    foreach (TeamComponent teamComponent in TeamComponent.GetTeamMembers(teamIndex))
                     {
                         if ((teamComponent.transform.position - pos).sqrMagnitude <= Mathf.Pow(Radius, 2))
                         {
@@ -46,7 +44,7 @@ namespace HarbCrate.Equipment
                                 var state = component.GetComponent<SetStateOnHurt>();
                                 if (state)
                                 {
-                                    state.SetFrozen(Duration);
+                                    state.SetFrozen(FreezeDuration);
                                 }
                             }
                         }
@@ -67,5 +65,8 @@ namespace HarbCrate.Equipment
 
             return true;
         }
+
+        public override void Hook()
+        { }
     }
 }

@@ -30,7 +30,7 @@ namespace Diluvian
             VERSION = "1.0.2";
 
         //Defining The difficultyDef of Diluvian.
-        private readonly Color DiluvianColor = new Color(0.61f, 0.07f, 0.93f);;
+        private readonly Color DiluvianColor = new Color(0.61f, 0.07f, 0.93f);
         private readonly float DiluvianCoef = 3.5f;
         private readonly DifficultyDef DiluvianDef;
         private DifficultyIndex DiluvianIndex;
