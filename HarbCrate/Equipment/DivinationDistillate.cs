@@ -9,11 +9,12 @@ namespace HarbCrate.Equipment
     [Equipment]
     internal sealed class DivinationDistillate : Equip
     {
-        private const int DistillateLuckIncrease = 2;
+        private const int   DistillateLuckIncrease = 2;
         private const float DistillateDuration = 7f;
         private const float Interval = 0.2f;
         private const float TotalHealthFraction = 0.2f;
         private const float TotalShieldFraction = 0.5f;
+        
         private static BuffDef DistillateBuff;
 
         DivinationDistillate() : base()
