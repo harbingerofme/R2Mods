@@ -1,4 +1,4 @@
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 using MonoMod.Cil;
 using System;
@@ -53,7 +53,7 @@ namespace HarbCrate.Items
             c.GotoNext(
                 MoveType.Before,
                 x => x.MatchLdloc(out shieldsLoc),
-                x => x.MatchCallvirt(typeof(CharacterBody).GetMethodCached("set_maxShield"))
+                x => x.MatchCallvirt<CharacterBody>("set_maxShield")
             );
             c.Emit(OpCodes.Ldloc, shieldsLoc);
             c.EmitDelegate<Func<CharacterBody, float, float>>((self, shields) =>
