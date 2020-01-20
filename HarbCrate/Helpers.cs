@@ -49,6 +49,14 @@ namespace HarbCrate
         public ItemDisplayRule[] DisplayRules = null;
 
         public abstract void Hook();
+
+        public void AddTokens(HarbCratePlugin plugin)
+        {
+            plugin.AddLanguage(Name);
+            plugin.AddLanguage(Description);
+            plugin.AddLanguage(PickupText);
+            plugin.AddLanguage(Lore);
+        }
     }
 
     public abstract class Item : Pickup

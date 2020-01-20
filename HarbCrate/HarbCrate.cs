@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using BepInEx;
 using R2API;
 using R2API.Utils;
@@ -14,17 +15,26 @@ using RoR2;
 namespace HarbCrate
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
-    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(R2API.ItemAPI))]
+    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(R2API.ItemAPI), nameof(AssetAPI))]
     [BepInPlugin("com.harbingerofme.HarbCrate", "HarbCrate", "0.0.0")]
     public class HarbCratePlugin : BaseUnityPlugin
     {
         public Dictionary<EquipmentIndex,Equip> Equipment;
         public Dictionary<ItemIndex,Item> Items;
 
+        private const string assetID = "@HarbDiluvian";
+        internal const string assetPrefix = assetID + ":";
+
         public HarbCratePlugin()
         {
             Equipment = new Dictionary<EquipmentIndex, Equip>();
             Items = new Dictionary<ItemIndex, Item>();
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("HarbCrate.harbcrate"))
+            {
+                var bundle = AssetBundle.LoadFromStream(stream);
+                var provider = new R2API.AssetBundleResourcesProvider(assetID, bundle);
+                R2API.ResourcesAPI.AddProvider(provider);
+            }
         }
 
         public void Awake()
@@ -44,7 +54,7 @@ namespace HarbCrate
                 }
                 else if (flagEquip)
                 {
-                    Equip myEquip = (Equip) Activator.CreateInstance(type);
+                    Equip myEquip = (Equip) Activator.CreateInstance(type,null);
                     ItemAPI.AddCustomEquipment(myEquip.CustomDef);
                     Equipment.Add(myEquip.Definition.equipmentIndex,myEquip);
                     pickup = myEquip;
@@ -52,10 +62,7 @@ namespace HarbCrate
 
                 if (flagEquip || flagItem)
                 {
-                    foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Public| BindingFlags.NonPublic).Where((info => info.FieldType == typeof(TokenValue))))
-                    {
-                        AddLanguage((TokenValue) fieldInfo.GetValue(pickup));
-                    }
+                    pickup.AddTokens(this);
                     pickup.Hook();
                 }
             }
@@ -72,9 +79,13 @@ namespace HarbCrate
         }
 
 
-        public static void AddLanguage(TokenValue tv)
+        public void AddLanguage(TokenValue tv)
         {
-            R2API.AssetPlus.Languages.AddToken(tv.Token,tv.Value);
+            if (tv.Token!=null && tv.Token != "")
+            {
+                Logger.LogInfo(string.Format("{0}:{1}", tv.Token, tv.Value));
+                R2API.AssetPlus.Languages.AddToken(tv.Token, tv.Value);
+            }
         }
 
     }

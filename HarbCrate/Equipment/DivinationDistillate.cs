@@ -17,7 +17,7 @@ namespace HarbCrate.Equipment
         
         private static BuffDef DistillateBuff;
 
-        DivinationDistillate() : base()
+        public DivinationDistillate() : base()
         {
             Cooldown = 30;
             Name = new TokenValue("HC_LUCKJUICE","Divination Distillate");

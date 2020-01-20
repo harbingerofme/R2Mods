@@ -7,7 +7,7 @@ namespace HarbCrate.Equipment
     [Equipment]
     internal sealed class WrithingJar : Equip
     {
-        WrithingJar() : base()
+        public WrithingJar() : base()
         {
 
             Name = new TokenValue("HC_WORMJAR", "The Writhing Jar");
@@ -15,7 +15,7 @@ namespace HarbCrate.Equipment
                 "Summons a <style=cHealing>friendly</style> Magma Worm and a <style=cDeath>HOSTILE</cstyle> Overloading Magma Worm.");
             PickupText = new TokenValue("HC_WORMJAR_DESC",
                 "Inside of you there's two worms. One is a friend, the other a monster. You are a <color=blue>monster</color>.");
-            AssetPath = "";
+            AssetPath = HarbCratePlugin.assetPrefix+"Assets/HarbCrate/2_Worm_Jar/WrithingJar.prefab";
             SpritePath = "";
             Cooldown = 120f;
             IsLunar = true;

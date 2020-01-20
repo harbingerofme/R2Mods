@@ -13,31 +13,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deprecated", "Deprecated", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{86C61259-621C-406D-8D9F-F525EE4C1EE2}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "OSP_Endscreen", "OSP_Endscreen\OSP_Endscreen.csproj", "{88642B73-3FEB-4A4C-A59E-F58F917B3D65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSP_Endscreen", "OSP_Endscreen\OSP_Endscreen.csproj", "{88642B73-3FEB-4A4C-A59E-F58F917B3D65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarbCrate", "HarbCrate\HarbCrate.csproj", "{AEB09347-7F36-4F37-9291-928AA48CFFFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HarbCrate", "HarbCrate\HarbCrate.csproj", "{AEB09347-7F36-4F37-9291-928AA48CFFFC}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "FirstStageSpawns", "Deprecated\FirstStageSpawns\FirstStageSpawns.csproj", "{E7DA1757-B107-47F0-8321-87849DBEDB02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstStageSpawns", "Deprecated\FirstStageSpawns\FirstStageSpawns.csproj", "{E7DA1757-B107-47F0-8321-87849DBEDB02}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "GreedyLockboxes", "Deprecated\GreedyLockboxes\GreedyLockboxes.csproj", "{64E88175-849A-413D-A62F-18E2344CF558}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreedyLockboxes", "Deprecated\GreedyLockboxes\GreedyLockboxes.csproj", "{64E88175-849A-413D-A62F-18E2344CF558}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "NoForwardSaw", "Deprecated\NoForwardSaw\NoForwardSaw.csproj", "{C974E4FF-E2B6-49B5-9FFA-65F747A0F6E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoForwardSaw", "Deprecated\NoForwardSaw\NoForwardSaw.csproj", "{C974E4FF-E2B6-49B5-9FFA-65F747A0F6E0}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "NoMoreTripleQuestion", "Deprecated\NoMoreTripleQuestion\NoMoreTripleQuestion.csproj", "{321D2766-1FB1-4104-8C0C-A8954CA60F90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoMoreTripleQuestion", "Deprecated\NoMoreTripleQuestion\NoMoreTripleQuestion.csproj", "{321D2766-1FB1-4104-8C0C-A8954CA60F90}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "ShorterMedkits", "Deprecated\ShorterMedkits\ShorterMedkits.csproj", "{C47126F2-EA37-48CA-A001-2FC0F506A154}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShorterMedkits", "Deprecated\ShorterMedkits\ShorterMedkits.csproj", "{C47126F2-EA37-48CA-A001-2FC0F506A154}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "BiggerLockboxes", "Deprecated\BiggerLockboxes\BiggerLockboxes.csproj", "{F72490CB-FCEF-467C-A3BC-A343E537D148}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BiggerLockboxes", "Deprecated\BiggerLockboxes\BiggerLockboxes.csproj", "{F72490CB-FCEF-467C-A3BC-A343E537D148}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "Skillshrine", "SkillShrine\Skillshrine.csproj", "{C7B1A8E2-5A58-4292-9F58-AAFE090546E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skillshrine", "SkillShrine\Skillshrine.csproj", "{C7B1A8E2-5A58-4292-9F58-AAFE090546E3}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "emptyPlugin", "emptyPlugin\emptyPlugin.csproj", "{39523BA3-C898-43D5-8473-7DE946ACB985}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "emptyPlugin", "emptyPlugin\emptyPlugin.csproj", "{39523BA3-C898-43D5-8473-7DE946ACB985}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DumbStupidStats", "DumbStupidStats\DumbStupidStats.csproj", "{95243E3A-B841-4F6D-874B-B8D50555BDD4}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "HarbTweaks", "HarbTweaks\HarbTweaks.csproj", "{4C61C163-377B-4534-996A-BC9B523896C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HarbTweaks", "HarbTweaks\HarbTweaks.csproj", "{4C61C163-377B-4534-996A-BC9B523896C1}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "Diluvian", "Diluvian\Diluvian.csproj", "{4F68D398-C047-4E7B-AA83-62C311D86780}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diluvian", "Diluvian\Diluvian.csproj", "{4F68D398-C047-4E7B-AA83-62C311D86780}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +85,10 @@ Global
 		{39523BA3-C898-43D5-8473-7DE946ACB985}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39523BA3-C898-43D5-8473-7DE946ACB985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39523BA3-C898-43D5-8473-7DE946ACB985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95243E3A-B841-4F6D-874B-B8D50555BDD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95243E3A-B841-4F6D-874B-B8D50555BDD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95243E3A-B841-4F6D-874B-B8D50555BDD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95243E3A-B841-4F6D-874B-B8D50555BDD4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4C61C163-377B-4534-996A-BC9B523896C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4C61C163-377B-4534-996A-BC9B523896C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C61C163-377B-4534-996A-BC9B523896C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
