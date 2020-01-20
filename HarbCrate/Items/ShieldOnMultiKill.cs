@@ -1,11 +1,10 @@
-﻿using RoR2;
+using RoR2;
 using UnityEngine;
 using MonoMod.Cil;
-using R2API.Utils;
 using System;
 using Mono.Cecil.Cil;
-using R2API;
-using UserProfile = On.RoR2.UserProfile;
+using HarbCrate;
+
 
 namespace HarbCrate.Items
 {
@@ -27,7 +26,7 @@ namespace HarbCrate.Items
                 $" Gain {ShieldPerMK} additional maximum shield on multikill."
                 + $" Maximum shield tops of at an aditional {MaxSize}<style=cStack>(+{PerStack} per stack)</style>.");
             PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum shield on multikill.");
-            AssetPath = "";
+            AssetPath = HarbCratePlugin.assetPrefix +"Assets/HarbCrate/Obsidian_Shield/ShieldOnMK.prefab";
             SpritePath = "";
         }
 

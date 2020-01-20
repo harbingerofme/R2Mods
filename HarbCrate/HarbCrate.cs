@@ -15,24 +15,22 @@ using RoR2;
 namespace HarbCrate
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
-    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(R2API.ItemAPI), nameof(AssetAPI))]
+    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(R2API.ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI))]
     [BepInPlugin("com.harbingerofme.HarbCrate", "HarbCrate", "0.0.0")]
     public class HarbCratePlugin : BaseUnityPlugin
     {
-        public Dictionary<EquipmentIndex,Equip> Equipment;
-        public Dictionary<ItemIndex,Item> Items;
-
-        private const string assetID = "@HarbDiluvian";
-        internal const string assetPrefix = assetID + ":";
+        readonly Dictionary<EquipmentIndex, Equip> equipmentTable;
+        private const string assetProvider = "@HarbCrate";
+        internal const string assetPrefix = assetProvider + ":";
 
         public HarbCratePlugin()
         {
-            Equipment = new Dictionary<EquipmentIndex, Equip>();
-            Items = new Dictionary<ItemIndex, Item>();
+            equipmentTable = new Dictionary<EquipmentIndex,Equip>();
+
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("HarbCrate.harbcrate"))
             {
                 var bundle = AssetBundle.LoadFromStream(stream);
-                var provider = new R2API.AssetBundleResourcesProvider(assetID, bundle);
+                var provider = new R2API.AssetBundleResourcesProvider(assetProvider, bundle);
                 R2API.ResourcesAPI.AddProvider(provider);
             }
         }
@@ -48,15 +46,14 @@ namespace HarbCrate
                 if (flagItem)
                 {
                     Item myItem = (Item) Activator.CreateInstance(type);
-                    ItemAPI.AddCustomItem(myItem.CustomDef);
-                    Items.Add(myItem.Definition.itemIndex,myItem);
+                    ItemAPI.Add(myItem.CustomDef);
                     pickup = myItem;
                 }
                 else if (flagEquip)
                 {
                     Equip myEquip = (Equip) Activator.CreateInstance(type,null);
-                    ItemAPI.AddCustomEquipment(myEquip.CustomDef);
-                    Equipment.Add(myEquip.Definition.equipmentIndex,myEquip);
+                    EquipmentIndex index = ItemAPI.Add(myEquip.CustomDef);
+                    equipmentTable.Add(index,myEquip);
                     pickup = myEquip;
                 }
 
@@ -70,9 +67,9 @@ namespace HarbCrate
             On.RoR2.EquipmentSlot.PerformEquipmentAction += (orig, self, index) =>
             {
                 bool flag = orig(self, index);
-                if (!flag && Equipment.ContainsKey(index))
+                if (!flag && equipmentTable.ContainsKey(index))
                 {
-                    return Equipment[index].Effect(self);
+                    return equipmentTable[index].Effect(self);
                 }
                 return flag;
             };
@@ -83,7 +80,6 @@ namespace HarbCrate
         {
             if (tv.Token!=null && tv.Token != "")
             {
-                Logger.LogInfo(string.Format("{0}:{1}", tv.Token, tv.Value));
                 R2API.AssetPlus.Languages.AddToken(tv.Token, tv.Value);
             }
         }

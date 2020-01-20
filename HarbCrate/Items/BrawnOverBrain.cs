@@ -34,7 +34,7 @@ namespace HarbCrate.Items
                 Value = "A percentage of damage is taken from health before shield."
                         + " 50% debuff reduction whilst you have shield."
             };
-            AssetPath = "";
+            AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Tetrahdron/BoB.prefab";
             SpritePath = "";
             Tier = ItemTier.Tier3;
         }

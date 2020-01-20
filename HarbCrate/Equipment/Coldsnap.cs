@@ -22,7 +22,7 @@ namespace HarbCrate.Equipment
             );
             IsLunar = false;
             IsEnigmaCompat = true;
-            AssetPath = "";
+            AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/ColdSnap.prefab";
             SpritePath = "";
         }
         

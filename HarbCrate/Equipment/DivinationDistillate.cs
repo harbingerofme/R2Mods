@@ -34,10 +34,10 @@ namespace HarbCrate.Equipment
             };
             IsLunar = false;
             IsEnigmaCompat = false;
-            AssetPath = "";
+            AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/LuckJuice.prefab";
             SpritePath = "";
             CustomBuff buff = new CustomBuff(DistillateBuff.name, DistillateBuff);
-            ItemAPI.AddCustomBuff(buff);
+            ItemAPI.Add(buff);
         }
 
         public override bool Effect(EquipmentSlot slot)
