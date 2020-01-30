@@ -122,7 +122,7 @@ namespace Diluvian
         private void ReplaceString(string token, string newText)
         {
             DefaultLanguage[token] = Language.GetString(token);
-            R2API.AssetPlus.Languages.AddToken(token, newText);
+            R2API.AssetPlus.Languages.AddToken(token, newText, reload:false);
         }
 
 
@@ -151,8 +151,6 @@ namespace Diluvian
                 }
                 On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinePriceRandom;
 
-                //Complain @mister_name.
-                Debug.Log("Blame r2api for not providing Diluvian a way to mass replace text without this.");
 
                 //All of these replace strings.
                 ReplaceInteractibles();
@@ -160,6 +158,8 @@ namespace Diluvian
                 ReplaceObjectives();
                 ReplacePause();
                 ReplaceStats();
+                //Forcefully update the language.
+                R2API.AssetPlus.Languages.ReloadLanguage();
             }
         }
 
@@ -184,12 +184,12 @@ namespace Diluvian
                 }
                 On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinePriceRandom;
 
-                Debug.Log("Blame r2api for not providing Diluvian a way to mass replace text without this.");
                 //Restore vanilla text.
                 DefaultLanguage.ForEachTry((pair) =>
                 {
-                    R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value);
+                    R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value,reload:false);
                 });
+                R2API.AssetPlus.Languages.ReloadLanguage();
                 HooksApplied = false;
             }
         }
@@ -298,16 +298,16 @@ namespace Diluvian
             try
             {
                 ILCursor c = new ILCursor(il);
-                c.GotoNext(MoveType.Before,//move to right before the call to check if it's a player.
+                c.GotoNext(MoveType.After,//move to right after the call to check if it's a player.
                     x => x.MatchCallvirt<HealthComponent>("get_hasOneshotProtection")
                     );
-                c.RemoveRange(2);//remove the call and the following brfalse instruction
-                c.Emit(OpCodes.Pop);//remove unwanted variable from the stack
-                c.GotoNext(MoveType.Before,//go to right before the 0.9 from OSP
+                c.Emit(OpCodes.Pop);//remove the result from the stack
+                c.Emit(OpCodes.Ldc_I4_1);//put "true" on the stack.
+                c.GotoNext(MoveType.After,//go to right after the 0.9 from OSP
                         x => x.MatchLdcR4(0.9f)
                         );
-                c.Remove();
-                c.Emit(OpCodes.Ldc_R4, NewOSPTreshold);//Replace it with my value.
+                c.Emit(OpCodes.Pop);//Remove the 0.9
+                c.Emit(OpCodes.Ldc_R4, NewOSPTreshold);//Put my valye there instead.
             }
             catch (Exception e) //probably pointless.
             {
