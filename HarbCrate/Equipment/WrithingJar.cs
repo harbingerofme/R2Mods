@@ -28,10 +28,10 @@ namespace HarbCrate.Equipment
         private readonly SpawnCard hostileCard;
         private readonly SpawnCard friendCard;
         
-        private const float HostileDMG = 3;
+        private const float HostileDMG = 2;
         private const float HostileHP = 4.7f;
         private const float AllyDMG = 1.5f;
-        private const float AllyHP = 1;
+        private const float AllyHP = 2;
 
         public override bool Effect(EquipmentSlot equipmentSlot)
         {
