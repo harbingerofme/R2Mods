@@ -1,4 +1,4 @@
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 using MonoMod.Cil;
 using System;
@@ -58,6 +58,8 @@ namespace HarbCrate.Items
             c.Emit(OpCodes.Ldloc, shieldsLoc);
             c.EmitDelegate<Func<CharacterBody, float, float>>((self, shields) =>
             {
+                if (!self.inventory)
+                    return shields;
                 ShieldInfusion si = self.inventory.GetComponent<ShieldInfusion>();
                 if (si)
                 {
@@ -74,12 +76,24 @@ namespace HarbCrate.Items
                 return;
 
             ShieldInfusion si = inventory.GetComponent<ShieldInfusion>();
-            if (si == null)
+            if (count > 0)
             {
-                si = inventory.gameObject.AddComponent<ShieldInfusion>();
+                if (si == null)
+                {
+                    si = inventory.gameObject.AddComponent<ShieldInfusion>();
+                    si.body = inventory.GetComponentInParent<CharacterBody>();
+                }
+                si.Count = count;
+            }
+            else
+            {
+                if (si)
+                {
+                    UnityEngine.Object.Destroy(si);
+                }
             }
 
-            si.Count += count;
+            
         }
 
         public class ShieldInfusion : MonoBehaviour
@@ -96,12 +110,14 @@ namespace HarbCrate.Items
 
             private void Start()
             {
-                body.onInventoryChanged += () =>
+                if (body)
                 {
-                    Count = body.inventory.GetItemCount(((ShieldOnMultiKill) Instance).Definition.itemIndex);
-                    ShieldCharge = shieldCharge;
-                };
-                
+                    body.onInventoryChanged += () =>
+                    {
+                        Count = body.inventory.GetItemCount(((ShieldOnMultiKill)Instance).Definition.itemIndex);
+                        ShieldCharge = shieldCharge;
+                    };
+                }
             }
         }
     }
