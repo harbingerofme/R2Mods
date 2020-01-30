@@ -1,4 +1,4 @@
-﻿using R2API;
+using R2API;
 using RoR2;
 using UnityEngine;
 
@@ -16,7 +16,6 @@ namespace HarbCrate.Equipment
             PickupText = new TokenValue("HC_WORMJAR_DESC",
                 "Inside of you there's two worms. One is a friend, the other a monster. You are a <color=blue>monster</color>.");
             AssetPath = HarbCratePlugin.assetPrefix+ "Assets/HarbCrate/2_Worm_Jar/WormJar.prefab";
-            AssetPath = "";
             SpritePath = "";
             Cooldown = 120f;
             IsLunar = true;
