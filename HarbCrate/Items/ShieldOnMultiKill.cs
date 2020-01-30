@@ -1,4 +1,4 @@
-﻿using RoR2;
+using RoR2;
 using UnityEngine;
 using MonoMod.Cil;
 using System;
@@ -13,7 +13,7 @@ namespace HarbCrate.Items
     {
         
         private const float ShieldPerMK = 10f;//Scaling in percent.
-        private const int MultikillCountNeeded = 4;
+        private const int MultikillCountNeeded = 3;
         private const float MaxSize =100;//shield fraction in actual numbers.
         private const float PerStack = 100;
         
