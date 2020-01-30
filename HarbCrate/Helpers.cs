@@ -79,6 +79,7 @@ namespace HarbCrate
                         canRemove = true,
                         descriptionToken = Description.Token,
                         hidden = (Tier == (Tier) - 1),
+                        tier = Tier,
                         loreToken = Lore.Token,
                         nameToken = Name.Token,
                         itemIndex = ItemIndex.None,
