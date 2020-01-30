@@ -42,7 +42,8 @@ namespace HarbCrate.Items
         public override void Hook()
         {
             IL.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
-            DebuffStatComponent.Hooks(Definition.itemIndex);
+            DebuffStatComponent.BrawnIndex = Definition.itemIndex;
+            DebuffStatComponent.Hooks();
         }
 
         private void HealthComponent_TakeDamage(ILContext il)
@@ -90,7 +91,6 @@ namespace HarbCrate.Items
         [RequireComponent(typeof(CharacterBody))]
         public class DebuffStatComponent : MonoBehaviour
         {
-            public ItemIndex BrawnOverBrain;
             public CharacterBody cb;
 
             private bool BoB;
@@ -103,7 +103,7 @@ namespace HarbCrate.Items
 
             private void Cb_onInventoryChanged()
             {
-                BoB = cb.inventory.GetItemCount(BrawnOverBrain) > 0;
+                BoB = cb.inventory.GetItemCount(BrawnIndex) > 0;
             }
 
             public float Reduction
@@ -111,29 +111,19 @@ namespace HarbCrate.Items
                 get
                 {
                     float reductionMulti = 1;
-                    if (IsReady)
+                    if (cb && cb.inventory)
                     {
-                        if (cb && cb.inventory)
+                        if (BoB && cb.healthComponent.shield > 0)
                         {
-                            if (BoB && cb.healthComponent.shield > 0)
-                            {
-                                reductionMulti *= 0.5f;
-                            }
+                            reductionMulti *= 0.5f;
                         }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("DebuffStatReducer component not properly init!");
                     }
 
                     return reductionMulti;
                 }
             }
 
-            private bool IsReady => BrawnOverBrain != ItemIndex.None;
-
-
-            public static void Hooks(ItemIndex Brawn)
+            public static void Hooks()
             {
                 On.RoR2.CharacterBody.AddTimedBuff += CharacterBody_AddTimedBuff;
                 On.RoR2.DotController.AddDot += DotController_AddDot;
@@ -146,11 +136,12 @@ namespace HarbCrate.Items
                     if (!a)
                     {
                         a = self.gameObject.AddComponent<DebuffStatComponent>();
-                        a.BrawnOverBrain = Brawn;
                         a.cb = self;
                     }
                 };
             }
+
+            public static ItemIndex BrawnIndex;
 
             private static void SetStateOnHurt_SetFrozen(On.RoR2.SetStateOnHurt.orig_SetFrozen orig,
                 SetStateOnHurt self, float duration)
@@ -179,7 +170,10 @@ namespace HarbCrate.Items
                 float newduration = duration;
                 var component = cb.GetComponent<DebuffStatComponent>();
                 if (component)
+                {
+                    Debug.LogWarning("AAAAAAAAAAAAA");
                     newduration *= component.Reduction;
+                }
                 orig(self, attackerObject, newduration, dotIndex, damageMultiplier);
             }
 
