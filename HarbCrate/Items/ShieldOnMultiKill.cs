@@ -14,8 +14,8 @@ namespace HarbCrate.Items
         
         private const float ShieldPerMK = 10f;//Scaling in percent.
         private const int MultikillCountNeeded = 3;
-        private const float MaxSize =100;//shield fraction in actual numbers.
-        private const float PerStack = 100;
+        private const float MaxSize = 150;//shield fraction in actual numbers.
+        private const float PerStack = 150;
         
         public ShieldOnMultiKill() : base()
         {
