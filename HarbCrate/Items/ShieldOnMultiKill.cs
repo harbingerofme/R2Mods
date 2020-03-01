@@ -104,6 +104,7 @@ namespace HarbCrate.Items
         public class ShieldInfusion : MonoBehaviour
         {
             private float shieldCharge;
+            private ItemIndex itemIndex;
             [NonSerialized] public int Count;
             public CharacterBody body;
 
@@ -115,11 +116,12 @@ namespace HarbCrate.Items
 
             private void Start()
             {
+                itemIndex = ((ShieldOnMultiKill)HarbCratePlugin.AllPickups[nameof(ShieldOnMultiKill)]).Definition.itemIndex;
                 if (body)
                 {
                     body.onInventoryChanged += () =>
                     {
-                        Count = body.inventory.GetItemCount(((ShieldOnMultiKill)Instance).Definition.itemIndex);
+                        Count = body.inventory.GetItemCount(itemIndex);
                         ShieldCharge = shieldCharge;
                     };
                 }
