@@ -7,6 +7,7 @@ using R2API;
 using R2API.Utils;
 using System.Reflection;
 using RoR2;
+using System.Collections;
 
 /*
     Code By Guido "Harb". 
@@ -20,6 +21,7 @@ namespace HarbCrate
     public class HarbCratePlugin : BaseUnityPlugin
     {
         private static BepInEx.Logging.ManualLogSource logger;
+        public static Dictionary<string, Pickup> AllPickups = new Dictionary<string, Pickup>();
         readonly Dictionary<EquipmentIndex, Equip> equipmentTable;
         private const string assetProvider = "@HarbCrate";
         internal const string assetPrefix = assetProvider + ":";
@@ -63,6 +65,7 @@ namespace HarbCrate
                 {
                     pickup.AddTokens(this);
                     pickup.Hook();
+                    AllPickups.Add(type.Name, pickup);
                 }
             }
 
