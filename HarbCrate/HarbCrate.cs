@@ -16,7 +16,7 @@ using System.Collections;
 namespace HarbCrate
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
-    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(R2API.ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI))]
+    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI))]
     [BepInPlugin("com.harbingerofme.HarbCrate", "HarbCrate", "0.0.0")]
     public class HarbCratePlugin : BaseUnityPlugin
     {
