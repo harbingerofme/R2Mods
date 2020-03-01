@@ -1,4 +1,4 @@
-﻿using RoR2;
+using RoR2;
 using UnityEngine;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -37,6 +37,11 @@ namespace HarbCrate.Items
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Tetrahdron/BoB.prefab";
             SpritePath = "";
             Tier = ItemTier.Tier3;
+            Tags = new ItemTag[2]
+            {
+                ItemTag.Utility,
+                ItemTag.Healing
+            };
         }
 
         public override void Hook()

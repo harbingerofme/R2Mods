@@ -1,4 +1,4 @@
-﻿using RoR2;
+using RoR2;
 using UnityEngine;
 using MonoMod.Cil;
 using System;
@@ -28,6 +28,11 @@ namespace HarbCrate.Items
             PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum shield on multikill.");
             AssetPath = HarbCratePlugin.assetPrefix +"Assets/HarbCrate/Obsidian_Shield/ShieldOnMK.prefab";
             SpritePath = "";
+            Tags = new ItemTag[2]
+            {
+                ItemTag.Utility,
+                ItemTag.OnKillEffect
+            };
         }
 
         public override void Hook()
