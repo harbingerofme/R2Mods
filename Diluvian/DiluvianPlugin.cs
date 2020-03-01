@@ -27,7 +27,7 @@ namespace Diluvian
         public const string
             NAME = "Diluvian",
             GUID = "com.harbingerofme." + NAME,
-            VERSION = "1.0.2";
+            VERSION = "1.0.3";
 
         //Defining The difficultyDef of Diluvian.
         private readonly Color DiluvianColor = new Color(0.61f, 0.07f, 0.93f);
