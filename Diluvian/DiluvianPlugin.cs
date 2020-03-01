@@ -57,6 +57,10 @@ namespace Diluvian
         private float[] vanillaEliteMultipliers;
         //Cache the array for the combatdirector.
         private EliteDef[] CombatDirectorTierDefs;
+        //Cache the fieldinfo for bloodshrines.
+        private FieldInfo BloodShrineWaitingForRefresh;
+        private FieldInfo BloodShrinePurchaseInteraction;
+
 
         private Diluvian()
         {
@@ -89,6 +93,9 @@ namespace Diluvian
             CombatDirectorTierDefs = (EliteDef[])typeof(CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
             //Init array because we now know the size.
             vanillaEliteMultipliers = new float[CombatDirectorTierDefs.Length];
+            //Cache the BloodshrineBehaviour field.
+            BloodShrineWaitingForRefresh = typeof(ShrineBloodBehavior).GetField("waitingForRefresh", BindingFlags.Instance | BindingFlags.NonPublic);
+            BloodShrinePurchaseInteraction = typeof(ShrineBloodBehavior).GetField("purchaseInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
 
             //Acquire my index from R2API.
             DiluvianIndex = R2API.DifficultyAPI.AddDifficulty(DiluvianDef);
@@ -197,9 +204,17 @@ namespace Diluvian
 
         private void BloodShrinePriceRandom(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
         {
-            orig(self);
-            //reflect to get the purchaseinteractioncomponent. I then get a random number to cange it's price. The price is hidden by the language modification.
-            self.GetFieldValue<PurchaseInteraction>("purchaseInteraction").Networkcost = Run.instance.stageRng.RangeInt(50,100);
+            //This 'if' is essentially the same as the first line of the orig method(, save that they don't need to do reflection).
+            if ((bool)BloodShrineWaitingForRefresh.GetValue(self))
+            {
+                orig(self);
+                //reflect to get the purchaseinteractioncomponent. I then get a random number to change it's price. The price is hidden by the language modification.
+                PurchaseInteraction pi = ((PurchaseInteraction)BloodShrinePurchaseInteraction.GetValue(self));
+                if (pi)
+                {
+                    pi.Networkcost = Run.instance.stageRng.RangeInt(50, 100);
+                }
+            }
         }
 
 
