@@ -1,4 +1,4 @@
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 using MonoMod.Cil;
 using System;
@@ -33,6 +33,11 @@ namespace HarbCrate.Items
                 ItemTag.Utility,
                 ItemTag.OnKillEffect
             };
+
+            GameObject go = Resources.Load<GameObject>(AssetPath);
+            HarbCratePlugin.Log($"transform: {go.transform.rotation}");
+            go.transform.rotation = Quaternion.Euler(60, 60, 60);
+            HarbCratePlugin.Log($"transform: {go.transform.rotation}");
         }
 
         public override void Hook()
