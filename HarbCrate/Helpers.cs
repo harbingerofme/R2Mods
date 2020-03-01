@@ -65,6 +65,7 @@ namespace HarbCrate
         { }
 
         public ItemTier Tier;
+        public ItemTag[] Tags = new ItemTag[0];
 
         private ItemDef _definiton = null;
         public ItemDef Definition
@@ -80,6 +81,7 @@ namespace HarbCrate
                         descriptionToken = Description.Token,
                         hidden = (Tier == (Tier) - 1),
                         tier = Tier,
+                        tags = Tags,
                         loreToken = Lore.Token,
                         nameToken = Name.Token,
                         itemIndex = ItemIndex.None,
