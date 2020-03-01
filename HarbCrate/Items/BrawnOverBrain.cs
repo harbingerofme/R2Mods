@@ -176,7 +176,6 @@ namespace HarbCrate.Items
                 var component = cb.GetComponent<DebuffStatComponent>();
                 if (component)
                 {
-                    Debug.LogWarning("AAAAAAAAAAAAA");
                     newduration *= component.Reduction;
                 }
                 orig(self, attackerObject, newduration, dotIndex, damageMultiplier);
