@@ -38,9 +38,6 @@
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\libs\MMHOOK_Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="MonoMod.Utils">
-      <HintPath>..\libs\MonoMod.Utils.dll</HintPath>
-    </Reference>
     <Reference Include="R2API">
       <HintPath>..\libs\R2API.dll</HintPath>
     </Reference>
@@ -48,7 +45,7 @@
       <HintPath>..\libs\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\..\Github2\libs\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>..\libs\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\libs\UnityEngine.CoreModule.dll</HintPath>
