@@ -23,7 +23,7 @@ namespace HarbCrate.Equipment
             IsLunar = false;
             IsEnigmaCompat = true;
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/ColdSnap.prefab";
-            SpritePath = "";
+            SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/coldsnap.png";
         }
         
         public override bool Effect(EquipmentSlot slot)

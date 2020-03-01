@@ -27,7 +27,7 @@ namespace HarbCrate.Items
                 + $" Maximum shield tops of at an aditional {MaxSize}<style=cStack>(+{PerStack} per stack)</style>.");
             PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum shield on multikill.");
             AssetPath = HarbCratePlugin.assetPrefix +"Assets/HarbCrate/Obsidian_Shield/GhorsWay.prefab";
-            SpritePath = "";
+            SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/Bouche.png";
             Tags = new ItemTag[2]
             {
                 ItemTag.Utility,

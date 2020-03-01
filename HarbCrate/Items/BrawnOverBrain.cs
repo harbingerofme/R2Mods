@@ -35,7 +35,7 @@ namespace HarbCrate.Items
                         + " 50% debuff reduction whilst you have shield."
             };
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Tetrahdron/BoB.prefab";
-            SpritePath = "";
+            SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Tetrahdron/bob.png";
             Tier = ItemTier.Tier3;
             Tags = new ItemTag[2]
             {

@@ -35,7 +35,7 @@ namespace HarbCrate.Equipment
             IsLunar = false;
             IsEnigmaCompat = false;
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/LuckJuice.prefab";
-            SpritePath = "";
+            SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/luckjuice.png";
             CustomBuff buff = new CustomBuff(DistillateBuff.name, DistillateBuff);
             ItemAPI.Add(buff);
         }
