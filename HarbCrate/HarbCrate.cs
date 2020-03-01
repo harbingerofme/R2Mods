@@ -19,12 +19,14 @@ namespace HarbCrate
     [BepInPlugin("com.harbingerofme.HarbCrate", "HarbCrate", "0.0.0")]
     public class HarbCratePlugin : BaseUnityPlugin
     {
+        private static BepInEx.Logging.ManualLogSource logger;
         readonly Dictionary<EquipmentIndex, Equip> equipmentTable;
         private const string assetProvider = "@HarbCrate";
         internal const string assetPrefix = assetProvider + ":";
 
         public HarbCratePlugin()
         {
+            logger = Logger;
             equipmentTable = new Dictionary<EquipmentIndex,Equip>();
 
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("HarbCrate.harbcrate"))
@@ -84,5 +86,12 @@ namespace HarbCrate
             }
         }
 
+        internal static void Log(object input)
+        {
+            if (logger != null)
+            {
+                logger.LogMessage(input);
+            }
+        }
     }
 }
