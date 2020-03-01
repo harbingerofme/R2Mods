@@ -26,16 +26,7 @@ namespace HarbCrate
     public class ItemAttribute : System.Attribute
     { }
     
-    public abstract class Singleton
-    {
-        public static Singleton Instance;
-        public Singleton()
-        {
-            Instance = this;
-        }
-        
-    }
-    public abstract class Pickup : Singleton
+    public abstract class Pickup
     {
         public Pickup() : base()
         {
