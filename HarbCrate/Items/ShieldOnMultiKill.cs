@@ -20,13 +20,13 @@ namespace HarbCrate.Items
         public ShieldOnMultiKill() : base()
         {
             Tier = ItemTier.Tier2;
-            Name = new TokenValue("HC_MAXSHIELDONMULTIKILL","Perfect Timepiece");
+            Name = new TokenValue("HC_MAXSHIELDONMULTIKILL", "Obsidian Bouche");
             Description = new TokenValue(
                 "HC_MAXSHIELDONMULTIKILL_DESC",
                 $" Gain {ShieldPerMK} additional maximum shield on multikill."
                 + $" Maximum shield tops of at an aditional {MaxSize}<style=cStack>(+{PerStack} per stack)</style>.");
             PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum shield on multikill.");
-            AssetPath = HarbCratePlugin.assetPrefix +"Assets/HarbCrate/Obsidian_Shield/ShieldOnMK.prefab";
+            AssetPath = HarbCratePlugin.assetPrefix +"Assets/HarbCrate/Obsidian_Shield/Obsidian Shield.prefab";
             SpritePath = "";
             Tags = new ItemTag[2]
             {
