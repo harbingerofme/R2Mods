@@ -15,9 +15,14 @@ namespace HarbCrate
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
     [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI), nameof(CommandHelper))]
-    [BepInPlugin("com.harbingerofme.HarbCrate", "HarbCrate", "0.0.0")]
+    [BepInPlugin(GUID, Name, Version)]
     public class HarbCratePlugin : BaseUnityPlugin
     {
+        public const string Name = "HarbCrate";
+        public const string GUID = "com.harbingerofme." + Name;
+        public const string Version = "0.0.0";
+
+
         private static BepInEx.Logging.ManualLogSource logger;
         public static Dictionary<string, Pickup> AllPickups = new Dictionary<string, Pickup>();
         readonly Dictionary<EquipmentIndex, Equip> equipmentTable;
