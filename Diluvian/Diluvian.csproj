@@ -54,10 +54,6 @@
       <HintPath>..\libs\Mono.Cecil.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="Mono.Security">
-      <HintPath>..\libs\Mono.Security.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
     <Reference Include="MonoMod.Utils">
       <HintPath>..\libs\MonoMod.Utils.dll</HintPath>
       <Private>false</Private>
