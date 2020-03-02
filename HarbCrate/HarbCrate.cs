@@ -14,7 +14,7 @@ using UnityEngine;
 namespace HarbCrate
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
-    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI))]
+    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI), nameof(CommandHelper))]
     [BepInPlugin("com.harbingerofme.HarbCrate", "HarbCrate", "0.0.0")]
     public class HarbCratePlugin : BaseUnityPlugin
     {
@@ -76,12 +76,14 @@ namespace HarbCrate
                 }
                 return flag;
             };
+
+            CommandHelper.AddToConsoleWhenReady();
         }
 
 
         public void AddLanguage(TokenValue tv)
         {
-            if (tv.Token!=null && tv.Token != "")
+            if (tv.Token != null && tv.Token != "")
             {
                 R2API.AssetPlus.Languages.AddToken(tv.Token, tv.Value);
             }
