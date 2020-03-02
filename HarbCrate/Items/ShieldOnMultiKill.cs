@@ -4,7 +4,7 @@ using MonoMod.Cil;
 using System;
 using Mono.Cecil.Cil;
 using HarbCrate;
-
+using System.Reflection;
 
 namespace HarbCrate.Items
 {
@@ -16,6 +16,8 @@ namespace HarbCrate.Items
         private const int MultikillCountNeeded = 3;
         private const float MaxSize = 150;//shield fraction in actual numbers.
         private const float PerStack = 150;
+
+        private readonly FieldInfo StatsDirty;
         
         public ShieldOnMultiKill() : base()
         {
@@ -33,6 +35,8 @@ namespace HarbCrate.Items
                 ItemTag.Utility,
                 ItemTag.OnKillEffect
             };
+
+            StatsDirty = typeof(CharacterBody).GetField("statsDirty", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
         public override void Hook()
@@ -48,6 +52,7 @@ namespace HarbCrate.Items
             if (self.inventory && self.multiKillCount % MultikillCountNeeded == 0 && self.inventory.GetItemCount(Definition.itemIndex) > 0 )
             {
                 self.inventory.GetComponent<ShieldInfusion>().ShieldCharge += ShieldPerMK;
+                StatsDirty.SetValue(self, true);
             }
         }
 
