@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 using BepInEx;
 using R2API;
 using R2API.Utils;
-using System.Reflection;
 using RoR2;
-using System.Collections;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
 
 /*
     Code By Guido "Harb". 
@@ -29,7 +27,7 @@ namespace HarbCrate
         public HarbCratePlugin()
         {
             logger = Logger;
-            equipmentTable = new Dictionary<EquipmentIndex,Equip>();
+            equipmentTable = new Dictionary<EquipmentIndex, Equip>();
 
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("HarbCrate.harbcrate"))
             {
@@ -49,15 +47,15 @@ namespace HarbCrate
                 Pickup pickup = null;
                 if (flagItem)
                 {
-                    Item myItem = (Item) Activator.CreateInstance(type);
+                    Item myItem = (Item)Activator.CreateInstance(type);
                     ItemAPI.Add(myItem.CustomDef);
                     pickup = myItem;
                 }
                 else if (flagEquip)
                 {
-                    Equip myEquip = (Equip) Activator.CreateInstance(type,null);
+                    Equip myEquip = (Equip)Activator.CreateInstance(type, null);
                     EquipmentIndex index = ItemAPI.Add(myEquip.CustomDef);
-                    equipmentTable.Add(index,myEquip);
+                    equipmentTable.Add(index, myEquip);
                     pickup = myEquip;
                 }
 

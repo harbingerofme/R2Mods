@@ -42,7 +42,7 @@ namespace HarbCrate.Items
             {
                 self.inventory.RemoveItem(Definition.itemIndex, 3);
                 PickupIndex loot;
-                if(Util.CheckRoll(5, self.master))
+                if (Util.CheckRoll(5, self.master))
                 {
                     loot = Run.instance.treasureRng.NextElementUniform(Run.instance.availableTier3DropList);
                 }

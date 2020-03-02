@@ -106,15 +106,15 @@ namespace Diluvian
             description = string.Join("\n",
                 description,
                 $">Difficulty Scaling: +{DiluvianDef.scalingValue * 50 - 100}%",
-                $">Player Health Regeneration: -{(int) (HealthRegenMultiplier*100)}%",
+                $">Player Health Regeneration: -{(int)(HealthRegenMultiplier * 100)}%",
                 ">Player luck: Reduced in some places.",
-                $">Monster Health Regeneration: +{MonsterRegen*100}% of MaxHP per second (out of danger)",
+                $">Monster Health Regeneration: +{MonsterRegen * 100}% of MaxHP per second (out of danger)",
                 ">Oneshot Protection: Also applies to monsters",
-                $">Oneshot Protection: Protects only {100-100*NewOSPTreshold}%",
+                $">Oneshot Protection: Protects only {100 - 100 * NewOSPTreshold}%",
                 ">Teleporter: Enemies don't stop after charge completion",
                 $">Elites: {(1 - EliteModifier) * 100}% cheaper.",
                 ">Shrine of Blood: Cost hidden and random."
-                
+
                 );
             description += "</style>";
             R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DILUVIAN_DESCRIPTION", description);
@@ -129,7 +129,7 @@ namespace Diluvian
         private void ReplaceString(string token, string newText)
         {
             DefaultLanguage[token] = Language.GetString(token);
-            R2API.AssetPlus.Languages.AddToken(token, newText, reload:false);
+            R2API.AssetPlus.Languages.AddToken(token, newText, reload: false);
         }
 
 
@@ -194,7 +194,7 @@ namespace Diluvian
                 //Restore vanilla text.
                 DefaultLanguage.ForEachTry((pair) =>
                 {
-                    R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value,reload:false);
+                    R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value, reload: false);
                 });
                 R2API.AssetPlus.Languages.ReloadLanguage();
                 HooksApplied = false;
@@ -296,14 +296,14 @@ namespace Diluvian
         {
             ILCursor c = new ILCursor(il);
             c.GotoNext(
-                x => x.MatchLdcI4((int) ItemIndex.Bear),
+                x => x.MatchLdcI4((int)ItemIndex.Bear),
                 x => x.MatchCallvirt<Inventory>("GetItemCount")
                 );
             c.GotoNext(MoveType.Before,
                 x => x.MatchLdcR4(0),//This is the luck value used in CheckRoll for toughertimes.
                 x => x.MatchLdnull(),
                 x => x.MatchCall("RoR2.Util", "CheckRoll")
-                ) ;
+                );
             c.Remove();
             c.Emit(OpCodes.Ldc_R4, -1f);//We replace it with -1. Because no mercy.
         }

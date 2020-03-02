@@ -1,5 +1,4 @@
-﻿using System;
-using R2API;
+﻿using R2API;
 using RoR2;
 using UnityEngine;
 
@@ -9,19 +8,19 @@ namespace HarbCrate.Equipment
     [Equipment]
     internal sealed class DivinationDistillate : Equip
     {
-        private const int   DistillateLuckIncrease = 2;
+        private const int DistillateLuckIncrease = 2;
         private const float DistillateDuration = 7f;
         private const float Interval = 0.2f;
         private const float TotalHealthFraction = 0.2f;
         private const float TotalShieldFraction = 0.5f;
-        
+
         private static BuffDef DistillateBuff;
 
         public DivinationDistillate() : base()
         {
             Cooldown = 30;
-            Name = new TokenValue("HC_LUCKJUICE","Divination Distillate");
-            PickupText = new TokenValue("HC_LUCKJUICE_PICKUP","Heal both health and shield for a short period of time. Luk increased while active.");
+            Name = new TokenValue("HC_LUCKJUICE", "Divination Distillate");
+            PickupText = new TokenValue("HC_LUCKJUICE_PICKUP", "Heal both health and shield for a short period of time. Luk increased while active.");
             Description = new TokenValue("HC_LUCKJUICE_DESC",
                 $"Heal both health and shields for {DistillateDuration} seconds. Effects stops at full health and full shields." +
                 $" While under effect, your luck is greatly increased.");
@@ -64,7 +63,7 @@ namespace HarbCrate.Equipment
             private float intervalFraction;
             public HealthComponent hc;
             public CharacterBody cb;
-            
+
             private void Awake()
             {
                 this.intervalFraction = Interval / DistillateDuration;

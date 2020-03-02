@@ -1,8 +1,6 @@
-using System.Linq;
-using System.Reflection;
+using JetBrains.Annotations;
 using R2API;
 using RoR2;
-using JetBrains.Annotations;
 
 
 namespace HarbCrate
@@ -17,15 +15,15 @@ namespace HarbCrate
         public string Token;
         public string Value;
     }
-    
+
     [MeansImplicitUse]
     public class EquipmentAttribute : System.Attribute
     { }
-    
+
     [MeansImplicitUse]
     public class ItemAttribute : System.Attribute
     { }
-    
+
     public abstract class Pickup
     {
         public Pickup() : base()
@@ -93,18 +91,18 @@ namespace HarbCrate
             {
                 if (customDef == null)
                 {
-                    customDef = new CustomItem(Definition,DisplayRules);
+                    customDef = new CustomItem(Definition, DisplayRules);
                 }
                 return customDef;
             }
         }
     }
 
-    public  abstract  class Equip:  Pickup
+    public abstract class Equip : Pickup
     {
         public Equip() : base()
         { }
-        
+
         public float Cooldown;
         public bool IsLunar;
         public bool IsEnigmaCompat;
@@ -118,13 +116,13 @@ namespace HarbCrate
             {
                 if (customDef == null)
                 {
-                    customDef = new CustomEquipment(Definition,DisplayRules);
+                    customDef = new CustomEquipment(Definition, DisplayRules);
                 }
                 return customDef;
             }
         }
-        
-        
+
+
         private EquipmentDef definition;
         public EquipmentDef Definition
         {
@@ -143,7 +141,7 @@ namespace HarbCrate
                         pickupToken = PickupText.Token,
                         cooldown = Cooldown,
                         isLunar = IsLunar,
-                        enigmaCompatible= IsEnigmaCompat,
+                        enigmaCompatible = IsEnigmaCompat,
                         unlockableName = ""
                     };
                 }

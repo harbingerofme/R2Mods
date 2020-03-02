@@ -1,5 +1,4 @@
-﻿using R2API;
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 
 namespace HarbCrate.Equipment
@@ -15,19 +14,19 @@ namespace HarbCrate.Equipment
                 "Summons a <style=cHealing>friendly</style> Magma Worm and a <style=cDeath>HOSTILE</cstyle> Overloading Magma Worm.");
             PickupText = new TokenValue("HC_WORMJAR_DESC",
                 "Inside of you there's two worms. One is a friend, the other a monster. You are a <color=blue>monster</color>.");
-            AssetPath = HarbCratePlugin.assetPrefix+ "Assets/HarbCrate/2_Worm_Jar/WormJar.prefab";
+            AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/2_Worm_Jar/WormJar.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/2_Worm_Jar/worm.png";
             Cooldown = 120f;
             IsLunar = true;
             IsEnigmaCompat = true;
-            
+
             hostileCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscElectricWorm");
-            friendCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscMagmaWorm"); 
+            friendCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscMagmaWorm");
         }
 
         private readonly SpawnCard hostileCard;
         private readonly SpawnCard friendCard;
-        
+
         private const float HostileDMG = 2;
         private const float HostileHP = 4.7f;
         private const float AllyDMG = 1.5f;
@@ -74,7 +73,7 @@ namespace HarbCrate.Equipment
                 {
                     cm.inventory.GiveItem(ItemIndex.BoostDamage, GetItemCountFromMultiplier(AllyDMG));
                     cm.inventory.GiveItem(ItemIndex.BoostHp, GetItemCountFromMultiplier((AllyHP)));
-                }   
+                }
             }
             if (spawn || spawn2)
                 return true;

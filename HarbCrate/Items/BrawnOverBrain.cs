@@ -1,12 +1,9 @@
-﻿using RoR2;
-using UnityEngine;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using System;
-using JetBrains.Annotations;
-using MonoMod.RuntimeDetour;
-using R2API;
 using R2API.Utils;
+using RoR2;
+using System;
+using UnityEngine;
 
 namespace HarbCrate.Items
 {

@@ -1,5 +1,4 @@
-﻿using R2API;
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 
 namespace HarbCrate.Equipment
@@ -11,11 +10,11 @@ namespace HarbCrate.Equipment
         private const float FreezeDuration = 3;
 
 
-        public ColdSnap():base()
+        public ColdSnap() : base()
         {
             Cooldown = 64;
-            Name = new TokenValue("HC_COLDSNAP","Coldsnap");
-            PickupText = new TokenValue("HC_COLDSNAP_PICKUP","Freeze nearby enemies.");
+            Name = new TokenValue("HC_COLDSNAP", "Coldsnap");
+            PickupText = new TokenValue("HC_COLDSNAP_PICKUP", "Freeze nearby enemies.");
             Description = new TokenValue("HC_COLDSNAP_DESC",
                 $"Freeze nearby enemies for {FreezeDuration} seconds."
                 + " Frozen enemies can be executed."
@@ -25,7 +24,7 @@ namespace HarbCrate.Equipment
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/ColdSnap.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/coldsnap.png";
         }
-        
+
         public override bool Effect(EquipmentSlot slot)
         {
             var ownerBody = slot.GetComponent<CharacterBody>();
