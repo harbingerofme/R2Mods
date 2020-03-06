@@ -85,6 +85,13 @@ namespace HarbCrate
             CommandHelper.AddToConsoleWhenReady();
         }
 
+        public static event EventHandler Started;
+
+        private void Start()
+        {
+            Started.Invoke(this, null);
+        }
+
 
         public void AddLanguage(TokenValue tv)
         {
