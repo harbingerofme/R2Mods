@@ -1,24 +1,26 @@
-﻿using RoR2;
-using UnityEngine;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using RoR2;
 using System;
-using Mono.Cecil.Cil;
-using HarbCrate;
+using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace HarbCrate.Items
 {
     [Item]
     internal sealed class ShieldOnMultiKill : Item
     {
-        
-        private const float ShieldPerMK = 10f;//Scaling in percent.
+
+        public const float ShieldPerMK = 10f;
         private const int MultikillCountNeeded = 3;
-        private const float MaxSize = 150;//shield fraction in actual numbers.
-        private const float PerStack = 150;
+        private const int MultKillsNeededForMaxValue = 15;
+        private const int PerStack = 15;
 
         private readonly FieldInfo StatsDirty;
-        
+        private ItemIndex helperIndex;
+
         public ShieldOnMultiKill() : base()
         {
             Tier = ItemTier.Tier2;
@@ -26,9 +28,9 @@ namespace HarbCrate.Items
             Description = new TokenValue(
                 "HC_MAXSHIELDONMULTIKILL_DESC",
                 $" Gain {ShieldPerMK} additional maximum shield on multikill."
-                + $" Maximum shield tops of at an aditional {MaxSize}<style=cStack>(+{PerStack} per stack)</style>.");
+                + $" Maximum shield tops of at an aditional {MultKillsNeededForMaxValue*ShieldPerMK}<style=cStack>(+{PerStack* ShieldPerMK} per stack)</style>.");
             PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum shield on multikill.");
-            AssetPath = HarbCratePlugin.assetPrefix +"Assets/HarbCrate/Obsidian_Shield/GhorsWay.prefab";
+            AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/GhorsWay.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/Bouche.png";
             Tags = new ItemTag[2]
             {
@@ -36,87 +38,99 @@ namespace HarbCrate.Items
                 ItemTag.OnKillEffect
             };
 
+            DisplayRules = new ItemDisplayRule[1]
+            {
+                new ItemDisplayRule()
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab =  Resources.Load<GameObject>(AssetPath),
+                    childName = "HandR",
+                    localPos = new Vector3(-0.4f, 1.47f, -0.03f),
+                    localAngles = new Vector3(3.1f, 265, -3.7f),
+                    localScale = new Vector3(1,1,1)
+                }
+            };
             StatsDirty = typeof(CharacterBody).GetField("statsDirty", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            HarbCratePlugin.Started += HarbCratePlugin_Started;
+        }
+
+        private void HarbCratePlugin_Started(object sender, EventArgs e)
+        {
+            helperIndex = ((Item)HarbCratePlugin.AllPickups[nameof(ShieldInfusionHelper)]).Definition.itemIndex;
         }
 
         public override void Hook()
         {
-            IL.RoR2.CharacterBody.RecalculateStats += ModifyRecalcStats;
             Inventory.onServerItemGiven += UpdateShieldInfusion;
+            On.RoR2.Inventory.ResetItem += Inventory_ResetItem;
             On.RoR2.CharacterBody.AddMultiKill += CharacterBodyOnAddMultiKill;
+        }
+
+        private void Inventory_ResetItem(On.RoR2.Inventory.orig_ResetItem orig, Inventory self, ItemIndex itemIndex)
+        {
+            if(itemIndex == Definition.itemIndex)
+            {
+                ShieldInfusion si = self.GetComponent<ShieldInfusion>();
+                if (si != null)
+                {
+                    si.Count = 0;
+                    si.VerifyIntegrity();
+                    ResetHelperCount(self, si);
+                }
+            }
+        }
+
+        private void ResetHelperCount(Inventory inventory, ShieldInfusion infusion)
+        {
+            inventory.ResetItem(helperIndex);
+            inventory.GiveItem(helperIndex,infusion.MultiKills);
         }
 
         private void CharacterBodyOnAddMultiKill(On.RoR2.CharacterBody.orig_AddMultiKill orig, CharacterBody self, int kills)
         {
             orig(self, kills);
-            if (self.inventory && self.multiKillCount % MultikillCountNeeded == 0 && self.inventory.GetItemCount(Definition.itemIndex) > 0 )
+            if (self.inventory && self.multiKillCount % MultikillCountNeeded == 0 && self.inventory.GetItemCount(Definition.itemIndex) > 0)
             {
-                self.inventory.GetComponent<ShieldInfusion>().ShieldCharge += ShieldPerMK;
+                var SI = self.inventory.GetComponent<ShieldInfusion>();
+                SI.MultiKills+=1;
+                ResetHelperCount(self.inventory, SI);
                 StatsDirty.SetValue(self, true);
             }
         }
 
-        private void ModifyRecalcStats(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            int shieldsLoc = 33;
-            c.GotoNext(
-                MoveType.Before,
-                x => x.MatchLdloc(out shieldsLoc),
-                x => x.MatchCallvirt<CharacterBody>("set_maxShield")
-            );
-            c.Emit(OpCodes.Ldloc, shieldsLoc);
-            c.EmitDelegate<Func<CharacterBody, float, float>>((self, shields) =>
-            {
-                if (!self.inventory)
-                    return shields;
-                ShieldInfusion si = self.inventory.GetComponent<ShieldInfusion>();
-                if (si)
-                {
-                    shields += si.ShieldCharge;
-                }
-                return shields;
-            });
-            c.Emit(OpCodes.Stloc, shieldsLoc);
-            c.Emit(OpCodes.Ldarg_0);
-        }
-        private void UpdateShieldInfusion(Inventory inventory,ItemIndex index,int count)
+        private void UpdateShieldInfusion(Inventory inventory, ItemIndex index, int count)
         {
             if (index != Definition.itemIndex)
                 return;
 
             ShieldInfusion si = inventory.GetComponent<ShieldInfusion>();
-            if (count > 0)
+            if (si == null)
             {
-                if (si == null)
-                {
-                    si = inventory.gameObject.AddComponent<ShieldInfusion>();
-                    si.body = inventory.GetComponentInParent<CharacterBody>();
-                }
-                si.Count = count;
+                si = inventory.gameObject.AddComponent<ShieldInfusion>();
+                si.body = inventory.GetComponentInParent<CharacterBody>();
             }
-            else
-            {
-                if (si)
-                {
-                    UnityEngine.Object.Destroy(si);
-                }
-            }
-
-            
+            si.Count = count;
+            si.VerifyIntegrity();
+            ResetHelperCount(inventory, si);
         }
 
         public class ShieldInfusion : MonoBehaviour
         {
-            private float shieldCharge;
+            private int multiKills;
             private ItemIndex itemIndex;
-            [NonSerialized] public int Count;
+            public int Count;
             public CharacterBody body;
 
-            public float ShieldCharge
+            public int MultiKills
             {
-                get => shieldCharge;
-                set => shieldCharge = Math.Min(value, (MaxSize * Math.Max(1,Count) + (Count-1)*PerStack));
+                get => multiKills;
+                set => multiKills = Math.Min(value, (MultKillsNeededForMaxValue * Math.Max(1, Count) + (Count - 1) * PerStack));
+            }
+
+            public void VerifyIntegrity()
+            {
+                MultiKills = MultiKills;
             }
 
             private void Start()
@@ -127,10 +141,11 @@ namespace HarbCrate.Items
                     body.onInventoryChanged += () =>
                     {
                         Count = body.inventory.GetItemCount(itemIndex);
-                        ShieldCharge = shieldCharge;
                     };
                 }
             }
+
+
         }
     }
 
