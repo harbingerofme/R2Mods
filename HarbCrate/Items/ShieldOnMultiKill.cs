@@ -1,11 +1,8 @@
-﻿using Mono.Cecil.Cil;
-using MonoMod.Cil;
+﻿using R2API;
 using RoR2;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace HarbCrate.Items
 {
@@ -38,21 +35,34 @@ namespace HarbCrate.Items
                 ItemTag.OnKillEffect
             };
 
-            DisplayRules = new ItemDisplayRule[1]
-            {
-                new ItemDisplayRule()
-                {
-                    ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    followerPrefab =  Resources.Load<GameObject>(AssetPath),
-                    childName = "HandR",
-                    localPos = new Vector3(-0.4f, 1.47f, -0.03f),
-                    localAngles = new Vector3(3.1f, 265, -3.7f),
-                    localScale = new Vector3(1,1,1)
-                }
-            };
+            SetupDisplayRules();
             StatsDirty = typeof(CharacterBody).GetField("statsDirty", BindingFlags.NonPublic | BindingFlags.Instance);
 
             HarbCratePlugin.Started += HarbCratePlugin_Started;
+        }
+
+        private void SetupDisplayRules()
+        {
+            DisplayRules = new ItemDisplayRuleDict(
+                new ItemDisplayRule()
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Resources.Load<GameObject>(AssetPath),
+                    childName = "HandR",
+                    localPos = new Vector3(0f, 0f, 0.2f),
+                    localAngles = new Vector3(210, 0, 0f),
+                    localScale = new Vector3(25, 25, 25)
+                }
+            );
+            DisplayRules.Add("mdlHuntress", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Resources.Load<GameObject>(AssetPath),
+                childName = "Chest",
+                localPos = new Vector3(0f, 0f, 0f),
+                localAngles = new Vector3(330, 0, 0f),
+                localScale = new Vector3(25, 25, 25)
+            });
         }
 
         private void HarbCratePlugin_Started(object sender, EventArgs e)

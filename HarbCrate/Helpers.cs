@@ -35,7 +35,7 @@ namespace HarbCrate
         public TokenValue Lore;
         public string AssetPath;
         public string SpritePath;
-        public ItemDisplayRule[] DisplayRules = null;
+        public ItemDisplayRuleDict DisplayRules = null;
 
         public abstract void Hook();
 
