@@ -63,7 +63,7 @@ namespace HarbCrate.Items
                 localAngles = new Vector3(330, 0, 180f),
                 localScale = new Vector3(25, 25, 25)
             });
-            DisplayRules["mdlBandit"] = DisplayRules["mdlHuntress"];
+            
             DisplayRules.Add("mdlMerc", new ItemDisplayRule()
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
@@ -137,7 +137,24 @@ namespace HarbCrate.Items
                 localAngles = new Vector3(0, 0, 0),
                 localScale = new Vector3(620, 620, 620)
             });
-
+            DisplayRules.Add("mdlHAND", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "UpperArmL",
+                localPos = new Vector3(-0.97f, 0.53f, 0.37f),
+                localAngles = new Vector3(49f, 92f, 0),
+                localScale = new Vector3(135, 135, 135)//Guess all robots are tiny?
+            });
+            DisplayRules.Add("mldBandit", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "UpperArmR",
+                localPos = new Vector3(-1f, 2.4f, 1.6f),
+                localAngles = new Vector3(0f, 0f, 0),
+                localScale = new Vector3(25, 25, 25)
+            });
         }
 
         private void HarbCratePlugin_Started(object sender, EventArgs e)
