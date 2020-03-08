@@ -37,17 +37,17 @@ namespace HarbCrate.Items
 
             SetupDisplayRules();
             StatsDirty = typeof(CharacterBody).GetField("statsDirty", BindingFlags.NonPublic | BindingFlags.Instance);
-
             HarbCratePlugin.Started += HarbCratePlugin_Started;
         }
 
         private void SetupDisplayRules()
         {
+            var Prefab = Resources.Load<GameObject>(AssetPath);
             DisplayRules = new ItemDisplayRuleDict(
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    followerPrefab = Resources.Load<GameObject>(AssetPath),
+                    followerPrefab = Prefab,
                     childName = "HandR",
                     localPos = new Vector3(0f, 0f, 0.2f),
                     localAngles = new Vector3(210, 0, 0f),
@@ -57,12 +57,78 @@ namespace HarbCrate.Items
             DisplayRules.Add("mdlHuntress", new ItemDisplayRule()
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefab = Resources.Load<GameObject>(AssetPath),
+                followerPrefab = Prefab,
                 childName = "Chest",
-                localPos = new Vector3(0f, 0f, 0f),
-                localAngles = new Vector3(330, 0, 0f),
+                localPos = new Vector3(0f, 0f, -0.3f),
+                localAngles = new Vector3(330, 0, 180f),
                 localScale = new Vector3(25, 25, 25)
             });
+            DisplayRules["mdlBandit"] = DisplayRules["mdlHuntress"];
+            DisplayRules.Add("mdlMerc", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "HandR",
+                localPos = new Vector3(0f, 0f, 0.25f),
+                localAngles = new Vector3(210, 0, 0f),
+                localScale = new Vector3(25, 25, 25)
+            });
+            DisplayRules.Add("mdlToolbot", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "LowerArmR",
+                localPos = new Vector3(-1f, 2.4f, 1.6f),
+                localAngles = new Vector3(8f, 180f, 67),
+                localScale = new Vector3(200, 200, 200)//wtf MULT
+            });
+            DisplayRules.Add("mdlTreebot", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "HandL",
+                localPos = new Vector3(-0.48f, 1.31f, 0.55f),
+                localAngles = new Vector3(338.5f, 228.5f, 280),
+                localScale = new Vector3(50, 50, 50)
+            });
+            DisplayRules.Add("mdlLoader", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "MechLowerArmL",
+                localPos = new Vector3(0.07f, 0.31f, -0.25f),
+                localAngles = new Vector3(23.14f, 0, 0),
+                localScale = new Vector3(25, 25, 25)
+            });
+            DisplayRules.Add("mdlMage", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "LowerArmR",
+                localPos = new Vector3(-0.14f, 0.2f, 0.2f),
+                localAngles = new Vector3(6, 160, 92),
+                localScale = new Vector3(25, 25, 25)
+            });
+            DisplayRules.Add("mdlCroco", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "LowerArmR",
+                localPos = new Vector3(2.5f, -0.59f, 1.67f),
+                localAngles = new Vector3(0, 255, 0),
+                localScale = new Vector3(200, 200, 200)//again, Acrid, wtf
+            });
+            DisplayRules.Add("mdlEngiTurret", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "LegBar3",
+                localPos = new Vector3(0f, 0.18f, 0.6f),
+                localAngles = new Vector3(30, 180, 0),
+                localScale = new Vector3(75, 75, 75)
+            });
+            DisplayRules["mdlEngiWalkerTurret"] = DisplayRules["mdlEngiTurret"];//The bases are the same.... hopefully?
+
         }
 
         private void HarbCratePlugin_Started(object sender, EventArgs e)
