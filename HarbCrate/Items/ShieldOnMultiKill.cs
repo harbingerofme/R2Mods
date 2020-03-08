@@ -128,6 +128,15 @@ namespace HarbCrate.Items
                 localScale = new Vector3(75, 75, 75)
             });
             DisplayRules["mdlEngiWalkerTurret"] = DisplayRules["mdlEngiTurret"];//The bases are the same.... hopefully?
+            DisplayRules.Add("mdlScav", new ItemDisplayRule()
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = Prefab,
+                childName = "Head",
+                localPos = new Vector3(0, -10, -11),
+                localAngles = new Vector3(0, 0, 0),
+                localScale = new Vector3(620, 620, 620)
+            });
 
         }
 
