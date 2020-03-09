@@ -25,8 +25,12 @@ namespace HarbCrate.Items
                 Value = "Useless. But one man's trash..."
             };
             AssetPath = "";
-            SpritePath = @"\Assets\Resources\textures\itemicons\bg\texRuleMapIsRandom.png";
+            SpritePath = @"Assets\Resources\textures\itemicons\bg\texRuleMapIsRandom.png";
             Tier = ItemTier.Tier1;
+            Tags = new ItemTag[]
+            {
+                ItemTag.AIBlacklist
+            };
         }
 
         public override void Hook()
