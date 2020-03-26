@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Diluvian</AssemblyName>
     <RootNamespace>Diluvian</RootNamespace>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
