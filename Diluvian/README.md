@@ -30,6 +30,7 @@ If all players have the mod, it works perfectly. Host needs the mod for most cha
 
 ## Changelog ##
 
+* **1.0.3** Added some intermod compatibility. No balance changes, I'm quite happy where it is now.
 * **1.0.2**: `   ` -> `Player Luck: Reduced in some places.`. *Get off your high horse, lucky boy.*
 * **1.0.2**: `Player  Health Regeneration: -50%` -> `Player  Health Regeneration: -60%` . *Was worried regen changes would screw with mine. They don't, but make it a bit more easier. We can't have that.*
 * **1.0.2**: `Shrine of Blood: Always 99%` -> `Shrine of Blood: Cost hidden`. *The blood shrine cost was always intended to be a flavor thing. But you know what's more fun? Not knowing how much life you're going to pay. *
