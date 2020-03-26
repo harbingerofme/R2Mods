@@ -5,6 +5,7 @@
 
 # Prevent from bloating with dlls
 libs/*.dll
+libs/*.xml
 
 # User-specific files
 *.rsuser
