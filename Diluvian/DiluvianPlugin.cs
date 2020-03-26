@@ -48,7 +48,7 @@ namespace Diluvian
         //When replicating make sure the icon is saved as a sprite.
 
         //Hold for the old language so that we can restore it.
-        private Dictionary<string, string> DefaultLanguage;
+        private readonly Dictionary<string, string> DefaultLanguage;
         //Keeping track of ESO
         private bool ESOenabled = false;
         //Keeping track of internal state.
@@ -266,7 +266,7 @@ namespace Diluvian
             {
                 if (self.isPlayerControlled)
                 {
-                    regenMulti = regenMulti + HealthRegenMultiplier;//note that a + -b == a - b;
+                    regenMulti += HealthRegenMultiplier;//note that a + -b == a - b;
                 }
                 return regenMulti;
             });
