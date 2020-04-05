@@ -13,7 +13,6 @@ Diluvian is a difficulty mod. It adds a harder than Monsoon difficulty to the ga
 * Monster Health Regeneration: +1.5% of MaxHP per second out of combat
 * Oneshot Protection: Also applies to monsters
 * Oneshot Protection: Protects only 1%
-* Teleporter: Enemies don't stop after charge completion
 * Elites: 20% cheaper.
 * Shrine of Blood: Cost hidden.
 
@@ -29,7 +28,7 @@ If all players have the mod, it works perfectly. Host needs the mod for most cha
 ---
 
 ## Changelog ##
-
+* **1.0.4** Updated for Artifacts, by... removing the monsters spawning after tp completion. Code just wouldn't work. I'll compensate for this in a future update, but for now, I want people able to play Diluvian again.
 * **1.0.3** Added some intermod compatibility. No balance changes, I'm quite happy where it is now.
 * **1.0.2**: `   ` -> `Player Luck: Reduced in some places.`. *Get off your high horse, lucky boy.*
 * **1.0.2**: `Player  Health Regeneration: -50%` -> `Player  Health Regeneration: -60%` . *Was worried regen changes would screw with mine. They don't, but make it a bit more easier. We can't have that.*
