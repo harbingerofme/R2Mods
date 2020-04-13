@@ -109,7 +109,7 @@ namespace Diluvian
             description = string.Join("\n",
                 description,
                 $">Difficulty Scaling: +{DiluvianDef.scalingValue * 50 - 100}%",
-                $">Player Health Regeneration: -{(int)(HealthRegenMultiplier * 100)}%",
+                $">Player Health Regeneration: {(int)(HealthRegenMultiplier * 100)}%",
                 ">Player luck: Reduced in some places.",
                 $">Monster Health Regeneration: +{MonsterRegen * 100}% of MaxHP per second (out of danger)",
                 ">Oneshot Protection: Also applies to monsters",
@@ -245,6 +245,7 @@ namespace Diluvian
             {
                 obj.bonusDirector.enabled = false;
             }
+
         }
 
         private void AdjustRegen(ILContext il)
@@ -285,7 +286,7 @@ namespace Diluvian
             c.EmitDelegate<Func<RoR2.CharacterBody, float, float>>((self, regen) =>//emit a function taking a characterbody an a float that returns a float
             {
                 //Check if this is a monster and if it's not been hit for 5 seconds.
-                if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger)
+                if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger && self.baseNameToken != "ARTIFACTSHELL_BODY_NAME" && self.baseNameToken!= "TITANGOLD_BODY_NAME")
                 {
                     regen += self.maxHealth * MonsterRegen;
                 }
