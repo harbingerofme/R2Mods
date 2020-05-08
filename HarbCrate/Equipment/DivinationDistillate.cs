@@ -31,7 +31,7 @@ namespace HarbCrate.Equipment
                 buffColor: Color.Lerp(Color.red, Color.yellow, 0.5f),
                 canStack: false,
                 isDebuff: false
-                ) ;
+                );
             DistillateBuff = cbuff.BuffDef;
             IsLunar = false;
             IsEnigmaCompat = false;

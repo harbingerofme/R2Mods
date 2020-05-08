@@ -1,7 +1,5 @@
 using BepInEx;
-using EntityStates;
 using Mono.Cecil.Cil;
-using Mono.Cecil;
 using MonoMod.Cil;
 using R2API.Utils;
 using RoR2;
@@ -9,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Networking;
 using EliteDef = RoR2.CombatDirector.EliteTierDef;
 
 namespace Diluvian
@@ -286,7 +283,7 @@ namespace Diluvian
             c.EmitDelegate<Func<RoR2.CharacterBody, float, float>>((self, regen) =>//emit a function taking a characterbody an a float that returns a float
             {
                 //Check if this is a monster and if it's not been hit for 5 seconds.
-                if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger && self.baseNameToken != "ARTIFACTSHELL_BODY_NAME" && self.baseNameToken!= "TITANGOLD_BODY_NAME")
+                if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger && self.baseNameToken != "ARTIFACTSHELL_BODY_NAME" && self.baseNameToken != "TITANGOLD_BODY_NAME")
                 {
                     regen += self.maxHealth * MonsterRegen;
                 }

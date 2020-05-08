@@ -52,7 +52,7 @@ namespace HarbCrate.Items
                 ruleType = Rule,
                 childName = "Base",
                 localScale = new Vector3(20, 20, 20),
-                localPos =  new Vector3(-0.43f,-0.72f,-0.43f)
+                localPos = new Vector3(-0.43f, -0.72f, -0.43f)
             });
             DisplayRules.Add("mdlToolbot", new ItemDisplayRule
             {
@@ -91,7 +91,7 @@ namespace HarbCrate.Items
         }
 
         public override void Hook()
-        { 
+        {
             IL.RoR2.HealthComponent.TakeDamage += NonLethalBypassShield;
             DebuffStatComponent.BrawnIndex = Definition.itemIndex;
             DebuffStatComponent.Hooks();

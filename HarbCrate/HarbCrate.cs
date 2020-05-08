@@ -96,7 +96,7 @@ namespace HarbCrate
         {
             if (tv.Token != null && tv.Token != "")
             {
-               LanguageAPI.Add(tv.Token, tv.Value);
+                LanguageAPI.Add(tv.Token, tv.Value);
             }
         }
 

@@ -41,7 +41,7 @@ namespace HarbCrate.Items
 
         private void FixPickupMessage(On.RoR2.Chat.orig_AddPickupMessage orig, CharacterBody body, string pickupToken, Color32 pickupColor, uint pickupQuantity)
         {
-            if(pickupToken == Name.Token && pickupQuantity == 0)
+            if (pickupToken == Name.Token && pickupQuantity == 0)
             {
                 pickupQuantity = 3;
             }
@@ -64,14 +64,14 @@ namespace HarbCrate.Items
                 {
                     loot = Run.instance.treasureRng.NextElementUniform(Run.instance.availableTier2DropList);
                 }
-                if(self.isPlayerControlled)
+                if (self.isPlayerControlled)
                     PickupDropletController.CreatePickupDroplet(loot, self.corePosition, Vector3.up * 5);
                 else
                 {
                     PickupDef def = PickupCatalog.GetPickupDef(loot);
                     self.inventory.GiveItem(def.itemIndex);
                     var lootCount = self.inventory.GetItemCount(def.itemIndex);
-                    Chat.AddPickupMessage(self, def.nameToken, ColorCatalog.GetColor(ItemCatalog.GetItemDef(def.itemIndex).colorIndex), (uint) lootCount);
+                    Chat.AddPickupMessage(self, def.nameToken, ColorCatalog.GetColor(ItemCatalog.GetItemDef(def.itemIndex).colorIndex), (uint)lootCount);
                 }
             }
         }

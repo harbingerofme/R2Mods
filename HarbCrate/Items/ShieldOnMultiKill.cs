@@ -25,7 +25,7 @@ namespace HarbCrate.Items
             Description = new TokenValue(
                 "HC_MAXSHIELDONMULTIKILL_DESC",
                 $" Gain {ShieldPerMK} additional maximum shield on multikill."
-                + $" Maximum shield tops of at an aditional {MultKillsNeededForMaxValue*ShieldPerMK}<style=cStack>(+{PerStack* ShieldPerMK} per stack)</style>.");
+                + $" Maximum shield tops of at an aditional {MultKillsNeededForMaxValue * ShieldPerMK}<style=cStack>(+{PerStack * ShieldPerMK} per stack)</style>.");
             PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum shield on multikill.");
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/GhorsWay.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/Bouche.png";
@@ -63,7 +63,7 @@ namespace HarbCrate.Items
                 localAngles = new Vector3(330, 0, 180f),
                 localScale = new Vector3(25, 25, 25)
             });
-            
+
             DisplayRules.Add("mdlMerc", new ItemDisplayRule()
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
@@ -171,7 +171,7 @@ namespace HarbCrate.Items
 
         private void Inventory_ResetItem(On.RoR2.Inventory.orig_ResetItem orig, Inventory self, ItemIndex itemIndex)
         {
-            if(itemIndex == Definition.itemIndex)
+            if (itemIndex == Definition.itemIndex)
             {
                 ShieldInfusion si = self.GetComponent<ShieldInfusion>();
                 if (si != null)
@@ -186,7 +186,7 @@ namespace HarbCrate.Items
         private void ResetHelperCount(Inventory inventory, ShieldInfusion infusion)
         {
             inventory.ResetItem(helperIndex);
-            inventory.GiveItem(helperIndex,infusion.MultiKills);
+            inventory.GiveItem(helperIndex, infusion.MultiKills);
         }
 
         private void CharacterBodyOnAddMultiKill(On.RoR2.CharacterBody.orig_AddMultiKill orig, CharacterBody self, int kills)
@@ -195,7 +195,7 @@ namespace HarbCrate.Items
             if (self.inventory && self.multiKillCount % MultikillCountNeeded == 0 && self.inventory.GetItemCount(Definition.itemIndex) > 0)
             {
                 var SI = self.inventory.GetComponent<ShieldInfusion>();
-                SI.MultiKills+=1;
+                SI.MultiKills += 1;
                 ResetHelperCount(self.inventory, SI);
                 StatsDirty.SetValue(self, true);
             }
