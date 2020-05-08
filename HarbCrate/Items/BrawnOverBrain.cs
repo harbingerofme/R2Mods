@@ -145,7 +145,7 @@ namespace HarbCrate.Items
             public static void Hooks()
             {
                 On.RoR2.CharacterBody.AddTimedBuff += ShortenTimedDebuffs;
-                On.RoR2.DotController.AddDot += ShortenDebuffs;
+                On.RoR2.DotController.AddDot += ShortenDots;
                 On.RoR2.SetStateOnHurt.SetFrozen += SetStateOnHurt_SetFrozen;
                 On.RoR2.SetStateOnHurt.SetStun += SetStateOnHurt_SetStun;
                 On.RoR2.CharacterBody.OnInventoryChanged += (orig, self) =>
@@ -159,8 +159,6 @@ namespace HarbCrate.Items
                     }
                 };
             }
-
-            public static ItemIndex BrawnIndex;
 
             private static void SetStateOnHurt_SetFrozen(On.RoR2.SetStateOnHurt.orig_SetFrozen orig,
                 SetStateOnHurt self, float duration)
@@ -182,7 +180,7 @@ namespace HarbCrate.Items
                 orig(self, newduration);
             }
 
-            private static void DotController_AddDot(On.RoR2.DotController.orig_AddDot orig, DotController self,
+            private static void ShortenDots(On.RoR2.DotController.orig_AddDot orig, DotController self,
                 GameObject attackerObject, float duration, DotController.DotIndex dotIndex, float damageMultiplier)
             {
                 var cb = self.GetPropertyValue<CharacterBody>("victimBody");
