@@ -1,5 +1,7 @@
 using BepInEx;
+using EntityStates;
 using Mono.Cecil.Cil;
+using Mono.Cecil;
 using MonoMod.Cil;
 using R2API.Utils;
 using RoR2;
@@ -7,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking;
 using EliteDef = RoR2.CombatDirector.EliteTierDef;
 
 namespace Diluvian
@@ -32,7 +35,7 @@ namespace Diluvian
         //Defining The difficultyDef of Diluvian.
         private readonly Color DiluvianColor = new Color(0.61f, 0.07f, 0.93f);
         private readonly float DiluvianCoef = 3.5f;
-        private readonly DifficultyDef DiluvianDef;
+        private readonly RoR2.DifficultyDef DiluvianDef;
         private DifficultyIndex DiluvianIndex;
 
         //DiluvianModifiers:
@@ -48,7 +51,7 @@ namespace Diluvian
         //When replicating make sure the icon is saved as a sprite.
 
         //Hold for the old language so that we can restore it.
-        private Dictionary<string, string> DefaultLanguage;
+        private readonly Dictionary<string, string> DefaultLanguage;
         //Keeping track of ESO
         private bool ESOenabled = false;
         //Keeping track of internal state.
@@ -64,7 +67,7 @@ namespace Diluvian
 
         private Diluvian()
         {
-            DiluvianDef = new DifficultyDef(
+            DiluvianDef = new RoR2.DifficultyDef(
                             DiluvianCoef,
                             "DIFFICULTY_DILUVIAN_NAME",
                             assetString,
@@ -90,12 +93,12 @@ namespace Diluvian
                 Logger.LogWarning("ESO detected: Delegating Elite modifications to them. Future support planned.");
             }
             //Index tierDef array.
-            CombatDirectorTierDefs = (EliteDef[])typeof(CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
+            CombatDirectorTierDefs = (EliteDef[])typeof(RoR2.CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
             //Init array because we now know the size.
             vanillaEliteMultipliers = new float[CombatDirectorTierDefs.Length];
             //Cache the BloodshrineBehaviour field.
-            BloodShrineWaitingForRefresh = typeof(ShrineBloodBehavior).GetField("waitingForRefresh", BindingFlags.Instance | BindingFlags.NonPublic);
-            BloodShrinePurchaseInteraction = typeof(ShrineBloodBehavior).GetField("purchaseInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
+            BloodShrineWaitingForRefresh = typeof(RoR2.ShrineBloodBehavior).GetField("waitingForRefresh", BindingFlags.Instance | BindingFlags.NonPublic);
+            BloodShrinePurchaseInteraction = typeof(RoR2.ShrineBloodBehavior).GetField("purchaseInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
 
             //Acquire my index from R2API.
             DiluvianIndex = R2API.DifficultyAPI.AddDifficulty(DiluvianDef);
@@ -106,12 +109,11 @@ namespace Diluvian
             description = string.Join("\n",
                 description,
                 $">Difficulty Scaling: +{DiluvianDef.scalingValue * 50 - 100}%",
-                $">Player Health Regeneration: -{(int)(HealthRegenMultiplier * 100)}%",
+                $">Player Health Regeneration: {(int)(HealthRegenMultiplier * 100)}%",
                 ">Player luck: Reduced in some places.",
                 $">Monster Health Regeneration: +{MonsterRegen * 100}% of MaxHP per second (out of danger)",
                 ">Oneshot Protection: Also applies to monsters",
                 $">Oneshot Protection: Protects only {100 - 100 * NewOSPTreshold}%",
-                ">Teleporter: Enemies don't stop after charge completion",
                 $">Elites: {(1 - EliteModifier) * 100}% cheaper.",
                 ">Shrine of Blood: Cost hidden and random."
 
@@ -120,20 +122,20 @@ namespace Diluvian
             R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DILUVIAN_DESCRIPTION", description);
 
             //This is where my hooks live. They themselves are events, not ONhooks
-            Run.onRunStartGlobal += Run_onRunStartGlobal;
-            Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
+            RoR2.Run.onRunStartGlobal += Run_onRunStartGlobal;
+            RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
 
         }
 
         //Because I want to restore the orignal strings when replacing them with assetplus, I store them prior to replacing them.
         private void ReplaceString(string token, string newText)
         {
-            DefaultLanguage[token] = Language.GetString(token);
+            DefaultLanguage[token] = RoR2.Language.GetString(token);
             R2API.AssetPlus.Languages.AddToken(token, newText, reload: false);
         }
 
 
-        private void Run_onRunStartGlobal(Run run)
+        private void Run_onRunStartGlobal(RoR2.Run run)
         {
             //Only do stuff when Diluvian is selected.
             if (run.selectedDifficulty == DiluvianIndex && HooksApplied == false)
@@ -144,8 +146,7 @@ namespace Diluvian
                 IL.RoR2.HealthComponent.TakeDamage += UnluckyBears;
                 IL.RoR2.HealthComponent.TakeDamage += ChangeOSP;
                 IL.RoR2.CharacterBody.RecalculateStats += AdjustRegen;
-                IL.RoR2.TeleporterInteraction.StateFixedUpdate += NoSafetyAfterFinishCharging;
-                TeleporterInteraction.onTeleporterFinishGlobal += MakeSureBonusDirectorDiesOnStageFinish;
+                RoR2.TeleporterInteraction.onTeleporterFinishGlobal += MakeSureBonusDirectorDiesOnStageFinish;
                 //
                 if (!ESOenabled)
                 {
@@ -158,7 +159,6 @@ namespace Diluvian
                 }
                 On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinePriceRandom;
 
-
                 //All of these replace strings.
                 ReplaceInteractibles();
                 ReplaceItems();
@@ -170,8 +170,28 @@ namespace Diluvian
             }
         }
 
+        //Failed code for keeping the teleporter director enabled. The game disagreees with me that this code sets it to disabled.
+        private void ChargingState_OnExit(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            c.GotoNext(MoveType.After,//Position our cursor far forward.
+                x => x.MatchCallOrCallvirt<TeleporterInteraction.ChargingState>("get_bonusDirector")//13	002B	call	instance class RoR2.CombatDirector RoR2.TeleporterInteraction/ChargingState::get_bossDirector()
+                );
+            c.GotoNext(MoveType.Before,
+                x => x.MatchCallOrCallvirt<TeleporterInteraction.ChargingState>("get_bonusDirector"),
+                x => x.MatchLdcI4(0)
+                );
+            c.Index += 1;//Move our cursor between the instructions just matched.
+            c.RemoveRange(2);//remove the 'false' and the enabled call of the bonusdirector
+            c.EmitDelegate<Action<RoR2.CombatDirector>>((director) =>
+                {
+                    director.expRewardCoefficient = 0f;//make the monsters not worth anything after the teleporter has finished charging.
+                }
+            );
+        }
 
-        private void Run_onRunDestroyGlobal(Run obj)
+
+        private void Run_onRunDestroyGlobal(RoR2.Run obj)
         {
             if (HooksApplied)
             {
@@ -179,8 +199,9 @@ namespace Diluvian
                 IL.RoR2.HealthComponent.TakeDamage -= UnluckyBears;
                 IL.RoR2.HealthComponent.TakeDamage -= ChangeOSP;
                 IL.RoR2.CharacterBody.RecalculateStats -= AdjustRegen;
-                IL.RoR2.TeleporterInteraction.StateFixedUpdate -= NoSafetyAfterFinishCharging;
-                TeleporterInteraction.onTeleporterFinishGlobal -= MakeSureBonusDirectorDiesOnStageFinish;
+                //RoR2.TeleporterInteraction.onTeleporterChargedGlobal += NoSafetyAfterFinishCharging;
+                //IL.RoR2.TeleporterInteraction.StateFixedUpdate -= NoSafetyAfterFinishCharging;
+                RoR2.TeleporterInteraction.onTeleporterFinishGlobal -= MakeSureBonusDirectorDiesOnStageFinish;
                 if (!ESOenabled)
                 {
                     for (int i = 0; i < CombatDirectorTierDefs.Length; i++)
@@ -202,47 +223,29 @@ namespace Diluvian
         }
 
 
-        private void BloodShrinePriceRandom(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, ShrineBloodBehavior self)
+        private void BloodShrinePriceRandom(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, RoR2.ShrineBloodBehavior self)
         {
             //This 'if' is essentially the same as the first line of the orig method(, save that they don't need to do reflection).
             if ((bool)BloodShrineWaitingForRefresh.GetValue(self))
             {
                 orig(self);
                 //reflect to get the purchaseinteractioncomponent. I then get a random number to change it's price. The price is hidden by the language modification.
-                PurchaseInteraction pi = ((PurchaseInteraction)BloodShrinePurchaseInteraction.GetValue(self));
+                RoR2.PurchaseInteraction pi = ((RoR2.PurchaseInteraction)BloodShrinePurchaseInteraction.GetValue(self));
                 if (pi)
                 {
-                    pi.Networkcost = Run.instance.stageRng.RangeInt(50, 100);
+                    pi.Networkcost = RoR2.Run.instance.stageRng.RangeInt(50, 100);
                 }
             }
         }
 
 
-        private void MakeSureBonusDirectorDiesOnStageFinish(TeleporterInteraction obj)
+        private void MakeSureBonusDirectorDiesOnStageFinish(RoR2.TeleporterInteraction obj)
         {
             if (obj.bonusDirector && obj.bonusDirector.enabled)
             {
                 obj.bonusDirector.enabled = false;
             }
-        }
 
-        private void NoSafetyAfterFinishCharging(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            c.GotoNext(MoveType.After,//Position our cursor far forward.
-                x => x.MatchLdfld<TeleporterInteraction>("bonusDirector")
-                );
-            c.GotoNext(MoveType.Before,
-                x => x.MatchLdfld<TeleporterInteraction>("bonusDirector"),
-                x => x.MatchLdcI4(0)
-                );
-            c.Index += 1;//Move our cursor between the instructions just matched.
-            c.RemoveRange(2);//remove the 'false' and the setting of the enabled of the bonusdirector
-            c.EmitDelegate<Action<CombatDirector>>((director) =>
-            {
-                director.expRewardCoefficient = 0f;//make the monsters not worht anything after the teleporter has finished charging.
-            }
-            );
         }
 
         private void AdjustRegen(ILContext il)
@@ -251,7 +254,7 @@ namespace Diluvian
             int monsoonPlayerHelperCountIndex = 25;//This value doesn't need to be set, but I set it to keep track of what it's expected to be.
             c.GotoNext(//Since this is only to move the cursor, no explicit movetyp is given as I don't care.
                 x => x.MatchLdcI4((int)ItemIndex.MonsoonPlayerHelper),//Find where the itemcount of the monsoon regen modifier is called
-                x => x.MatchCallvirt<Inventory>("GetItemCount"),
+                x => x.MatchCallvirt<RoR2.Inventory>("GetItemCount"),
                 x => x.MatchStloc(out monsoonPlayerHelperCountIndex)//Then use the `out` keyword to store the index of the local holding the count.
                 );
             int regenMultiIndex = 44;//Again this is the expected index,  but I'll be overwriting it.
@@ -262,11 +265,11 @@ namespace Diluvian
             c.Index += 2;//Since the previous cursor location will get skipped over by if statements, we need to move into a slightly weird place that is always called
             c.Emit(OpCodes.Ldarg_0);//emit the characterbody
             c.Emit(OpCodes.Ldloc, regenMultiIndex);//emit the local regen multiplier
-            c.EmitDelegate<Func<CharacterBody, float, float>>((self, regenMulti) =>//emit a function taking a charbody and a float that returns a float.
+            c.EmitDelegate<Func<RoR2.CharacterBody, float, float>>((self, regenMulti) =>//emit a function taking a charbody and a float that returns a float.
             {
                 if (self.isPlayerControlled)
                 {
-                    regenMulti = regenMulti + HealthRegenMultiplier;//note that a + -b == a - b;
+                    regenMulti += HealthRegenMultiplier;//note that a + -b == a - b;
                 }
                 return regenMulti;
             });
@@ -280,10 +283,10 @@ namespace Diluvian
             c.Index += 1;//go to right before the init of the regen multi
             c.Emit(OpCodes.Ldarg_0);//emit the characterbody
             c.Emit(OpCodes.Ldloc, regenIndex);//emit the value of the regen
-            c.EmitDelegate<Func<CharacterBody, float, float>>((self, regen) =>//emit a function taking a characterbody an a float that returns a float
+            c.EmitDelegate<Func<RoR2.CharacterBody, float, float>>((self, regen) =>//emit a function taking a characterbody an a float that returns a float
             {
                 //Check if this is a monster and if it's not been hit for 5 seconds.
-                if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger)
+                if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger && self.baseNameToken != "ARTIFACTSHELL_BODY_NAME" && self.baseNameToken!= "TITANGOLD_BODY_NAME")
                 {
                     regen += self.maxHealth * MonsterRegen;
                 }
@@ -297,7 +300,7 @@ namespace Diluvian
             ILCursor c = new ILCursor(il);
             c.GotoNext(
                 x => x.MatchLdcI4((int)ItemIndex.Bear),
-                x => x.MatchCallvirt<Inventory>("GetItemCount")
+                x => x.MatchCallvirt<RoR2.Inventory>("GetItemCount")
                 );
             c.GotoNext(MoveType.Before,
                 x => x.MatchLdcR4(0),//This is the luck value used in CheckRoll for toughertimes.
@@ -314,7 +317,7 @@ namespace Diluvian
             {
                 ILCursor c = new ILCursor(il);
                 c.GotoNext(MoveType.After,//move to right after the call to check if it's a player.
-                    x => x.MatchCallvirt<HealthComponent>("get_hasOneshotProtection")
+                    x => x.MatchCallvirt<RoR2.HealthComponent>("get_hasOneshotProtection")
                     );
                 c.Emit(OpCodes.Pop);//remove the result from the stack
                 c.Emit(OpCodes.Ldc_I4_1);//put "true" on the stack.
