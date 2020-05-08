@@ -54,7 +54,40 @@ namespace HarbCrate.Items
                 localScale = new Vector3(20, 20, 20),
                 localPos =  new Vector3(-0.43f,-0.72f,-0.43f)
             });
-            
+            DisplayRules.Add("mdlToolbot", new ItemDisplayRule
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Base",
+                localScale = new Vector3(175, 175, 175),
+                localPos = new Vector3(3.39f, -8f, 3f)
+            });
+            DisplayRules.Add("mdlCroco", new ItemDisplayRule
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Base",
+                localScale = new Vector3(175, 175, 175),
+                localPos = new Vector3(-3, 4f, 3f)
+            });
+            DisplayRules.Add("mdlEngiTurret", new ItemDisplayRule
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Head",
+                localScale = new Vector3(25, 25, 25),
+                localPos = new Vector3(-1.4f, 1f, -1f)
+            });
+            DisplayRules["mdlEngiWalkerTurret"] = DisplayRules["mdlEngiTurret"];//The bases are the same.... hopefully?
+            DisplayRules.Add("mdlScav", new ItemDisplayRule
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Base",
+                localScale = new Vector3(200, 200, 200),
+                localPos = new Vector3(-5f, 10f, 5f)
+            });
+            DisplayRules["mdlHAND"] = DisplayRules["mdlToolbot"];
         }
 
         public override void Hook()
