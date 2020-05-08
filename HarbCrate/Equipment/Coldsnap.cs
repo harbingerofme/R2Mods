@@ -1,4 +1,4 @@
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 
 namespace HarbCrate.Equipment
@@ -23,6 +23,8 @@ namespace HarbCrate.Equipment
             IsEnigmaCompat = true;
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/ColdSnap.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/coldsnap.png";
+
+            SetupDisplayRules();
         }
 
         public override bool Effect(EquipmentSlot slot)
@@ -67,5 +69,62 @@ namespace HarbCrate.Equipment
 
         public override void Hook()
         { }
+
+        private void SetupDisplayRules()
+        {
+            var Prefab = Resources.Load<GameObject>(AssetPath);
+            var Rule = ItemDisplayRuleType.ParentedPrefab;
+            var angles = new Vector3(275, 180, 180);
+            var reverseAngles = new Vector3(275, 0, 180);
+            DisplayRules = new R2API.ItemDisplayRuleDict(new ItemDisplayRule()
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Base",
+                localScale = new Vector3(20, 20, 20),
+                localPos = new Vector3(0.43f, -0.72f, -0.43f),
+                localAngles = angles
+            });
+            DisplayRules.Add("mdlToolbot", new ItemDisplayRule
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Base",
+                localScale = new Vector3(175, 175, 175),
+                localPos = new Vector3(-3.39f, -8f, 3f),
+                localAngles = reverseAngles
+            });
+            DisplayRules.Add("mdlCroco", new ItemDisplayRule
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Base",
+                localScale = new Vector3(175, 175, 175),
+                localPos = new Vector3(3, 4f, 3f),
+                localAngles = reverseAngles
+            });
+            //Dunno why I bother with turrets, but they got'em
+            DisplayRules.Add("mdlEngiTurret", new ItemDisplayRule
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Head",
+                localScale = new Vector3(25, 25, 25),
+                localPos = new Vector3(1.4f, 1f, -1f),
+                localAngles = angles
+            });
+            DisplayRules["mdlEngiWalkerTurret"] = DisplayRules["mdlEngiTurret"];//The bases are the same.... hopefully?
+            DisplayRules.Add("mdlScav", new ItemDisplayRule
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Base",
+                localScale = new Vector3(200, 200, 200),
+                localPos = new Vector3(5f, 10f, 5f),
+                localAngles = angles
+            });
+            DisplayRules["mdlHAND"] = DisplayRules["mdlToolbot"];
+        }
+
     }
 }
