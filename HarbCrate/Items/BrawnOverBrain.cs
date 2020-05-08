@@ -1,4 +1,4 @@
-﻿using Mono.Cecil.Cil;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API.Utils;
 using RoR2;
@@ -39,16 +39,32 @@ namespace HarbCrate.Items
                 ItemTag.Utility,
                 ItemTag.Healing
             };
+            SetupDisplayRules();
+        }
+
+        private void SetupDisplayRules()
+        {
+            var Prefab = Resources.Load<GameObject>(AssetPath);
+            var Rule = ItemDisplayRuleType.ParentedPrefab;
+            DisplayRules = new R2API.ItemDisplayRuleDict(new ItemDisplayRule()
+            {
+                followerPrefab = Prefab,
+                ruleType = Rule,
+                childName = "Base",
+                localScale = new Vector3(20, 20, 20),
+                localPos =  new Vector3(-0.43f,-0.72f,-0.43f)
+            });
+            
         }
 
         public override void Hook()
-        {
-            IL.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
+        { 
+            IL.RoR2.HealthComponent.TakeDamage += NonLethalBypassShield;
             DebuffStatComponent.BrawnIndex = Definition.itemIndex;
             DebuffStatComponent.Hooks();
         }
 
-        private void HealthComponent_TakeDamage(ILContext il)
+        private void NonLethalBypassShield(ILContext il)
         {
             ItemIndex myIndex = CustomDef.ItemDef.itemIndex;
             ILCursor c = new ILCursor(il);
@@ -97,6 +113,7 @@ namespace HarbCrate.Items
 
             private bool BoB;
 
+            public static ItemIndex BrawnIndex;
 
             public void Start()
             {
@@ -127,8 +144,8 @@ namespace HarbCrate.Items
 
             public static void Hooks()
             {
-                On.RoR2.CharacterBody.AddTimedBuff += CharacterBody_AddTimedBuff;
-                On.RoR2.DotController.AddDot += DotController_AddDot;
+                On.RoR2.CharacterBody.AddTimedBuff += ShortenTimedDebuffs;
+                On.RoR2.DotController.AddDot += ShortenDebuffs;
                 On.RoR2.SetStateOnHurt.SetFrozen += SetStateOnHurt_SetFrozen;
                 On.RoR2.SetStateOnHurt.SetStun += SetStateOnHurt_SetStun;
                 On.RoR2.CharacterBody.OnInventoryChanged += (orig, self) =>
@@ -178,7 +195,7 @@ namespace HarbCrate.Items
                 orig(self, attackerObject, newduration, dotIndex, damageMultiplier);
             }
 
-            private static void CharacterBody_AddTimedBuff(On.RoR2.CharacterBody.orig_AddTimedBuff orig,
+            private static void ShortenTimedDebuffs(On.RoR2.CharacterBody.orig_AddTimedBuff orig,
                 CharacterBody self, BuffIndex buffType, float duration)
             {
                 float newduration = duration;

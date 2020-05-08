@@ -1,6 +1,5 @@
 using BepInEx;
 using R2API;
-using R2API.Utils;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ using UnityEngine;
 namespace HarbCrate
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
-    [R2APISubmoduleDependency(nameof(R2API.AssetPlus), nameof(ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI), nameof(CommandHelper))]
+    [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI), nameof(ItemDropAPI), nameof(R2API.Utils.CommandHelper))]
     [BepInPlugin(GUID, Name, Version)]
     public class HarbCratePlugin : BaseUnityPlugin
     {
@@ -82,7 +81,7 @@ namespace HarbCrate
                 return flag;
             };
 
-            CommandHelper.AddToConsoleWhenReady();
+            R2API.Utils.CommandHelper.AddToConsoleWhenReady();
         }
 
         public static event EventHandler Started;
@@ -97,7 +96,7 @@ namespace HarbCrate
         {
             if (tv.Token != null && tv.Token != "")
             {
-                R2API.AssetPlus.Languages.AddToken(tv.Token, tv.Value);
+               LanguageAPI.Add(tv.Token, tv.Value);
             }
         }
 

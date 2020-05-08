@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace HarbCrate.Equipment
 {
+    [R2API.Utils.R2APISubmoduleDependency(nameof(BuffAPI))]
     [Equipment]
     internal sealed class DivinationDistillate : Equip
     {
@@ -24,19 +25,18 @@ namespace HarbCrate.Equipment
             Description = new TokenValue("HC_LUCKJUICE_DESC",
                 $"Heal both health and shields for {DistillateDuration} seconds. Effects stops at full health and full shields." +
                 $" While under effect, your luck is greatly increased.");
-            DistillateBuff = new BuffDef()
-            {
-                buffColor = Color.Lerp(Color.red, Color.yellow, 0.5f),
-                canStack = false,
-                isDebuff = false,
-                name = "HC_LUCKJUICE_BUFF"
-            };
+            var cbuff = new CustomBuff(
+                name: "HC_LUCKJUICE_BUFF",
+                iconPath: HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/texBuffLuck",
+                buffColor: Color.Lerp(Color.red, Color.yellow, 0.5f),
+                canStack: false,
+                isDebuff: false
+                ) ;
+            DistillateBuff = cbuff.BuffDef;
             IsLunar = false;
             IsEnigmaCompat = false;
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/LuckJuice.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/luckjuice.png";
-            CustomBuff buff = new CustomBuff(DistillateBuff.name, DistillateBuff);
-            ItemAPI.Add(buff);
         }
 
         public override bool Effect(EquipmentSlot slot)
@@ -64,11 +64,13 @@ namespace HarbCrate.Equipment
             public HealthComponent hc;
             public CharacterBody cb;
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity")]
             private void Awake()
             {
                 this.intervalFraction = Interval / DistillateDuration;
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity")]
             private void Start()
             {
                 if (cb && cb.master)
@@ -77,6 +79,7 @@ namespace HarbCrate.Equipment
                 }
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity")]
             private void OnDestroy()
             {
                 if (this.cb)
@@ -88,6 +91,7 @@ namespace HarbCrate.Equipment
 
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity")]
             private void FixedUpdate()
             {
                 this.nextHealIn -= Time.deltaTime;
