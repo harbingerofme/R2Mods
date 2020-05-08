@@ -11,17 +11,16 @@ namespace HarbCrate.Items
     {
         public ShieldInfusionHelper() : base()
         {
-            Tier = RoR2.ItemTier.NoTier;
+            Tier = ItemTier.NoTier;
             Name = new TokenValue("HC_HIDDEN0", "WAT R U DOING");
             Description = new TokenValue("HC_HIDDEN1", "DONT LOOK AT ME");
             PickupText = new TokenValue("HC_HIDDEN2", "HOW ARE YOU SEEING THIS");
             AssetPath = "";
             SpritePath = "";
-            Tags = new RoR2.ItemTag[]
+            Tags = new ItemTag[]
             {
-                RoR2.ItemTag.AIBlacklist
+                ItemTag.AIBlacklist
             };
-
             HarbCratePlugin.Started += HarbCratePlugin_Started;
         }
 
@@ -32,10 +31,10 @@ namespace HarbCrate.Items
 
         public override void Hook()
         {
-            IL.RoR2.CharacterBody.RecalculateStats += ModifyRecalcStats;
+            IL.RoR2.CharacterBody.RecalculateStats += AddFlatShields;
         }
 
-        private void ModifyRecalcStats(ILContext il)
+        private void AddFlatShields(ILContext il)
         {
             ILCursor c = new ILCursor(il);
             int shieldsLoc = 33;
