@@ -1,4 +1,4 @@
-﻿using RoR2;
+using RoR2;
 using UnityEngine;
 
 namespace HarbCrate.Equipment
@@ -50,7 +50,7 @@ namespace HarbCrate.Equipment
                     }
                 }
             }
-            GameObject explosionPreFab = Object.Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/NetworkedObjects/GenericDelayBlast"), pos, Quaternion.identity);
+            GameObject explosionPreFab = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/NetworkedObjects/GenericDelayBlast"), pos, Quaternion.identity);
             explosionPreFab.transform.localScale = new Vector3(Radius, Radius, Radius);
             DelayBlast delayBlast = explosionPreFab.GetComponent<DelayBlast>();
             delayBlast.explosionEffect = Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/AffixWhiteExplosion");
