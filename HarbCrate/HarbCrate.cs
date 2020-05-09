@@ -13,7 +13,7 @@ using UnityEngine;
 namespace HarbCrate
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
-    [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI), nameof(ItemDropAPI), nameof(R2API.Utils.CommandHelper))]
+    [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ItemAPI), nameof(AssetAPI), nameof(ResourcesAPI), nameof(ItemDropAPI), nameof(R2API.Utils.CommandHelper), nameof(PrefabAPI))]
     [BepInPlugin(GUID, Name, Version)]
     public class HarbCratePlugin : BaseUnityPlugin
     {

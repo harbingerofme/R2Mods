@@ -1,8 +1,10 @@
-﻿using R2API;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using R2API;
 using RoR2;
 using System;
-using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace HarbCrate.Items
 {
@@ -10,13 +12,10 @@ namespace HarbCrate.Items
     internal sealed class ShieldOnMultiKill : Item
     {
 
-        public const float ShieldPerMK = 10f;
-        private const int MultikillCountNeeded = 3;
-        private const int MultKillsNeededForMaxValue = 15;
-        private const int PerStack = 15;
+        internal const float ShieldPerMK = 10f;
+        internal const int MultikillCountNeeded = 3;
+        internal const int MultKillsNeededForMaxValue = 15;
 
-        private readonly FieldInfo StatsDirty;
-        private ItemIndex helperIndex;
 
         public ShieldOnMultiKill() : base()
         {
@@ -36,7 +35,6 @@ namespace HarbCrate.Items
             };
 
             SetupDisplayRules();
-            StatsDirty = typeof(CharacterBody).GetField("statsDirty", BindingFlags.NonPublic | BindingFlags.Instance);
             HarbCratePlugin.Started += HarbCratePlugin_Started;
         }
 
@@ -159,34 +157,69 @@ namespace HarbCrate.Items
 
         private void HarbCratePlugin_Started(object sender, EventArgs e)
         {
-            helperIndex = ((Item)HarbCratePlugin.AllPickups[nameof(ShieldInfusionHelper)]).Definition.itemIndex;
+            //helperIndex = ((Item)HarbCratePlugin.AllPickups[nameof(ShieldInfusionHelper)]).Definition.itemIndex;
+            NetworkedSI.ShieldOnMultiKillIndex = Definition.itemIndex;
         }
 
         public override void Hook()
         {
+            IL.RoR2.CharacterBody.RecalculateStats += AddFlatShields;
             Inventory.onServerItemGiven += UpdateShieldInfusion;
             On.RoR2.Inventory.ResetItem += Inventory_ResetItem;
             On.RoR2.CharacterBody.AddMultiKill += CharacterBodyOnAddMultiKill;
+            On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
         }
 
-        private void Inventory_ResetItem(On.RoR2.Inventory.orig_ResetItem orig, Inventory self, ItemIndex itemIndex)
+        private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
         {
-            if (itemIndex == Definition.itemIndex)
+            orig(self);
+            if (self.inventory.HasItem(this, out int itemCount))
             {
-                ShieldInfusion si = self.GetComponent<ShieldInfusion>();
-                if (si != null)
+                NetworkedSI si = self.GetComponent<NetworkedSI>();
+                if (si == null)
                 {
-                    si.Count = 0;
-                    si.VerifyIntegrity();
-                    ResetHelperCount(self, si);
+                    Log("Adding NetworkedSI!");
+                    si = self.gameObject.AddComponent<NetworkedSI>();
+                    NetworkServer.Spawn(si.gameObject);
                 }
+                si.SetItemCount(itemCount);
+                self.OnLevelChanged();//hack to avoid reflecting for a bool.
             }
         }
 
-        private void ResetHelperCount(Inventory inventory, ShieldInfusion infusion)
+        private void AddFlatShields(ILContext il)
         {
-            inventory.ResetItem(helperIndex);
-            inventory.GiveItem(helperIndex, infusion.MultiKills);
+            ILCursor c = new ILCursor(il);
+            int shieldsLoc = 33;
+            c.GotoNext(
+                MoveType.Before,
+                x => x.MatchLdloc(out shieldsLoc),
+                x => x.MatchCallvirt<CharacterBody>("set_maxShield")
+            );
+            c.Emit(OpCodes.Ldloc, shieldsLoc);
+            c.EmitDelegate<Func<CharacterBody, float, float>>((self, shields) =>
+            {
+                if (!self.inventory)
+                    return shields;
+                var si = self.GetComponent<NetworkedSI>();
+                if (si)
+                    shields +=  si.multikills * ShieldPerMK;
+                return shields;
+            });
+            c.Emit(OpCodes.Stloc, shieldsLoc);
+            c.Emit(OpCodes.Ldarg_0);
+        }
+
+        private void Inventory_ResetItem(On.RoR2.Inventory.orig_ResetItem orig, Inventory inventory, ItemIndex itemIndex)
+        {
+            if (itemIndex == Definition.itemIndex)
+            {
+                NetworkedSI si = inventory.GetComponentInParent<CharacterBody>()?.GetComponent<NetworkedSI>();
+                if (si != null)
+                {
+                    si.SetItemCount(0);
+                }
+            }
         }
 
         private void CharacterBodyOnAddMultiKill(On.RoR2.CharacterBody.orig_AddMultiKill orig, CharacterBody self, int kills)
@@ -194,61 +227,51 @@ namespace HarbCrate.Items
             orig(self, kills);
             if (self.inventory && self.multiKillCount % MultikillCountNeeded == 0 && self.inventory.GetItemCount(Definition.itemIndex) > 0)
             {
-                var SI = self.inventory.GetComponent<ShieldInfusion>();
-                SI.MultiKills += 1;
-                ResetHelperCount(self.inventory, SI);
-                StatsDirty.SetValue(self, true);
+                var si = self.GetComponent<NetworkedSI>();
+                if (!si)
+                {
+                    Log("NetworkedSI doesn't exist, yet we have the item!");
+                    return;
+                }
+                si.AddMultiKill();
+                self.OnLevelChanged();
             }
         }
-
         private void UpdateShieldInfusion(Inventory inventory, ItemIndex index, int count)
         {
             if (index != Definition.itemIndex)
                 return;
 
-            ShieldInfusion si = inventory.GetComponent<ShieldInfusion>();
-            if (si == null)
-            {
-                si = inventory.gameObject.AddComponent<ShieldInfusion>();
-                si.body = inventory.GetComponentInParent<CharacterBody>();
-            }
-            si.Count = count;
-            si.VerifyIntegrity();
-            ResetHelperCount(inventory, si);
-        }
-
-        public class ShieldInfusion : MonoBehaviour
-        {
-            private int multiKills;
-            private ItemIndex itemIndex;
-            public int Count;
-            public CharacterBody body;
-
-            public int MultiKills
-            {
-                get => multiKills;
-                set => multiKills = Math.Min(value, (MultKillsNeededForMaxValue * Math.Max(1, Count) + (Count - 1) * PerStack));
-            }
-
-            public void VerifyIntegrity()
-            {
-                MultiKills = MultiKills;
-            }
-
-            private void Start()
-            {
-                itemIndex = ((ShieldOnMultiKill)HarbCratePlugin.AllPickups[nameof(ShieldOnMultiKill)]).Definition.itemIndex;
-                if (body)
-                {
-                    body.onInventoryChanged += () =>
-                    {
-                        Count = body.inventory.GetItemCount(itemIndex);
-                    };
-                }
-            }
-
 
         }
     }
 
+    
+    public class NetworkedSI : NetworkBehaviour
+    {
+        [SyncVar]
+        public int multikills;
+
+        public int cachedItemCount;
+
+        public static ItemIndex ShieldOnMultiKillIndex;
+
+        public void AddMultiKill()
+        {
+            multikills++;
+            VerifyIntegrity();
+        }
+
+        public void SetItemCount(int newCount)
+        {
+            cachedItemCount = newCount;
+            VerifyIntegrity();
+        }
+
+        private void VerifyIntegrity()
+        {
+            int max = cachedItemCount * ShieldOnMultiKill.MultKillsNeededForMaxValue;
+            multikills = Math.Min(Math.Max(0, multikills), max);
+        }
+    }
 }
