@@ -4,25 +4,25 @@ using UnityEngine;
 namespace HarbCrate.Items
 {
     [Item]
-    internal sealed class Rubbish : Item
+    internal sealed class Fragment : Item
     {
-        public Rubbish() : base()
+        public Fragment() : base()
         {
             Name = new TokenValue
             {
-                Token = "HC_RUBBISH",
-                Value = "Rubbish"
+                Token = "HC_FRAGMENT",
+                Value = "Fragment"
             };
             Description = new TokenValue
             {
-                Token = "HC_RUBBISH_DESC",
+                Token = "HC_FRAGMENT_DESC",
                 Value =
                     "Every 3 of these you collect get turned into an item of a higher tier."
             };
             PickupText = new TokenValue
             {
-                Token = "HC_RUBBISH_PICKUP",
-                Value = "Useless. But one man's trash..."
+                Token = "HC_FRAGMENT_PICKUP",
+                Value = "A fragment of something greater."
             };
             AssetPath = "Prefabs/PickupModels/PickupMystery";
             SpritePath = "Textures/MiscIcons/texMysteryIcon";
