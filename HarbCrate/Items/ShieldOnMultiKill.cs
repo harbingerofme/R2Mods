@@ -163,10 +163,21 @@ namespace HarbCrate.Items
 
         public override void Hook()
         {
+            On.RoR2.BodyCatalog.Init += BodyCatalog_Init;
+
             IL.RoR2.CharacterBody.RecalculateStats += AddFlatShields;
             On.RoR2.Inventory.ResetItem += Inventory_ResetItem;
             On.RoR2.CharacterBody.AddMultiKill += CharacterBodyOnAddMultiKill;
             On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+        }
+
+        private void BodyCatalog_Init(On.RoR2.BodyCatalog.orig_Init orig)
+        {
+            orig();
+            foreach(CharacterBody cb in BodyCatalog.allBodyPrefabBodyBodyComponents)
+            {
+                cb.gameObject.AddComponent<NetworkedSI>();
+            }
         }
 
         private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
@@ -175,11 +186,10 @@ namespace HarbCrate.Items
             if (self.inventory.HasItem(this, out int itemCount))
             {
                 NetworkedSI si = self.GetComponent<NetworkedSI>();
-                if (si == null)
+                if (!si)
                 {
-                    Log("Adding NetworkedSI!");
-                    si = self.gameObject.AddComponent<NetworkedSI>();
-                    NetworkServer.Spawn(si.gameObject);
+                    Log("Missing si component!");
+                    return;
                 }
                 si.SetItemCount(itemCount);
                 self.OnLevelChanged();//hack to avoid reflecting for a bool.
@@ -228,10 +238,7 @@ namespace HarbCrate.Items
             {
                 var si = self.GetComponent<NetworkedSI>();
                 if (!si)
-                {
-                    Log("NetworkedSI doesn't exist, yet we have the item!");
                     return;
-                }
                 si.AddMultiKill();
                 self.OnLevelChanged();
             }
@@ -242,9 +249,9 @@ namespace HarbCrate.Items
     public class NetworkedSI : NetworkBehaviour
     {
         [SyncVar]
-        public int multikills;
+        public int multikills = 0;
 
-        public int cachedItemCount;
+        public int cachedItemCount = 0;
 
         public static ItemIndex ShieldOnMultiKillIndex;
 
