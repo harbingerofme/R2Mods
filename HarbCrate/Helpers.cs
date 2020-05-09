@@ -46,6 +46,11 @@ namespace HarbCrate
             plugin.AddLanguage(PickupText);
             plugin.AddLanguage(Lore);
         }
+
+        protected void Log(string message)
+        {
+            HarbCratePlugin.Log(message);
+        }
     }
 
     public abstract class Item : Pickup
