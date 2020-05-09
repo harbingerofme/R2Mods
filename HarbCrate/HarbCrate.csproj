@@ -62,7 +62,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /y $(TargetPath) $(ProjectDir)..\builds\" />
+    <Exec Command="robocopy $(TargetDir) $(ProjectDir)\NetworkWeaver $(TargetFileName) &gt; $(TargetDir)Robocopy&#xD;&#xA;cd $(ProjectDir)\NetworkWeaver&#xD;&#xA;Unity.UNetWeaver.exe &quot;..\..\libs\UnityEngine.CoreModule.dll&quot; &quot;..\..\libs\UnityEngine.Networking.dll&quot; &quot;Patched/&quot;  $(TargetFileName) &quot;..\..\libs&quot;&#xD;&#xA;del  $(TargetFileName).prepatch&#xD;&#xA;ren $(TargetFileName) $(TargetFileName).prepatch&#xD;&#xA;cd Patched&#xD;&#xA;robocopy . $(ProjectDir)..\builds\  $(TargetFileName) &gt; $(TargetDir)Robocopy&#xD;&#xA;del $(TargetFileName)&#xD;&#xA;del $(TargetDir)Robocopy" />
   </Target>
 
 </Project>
