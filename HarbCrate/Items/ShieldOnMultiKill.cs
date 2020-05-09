@@ -164,7 +164,6 @@ namespace HarbCrate.Items
         public override void Hook()
         {
             IL.RoR2.CharacterBody.RecalculateStats += AddFlatShields;
-            Inventory.onServerItemGiven += UpdateShieldInfusion;
             On.RoR2.Inventory.ResetItem += Inventory_ResetItem;
             On.RoR2.CharacterBody.AddMultiKill += CharacterBodyOnAddMultiKill;
             On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
@@ -236,13 +235,6 @@ namespace HarbCrate.Items
                 si.AddMultiKill();
                 self.OnLevelChanged();
             }
-        }
-        private void UpdateShieldInfusion(Inventory inventory, ItemIndex index, int count)
-        {
-            if (index != Definition.itemIndex)
-                return;
-
-
         }
     }
 
