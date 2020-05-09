@@ -14,10 +14,10 @@ namespace HarbCrate.Equipment
         {
             Cooldown = 64;
             Name = new TokenValue("HC_COLDSNAP", "Coldsnap");
-            PickupText = new TokenValue("HC_COLDSNAP_PICKUP", "Freeze nearby enemies.");
+            PickupText = new TokenValue("HC_COLDSNAP_PICKUP", "<style=cIsUtility>Freeze</style> nearby enemies.");
             Description = new TokenValue("HC_COLDSNAP_DESC",
-                $"Freeze nearby enemies for {FreezeDuration} seconds."
-                + " Frozen enemies can be executed."
+                $"<style=cIsUtility>Freeze</style> nearby enemies for {FreezeDuration} seconds."
+                + " Frozen enemies can be <style=cIsDamage>executed</style>."
             );
             IsLunar = false;
             IsEnigmaCompat = true;

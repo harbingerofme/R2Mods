@@ -1,4 +1,4 @@
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API;
 using RoR2;
@@ -23,9 +23,9 @@ namespace HarbCrate.Items
             Name = new TokenValue("HC_MAXSHIELDONMULTIKILL", "Obsidian Bouche");
             Description = new TokenValue(
                 "HC_MAXSHIELDONMULTIKILL_DESC",
-                $" Gain {ShieldPerMK} additional maximum shield on multikill."
-                + $" Maximum shield tops of at an aditional {MultKillsNeededForMaxValue * ShieldPerMK}<style=cStack>(+{PerStack * ShieldPerMK} per stack)</style>.");
-            PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum shield on multikill.");
+                $" Gain {ShieldPerMK} additional maximum <style=cIsHealing>shield</style> on multikill."
+                + $" Maximum <style=cIsHealing>shield</style> tops of at an aditional {MultKillsNeededForMaxValue * ShieldPerMK}<style=cStack>(+{MultKillsNeededForMaxValue * ShieldPerMK} per stack)</style>.");
+            PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum <style=cIsHealing>shield</style> on <style=cIsDamage>multikill</style>.");
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/GhorsWay.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/Bouche.png";
             Tags = new ItemTag[2]

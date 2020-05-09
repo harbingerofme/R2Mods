@@ -11,7 +11,7 @@ namespace HarbCrate.Equipment
 
             Name = new TokenValue("HC_WORMJAR", "The Writhing Jar");
             Description = new TokenValue("HC_WORMJAR_DESC",
-                "Summons a <style=cHealing>friendly</style> Magma Worm and a <style=cDeath>HOSTILE</cstyle> Overloading Magma Worm.");
+                "Summons a <style=cIsHealing>friendly</style> Magma Worm and a <style=cDeath>HOSTILE</cstyle> <color=blue>Overloading Magma Worm</color>.");
             PickupText = new TokenValue("HC_WORMJAR_DESC",
                 "Inside of you there's two worms. One is a friend, the other a monster. You are a <color=blue>monster</color>.");
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/2_Worm_Jar/WormJar.prefab";

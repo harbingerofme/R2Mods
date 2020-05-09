@@ -12,6 +12,9 @@ namespace HarbCrate.Items
     {
         public BrawnOverBrain() : base()
         {
+            const string cShield = "<style=cIsHealing>shield</style>";
+            const string cHealth = "<style=cIsHealing>health</style>";
+
             Name = new TokenValue
             {
                 Token = "HC_BOB",
@@ -21,15 +24,15 @@ namespace HarbCrate.Items
             {
                 Token = "HC_BOB_DESC",
                 Value =
-                    "50%(+0% per stack) debuff reduction whilst you have shield."
-                    + " 40%(+15% per stack)* of damage taken is taken from health before shield."
-                    + " This damage cannot kill while you have enough shield."
+                    $"<style=cIsUtility>50%</style><style=cStack>(+0% per stack)</style> <style=cIsUtility>debuff reduction</style> whilst you have {cShield}."
+                    + $" <style=cIsUtility>40%</style><style=cStack>((+15% per stack)</style>* of damage taken is taken from {cHealth} before {cShield}."
+                    + $" This damage <b>cannot</b> kill while you have enough {cShield}."
             };
             PickupText = new TokenValue
             {
                 Token = "HC_BOB_PICKUP",
-                Value = "A percentage of damage is taken from health before shield."
-                        + " 50% debuff reduction whilst you have shield."
+                Value = $"A percentage of damage is taken from {cHealth} before {cShield}."
+                        + $" <style=cIsUtility>50% debuff reduction</style> whilst you have {cShield}."
             };
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Tetrahdron/BoB.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Tetrahdron/bob.png";

@@ -20,15 +20,19 @@ namespace HarbCrate.Equipment
 
         public DivinationDistillate() : base()
         {
+            const string cShield = "<style=cIsHealing>shield</style>";
+            const string cHealth = "<style=cIsHealing>health</style>";
+
             Cooldown = 30;
             Name = new TokenValue("HC_LUCKJUICE", "Divination Distillate");
-            PickupText = new TokenValue("HC_LUCKJUICE_PICKUP", "Heal both health and shield for a short period of time. Luck increased while active.");
+            PickupText = new TokenValue("HC_LUCKJUICE_PICKUP", 
+                $"<style=cIsHealing>Heal</style> both {cHealth} and {cShield} for a short period of time. <style=cIsUtility>Luck</style> increased while active.");
             Description = new TokenValue("HC_LUCKJUICE_DESC",
-                $"Heal both health and shields for {DistillateDuration} seconds. Effects stops at full health and full shields." +
-                $" While under effect, your luck is greatly increased.");
+                $"Heal both {cHealth} and {cShield} for {DistillateDuration} seconds. Effects stops at full {cHealth} and full {cShield}." +
+                $" While under effect, your <style=cIsUtility>luck</style> is greatly increased.");
             var cbuff = new CustomBuff(
                 name: "HC_LUCKJUICE_BUFF",
-                iconPath: HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/texBuffLuck.png",
+                iconPath: HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/texBuffLuck",
                 buffColor: Color.Lerp(Color.red, Color.yellow, 0.5f),
                 canStack: false,
                 isDebuff: false
