@@ -1,4 +1,4 @@
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 
 namespace HarbCrate.Equipment
@@ -24,6 +24,9 @@ namespace HarbCrate.Equipment
 
             hostileCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscElectricWorm");
             friendCard = Resources.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscMagmaWorm");
+
+            DefaultScale *= 2.3f;
+            SetupDisplayRules();
         }
 
         private readonly SpawnCard hostileCard;

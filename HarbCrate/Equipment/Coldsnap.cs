@@ -29,6 +29,7 @@ namespace HarbCrate.Equipment
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/ColdSnap.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/coldsnap.png";
 
+            DefaultScale *= 60;
             SetupDisplayRules();
         }
 
@@ -75,6 +76,7 @@ namespace HarbCrate.Equipment
         public override void Hook()
         { }
 
+        /*
         private void SetupDisplayRules()
         {
             var Prefab = Resources.Load<GameObject>(AssetPath);
@@ -130,6 +132,6 @@ namespace HarbCrate.Equipment
             });
             DisplayRules["mdlHAND"] = DisplayRules["mdlToolbot"];
         }
-
+        */
     }
 }
