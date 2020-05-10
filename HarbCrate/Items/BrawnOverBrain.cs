@@ -34,6 +34,11 @@ namespace HarbCrate.Items
                 Value = $"A percentage of damage is taken from {cHealth} before {cShield}."
                         + $" <style=cIsUtility>50% debuff reduction</style> whilst you have {cShield}."
             };
+            Lore = new TokenValue
+            {
+                Token = "HC_BOB_LORE",
+                Value = "For loss, one must have\nFor defeat, one must try\n\nChange means to have an unnacceptable reality\n\nTo abandon, one must have\nTo win, one must try\n\nChange means to have an acceptable reality\n\nBeyond pain lies recovery\nBeyond rain lies the sun\n\nChange means to be wrong\n\nBefore disaster lies hope\nBefore death lies life\n\nChange means to be right\n\nAbandon then,your flesh.\nAbandon then,your frailty.\nCast your suffering away.\nEmbrace the balance between."
+            };
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Tetrahdron/BoB.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Tetrahdron/bob.png";
             Tier = ItemTier.Tier3;

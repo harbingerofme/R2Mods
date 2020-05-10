@@ -19,6 +19,11 @@ namespace HarbCrate.Equipment
                 $"<style=cIsUtility>Freeze</style> nearby enemies for {FreezeDuration} seconds."
                 + " Frozen enemies can be <style=cIsDamage>executed</style>."
             );
+            Lore = new TokenValue
+            {
+                Token = "HC_COLDSNAP_LORE",
+                Value = "Order: \"Instant Antiheat Crystal\"\r\nTracking Number: 23******\r\nEstimated Delivery: 02/29/2056\r\nShipping Method:  Standard/Fragile\r\nShipping Address: Tortoise Infrastructure, Salvador, Earth\r\nShipping Details:\r\n\r\nTo safeguard the interests of our clients, we need to up our fire proofing. I have ordered a test run of IACs for you. Install them and find out if they are worth investing into. "
+            };
             IsLunar = false;
             IsEnigmaCompat = true;
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/IceShard/ColdSnap.prefab";

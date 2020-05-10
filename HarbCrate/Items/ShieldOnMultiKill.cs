@@ -26,6 +26,9 @@ namespace HarbCrate.Items
                 $" Gain {ShieldPerMK} additional maximum <style=cIsHealing>shield</style> on multikill."
                 + $" Maximum <style=cIsHealing>shield</style> tops of at an aditional {MultKillsNeededForMaxValue * ShieldPerMK}<style=cStack>(+{MultKillsNeededForMaxValue * ShieldPerMK} per stack)</style>.");
             PickupText = new TokenValue("HC_MAXSHIELDONMULTIKILL_PICKUP", "Gain maximum <style=cIsHealing>shield</style> on <style=cIsDamage>multikill</style>.");
+            Lore = new TokenValue("HC_MAXSHIELDONMULTIKILL_LORE",
+                "Obsidian is an interesting material.\nUnlike what a popular games would have you believe, obsidian is relatively light and brittle.\nIt's a terrible material for shields.\nYou'll cut yourself on the edges and it will shatter on the slightest impact.\n\nHowever, a material made from the inside of a volcano has a certain charm to it.\nTo not acknowledge its mystical properties would be unwise.\nTherefore, we've build this shield.\nIt yearns to be back inside the volcano, to be inside the carnage, the heat.\n\nWill you fuel it, or break and shatter away?"
+                );
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/GhorsWay.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/Obsidian_Shield/Bouche.png";
             Tags = new ItemTag[2]

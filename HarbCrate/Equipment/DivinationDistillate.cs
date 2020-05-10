@@ -30,6 +30,8 @@ namespace HarbCrate.Equipment
             Description = new TokenValue("HC_LUCKJUICE_DESC",
                 $"Heal both {cHealth} and {cShield} for {DistillateDuration} seconds. Effects stops at full {cHealth} and full {cShield}." +
                 $" While under effect, your <style=cIsUtility>luck</style> is greatly increased.");
+            Lore = new TokenValue("HC_LUCKJUICE_LORE",
+                "Knowledge is fermented in pain and loss\nDistilled with reflection\nTo quench the thirst of those\nWho dream of enlightenment\n\nOpportunity is ripened in risk and rain\nRefined in a single moment\nTo fuel the hunger of those\nWho crave for avarice\n\n<i>Divination Distillate's model, effect and lore are deratives of Grinding Gear Games' version.</i>");
             var cbuff = new CustomBuff(
                 name: "HC_LUCKJUICE_BUFF",
                 iconPath: HarbCratePlugin.assetPrefix + "Assets/HarbCrate/DivDistillate/texBuffLuck",

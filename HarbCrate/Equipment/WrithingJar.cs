@@ -14,6 +14,8 @@ namespace HarbCrate.Equipment
                 "Summons a <style=cIsHealing>friendly</style> Magma Worm and a <style=cDeath>HOSTILE</cstyle> <color=blue>Overloading Magma Worm</color>.");
             PickupText = new TokenValue("HC_WORMJAR_DESC",
                 "Inside of you there's two worms. One is a friend, the other a monster. You are a <color=blue>monster</color>.");
+            Lore = new TokenValue("HC_WORMJAR_LORE",
+                "");
             AssetPath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/2_Worm_Jar/WormJar.prefab";
             SpritePath = HarbCratePlugin.assetPrefix + "Assets/HarbCrate/2_Worm_Jar/worm.png";
             Cooldown = 120f;

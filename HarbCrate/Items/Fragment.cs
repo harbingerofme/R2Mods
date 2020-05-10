@@ -24,6 +24,11 @@ namespace HarbCrate.Items
                 Token = "HC_FRAGMENT_PICKUP",
                 Value = "A fragment of something greater."
             };
+            Lore = new TokenValue
+            {
+                Token = "HC_FRAGMENT_LORE",
+                Value = "Do the stars tell us who we are?\nAfter wandering the stars for some decennia now, we can confidentily say,\n<b>\"yes\"</b>\nBecause you are either a spacefarer or you aren't.\nBut if asked if our fate is written there, I doubt it.\nThere's certainties everywhere if you are willing to look, but the stars are generally too far and too many to influence us.\n\nWe must choose our own fate, and grasp our own destiny."
+            };
             AssetPath = "Prefabs/PickupModels/PickupMystery";
             SpritePath = "Textures/MiscIcons/texMysteryIcon";
             Tier = ItemTier.Tier1;

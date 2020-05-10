@@ -109,8 +109,8 @@ namespace HarbCrate
         { }
 
         public float Cooldown;
-        public bool IsLunar;
-        public bool IsEnigmaCompat;
+        public bool IsLunar = false;
+        public bool IsEnigmaCompat = true;
         public abstract bool Effect(EquipmentSlot equipmentSlot);
 
         private CustomEquipment customDef;
@@ -146,6 +146,7 @@ namespace HarbCrate
                         pickupToken = PickupText.Token,
                         cooldown = Cooldown,
                         isLunar = IsLunar,
+                        canDrop = true,
                         enigmaCompatible = IsEnigmaCompat,
                         unlockableName = ""
                     };
