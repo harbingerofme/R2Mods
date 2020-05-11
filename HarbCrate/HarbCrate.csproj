@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <SignAssembly>false</SignAssembly>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
