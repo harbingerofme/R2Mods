@@ -224,6 +224,7 @@ namespace HarbCrate.Items
 
         private void Inventory_ResetItem(On.RoR2.Inventory.orig_ResetItem orig, Inventory inventory, ItemIndex itemIndex)
         {
+            orig(inventory, itemIndex);
             if (itemIndex == Definition.itemIndex)
             {
                 NetworkedSI si = inventory.GetComponentInParent<CharacterBody>()?.GetComponent<NetworkedSI>();

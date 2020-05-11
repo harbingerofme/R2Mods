@@ -78,7 +78,6 @@ namespace HarbCrate
                         tags = Tags,
                         loreToken = Lore.Token,
                         nameToken = Name.Token,
-                        itemIndex = ItemIndex.None,
                         pickupIconPath = SpritePath,
                         pickupModelPath = AssetPath,
                         pickupToken = PickupText.Token,

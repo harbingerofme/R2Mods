@@ -45,5 +45,8 @@ In no particular order:
 
 ### Changelog
 
+* 1.0.2
+	* fixed an oversight where the original method of `ResetItem` wasn't called. This caused an incompatibility with DronesInheritItems.
+
 * 1.0.1
 	* Fixed a bug where the names of items wouldn't be XML safe internally. This lead to run reports failing.

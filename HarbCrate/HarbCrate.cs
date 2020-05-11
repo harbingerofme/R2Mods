@@ -19,7 +19,7 @@ namespace HarbCrate
     {
         public const string Name = "HarbCrate";
         public const string GUID = "com.harbingerofme." + Name;
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
 
 
         private static BepInEx.Logging.ManualLogSource logger;

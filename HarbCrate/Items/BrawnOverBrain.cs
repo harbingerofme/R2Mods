@@ -25,7 +25,7 @@ namespace HarbCrate.Items
                 Token = "HC_BOB_DESC",
                 Value =
                     $"<style=cIsUtility>50%</style><style=cStack>(+0% per stack)</style> <style=cIsUtility>debuff reduction</style> whilst you have {cShield}."
-                    + $" <style=cIsUtility>40%</style><style=cStack>((+15% per stack)</style>* of damage taken is taken from {cHealth} before {cShield}."
+                    + $" <style=cIsUtility>40%</style><style=cStack>(+15% per stack)</style>* of damage taken is taken from {cHealth} before {cShield}."
                     + $" This damage <b>cannot</b> kill while you have enough {cShield}."
             };
             PickupText = new TokenValue
