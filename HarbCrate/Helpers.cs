@@ -70,7 +70,7 @@ namespace HarbCrate
                 {
                     _definiton = new ItemDef
                     {
-                        name = Name.Value,
+                        name = Name.Token,
                         canRemove = true,
                         descriptionToken = Description.Token,
                         hidden = (Tier == (Tier) - 1),
@@ -234,7 +234,7 @@ namespace HarbCrate
                 {
                     definition = new EquipmentDef()
                     {
-                        name = Name.Value,
+                        name = Name.Token,
                         descriptionToken = Description.Token,
                         loreToken = Lore.Token,
                         nameToken = Name.Token,
