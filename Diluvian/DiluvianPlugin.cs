@@ -1,6 +1,7 @@
 using BepInEx;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using R2API;
 using R2API.Utils;
 using RoR2;
 using System;
@@ -12,7 +13,7 @@ using EliteDef = RoR2.CombatDirector.EliteTierDef;
 namespace Diluvian
 {
 
-    [R2APISubmoduleDependency("DifficultyAPI", "ResourcesAPI", "AssetPlus")]
+    [R2APISubmoduleDependency("DifficultyAPI", "ResourcesAPI", "LanguageAPI")]
     //DifficultyAPI: I am adding a difficulty.
     //ResourcesAPI:  I am loading in a custom icon.
     //Assetplus:     For the massive amounts of text replacement.
@@ -27,7 +28,7 @@ namespace Diluvian
         public const string
             NAME = "Diluvian",
             GUID = "com.harbingerofme." + NAME,
-            VERSION = "1.0.3";
+            VERSION = "1.1.0";
 
         //Defining The difficultyDef of Diluvian.
         private readonly Color DiluvianColor = new Color(0.61f, 0.07f, 0.93f);
@@ -64,12 +65,14 @@ namespace Diluvian
 
         private Diluvian()
         {
-            DiluvianDef = new RoR2.DifficultyDef(
+            DiluvianDef = new DifficultyDef(
                             DiluvianCoef,
                             "DIFFICULTY_DILUVIAN_NAME",
                             assetString,
                             "DIFFICULTY_DILUVIAN_DESCRIPTION",
-                            DiluvianColor
+                            DiluvianColor,
+                            "DIL",
+                            true
                             );
             DefaultLanguage = new Dictionary<string, string>();
         }
@@ -101,7 +104,7 @@ namespace Diluvian
             DiluvianIndex = R2API.DifficultyAPI.AddDifficulty(DiluvianDef);
 
             //Create my description.
-            R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DILUVIAN_NAME", "Diluvian");
+            LanguageAPI.Add("DIFFICULTY_DILUVIAN_NAME", "Diluvian");
             string description = "For those found wanting. <style=cDeath>N'Kuhana</style> watches with interest.<style=cStack>\n";
             description = string.Join("\n",
                 description,
@@ -116,7 +119,7 @@ namespace Diluvian
 
                 );
             description += "</style>";
-            R2API.AssetPlus.Languages.AddToken("DIFFICULTY_DILUVIAN_DESCRIPTION", description);
+            LanguageAPI.Add("DIFFICULTY_DILUVIAN_DESCRIPTION", description);
 
             //This is where my hooks live. They themselves are events, not ONhooks
             RoR2.Run.onRunStartGlobal += Run_onRunStartGlobal;
@@ -128,7 +131,7 @@ namespace Diluvian
         private void ReplaceString(string token, string newText)
         {
             DefaultLanguage[token] = RoR2.Language.GetString(token);
-            R2API.AssetPlus.Languages.AddToken(token, newText, reload: false);
+            LanguageAPI.Add(token, newText);
         }
 
 
@@ -162,12 +165,12 @@ namespace Diluvian
                 ReplaceObjectives();
                 ReplacePause();
                 ReplaceStats();
-                //Forcefully update the language.
-                R2API.AssetPlus.Languages.ReloadLanguage();
+                //Forcefully update the language
             }
         }
 
         //Failed code for keeping the teleporter director enabled. The game disagreees with me that this code sets it to disabled.
+        /*
         private void ChargingState_OnExit(ILContext il)
         {
             ILCursor c = new ILCursor(il);
@@ -186,7 +189,7 @@ namespace Diluvian
                 }
             );
         }
-
+        */
 
         private void Run_onRunDestroyGlobal(RoR2.Run obj)
         {
@@ -212,9 +215,8 @@ namespace Diluvian
                 //Restore vanilla text.
                 DefaultLanguage.ForEachTry((pair) =>
                 {
-                    R2API.AssetPlus.Languages.AddToken(pair.Key, pair.Value, reload: false);
+                    LanguageAPI.Add(pair.Key, pair.Value);
                 });
-                R2API.AssetPlus.Languages.ReloadLanguage();
                 HooksApplied = false;
             }
         }
