@@ -1,0 +1,9 @@
+﻿{
+  "name": "InstallationChecker",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/harbingerofme/R2Mods",
+  "description": "Helps tech-support by dumping your bepinex folder in the log.",
+  "dependencies": [
+    "bbepis-BepInExPack-3.2.0"
+  ]
+}

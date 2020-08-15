@@ -37,7 +37,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HarbTweaks", "HarbTweaks\Ha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diluvian", "Diluvian\Diluvian.csproj", "{4F68D398-C047-4E7B-AA83-62C311D86780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{B7BA0FFB-2984-4150-9A93-02A55792CA5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{B7BA0FFB-2984-4150-9A93-02A55792CA5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatsAnnex", "StatsAnnex\StatsAnnex.csproj", "{E1DA4BA3-ECD4-4D0D-A110-621B6C8FBE6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallationChecker", "InstallationChecker\InstallationChecker.csproj", "{96EAC145-BCB4-4E92-8C4F-EEB69F762B22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +101,14 @@ Global
 		{B7BA0FFB-2984-4150-9A93-02A55792CA5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7BA0FFB-2984-4150-9A93-02A55792CA5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7BA0FFB-2984-4150-9A93-02A55792CA5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1DA4BA3-ECD4-4D0D-A110-621B6C8FBE6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1DA4BA3-ECD4-4D0D-A110-621B6C8FBE6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1DA4BA3-ECD4-4D0D-A110-621B6C8FBE6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1DA4BA3-ECD4-4D0D-A110-621B6C8FBE6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96EAC145-BCB4-4E92-8C4F-EEB69F762B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96EAC145-BCB4-4E92-8C4F-EEB69F762B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96EAC145-BCB4-4E92-8C4F-EEB69F762B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96EAC145-BCB4-4E92-8C4F-EEB69F762B22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.1</LangVersion>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoMod" Version="20.5.21.5" />
+    <PackageReference Include="MonoMod.Common" Version="20.5.31.1" />
+    <PackageReference Include="MonoMod.RuntimeDetour" Version="20.5.21.5" />
+    <PackageReference Include="MonoMod.Utils" Version="20.5.21.5" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -12,6 +21,9 @@
     <Reference Include="BepInEx">
       <HintPath>..\libs\BepInEx.dll</HintPath>
       <Private>false</Private>
+    </Reference>
+    <Reference Include="Diluvian">
+      <HintPath>..\builds\Diluvian.dll</HintPath>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\libs\MMHOOK_Assembly-CSharp.dll</HintPath>
@@ -31,4 +43,16 @@
     </Reference>
   </ItemGroup>
 
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo blah &gt; $(ProjectDir)test.txt" />
+    <Exec Command="echo blah &gt; $(ProjectDir)test2.txt" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)|$(Platform)'!='Release|AnyCPU'">
+    <Exec Command="echo blah &gt; $(ProjectDir)test3.txt" />
+    <Exec Command="echo blah &gt; $(ProjectDir)test4.txt" />
+  </Target>
+  
+  
 </Project>

@@ -1,5 +1,7 @@
 ﻿using BepInEx;
-using UnityEngine;
+using System.Reflection;
+using MonoMod.RuntimeDetour;
+using System.Collections.Generic;
 
 /*
 using R2API;
@@ -24,7 +26,8 @@ using R2API.Utils;
 namespace Test
 {
 
-    //[BepInDependency("com.bepis.r2api")]
+    [BepInDependency("com.bepis.r2api")]
+    [BepInDependency(Diluvian.Diluvian.GUID)]
     //[R2APISubmoduleDependency(nameof(yourDesiredAPI))]
     [BepInPlugin(GUID, MODNAME, VERSION)]
     public sealed class TestPlugin : BaseUnityPlugin
@@ -35,16 +38,25 @@ namespace Test
             GUID = "com." + AUTHOR + "." + MODNAME,
             VERSION = "0.0.0";
 
+        private Dictionary<string, string> overrides;
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Awake is automatically called by Unity")]
         private void Awake() //Called when loaded by BepInEx.
         {
-            On.RoR2.SpiteBombController.OnFinalBounce += SpiteBombController_OnFinalBounce;
+            overrides = new Dictionary<string, string>();
+            overrides.Add("ITEM_BEAR_PICKUP", "testing");
+            overrides.Add("OBJECTIVE_FIND_TELEPORTER", "EAT BANANA");
+
+            var origmethod = typeof(Diluvian.Diluvian).GetMethod("ReplaceString", BindingFlags.NonPublic | BindingFlags.Instance);
+            var targetmethod = typeof(TestPlugin).GetMethod(nameof(OnReplaceText), BindingFlags.NonPublic | BindingFlags.Instance);
+            new Hook(origmethod, targetmethod, this);
         }
 
-        private void SpiteBombController_OnFinalBounce(On.RoR2.SpiteBombController.orig_OnFinalBounce orig, RoR2.SpiteBombController self)
+
+        private void OnReplaceText(del_rep_text orig, Diluvian.Diluvian diluvian, string token, string text)
         {
-            Debug.LogWarning(self.delayBlast.procCoefficient);
-            orig(self);
+            if (overrides.ContainsKey(token)) text = overrides[token];
+            orig(diluvian, token, text);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Start is automatically called by Unity")]
@@ -53,4 +65,6 @@ namespace Test
 
         }
     }
+
+    internal delegate void del_rep_text(Diluvian.Diluvian self,string token, string text);
 }

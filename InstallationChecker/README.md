@@ -1,0 +1,1 @@
+﻿Mod to help people in the #tech-support channel of the modding discord found at the top of the thunderstore page.
