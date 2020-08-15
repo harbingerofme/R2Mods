@@ -16,12 +16,10 @@ namespace Diluvian
     [R2APISubmoduleDependency("DifficultyAPI", "ResourcesAPI", "LanguageAPI")]
     //DifficultyAPI: I am adding a difficulty.
     //ResourcesAPI:  I am loading in a custom icon.
-    //Assetplus:     For the massive amounts of text replacement.
+    //LanguageAPI:     For the massive amounts of text replacement.
 
     [BepInDependency(R2API.R2API.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
-    //I need R2API.
     [BepInDependency("com.jarlyk.eso", BepInDependency.DependencyFlags.SoftDependency)]
-    //ESO does stuff with elites.
     [BepInPlugin(GUID, NAME, VERSION)]
     public class Diluvian : BaseUnityPlugin
     {
@@ -113,8 +111,8 @@ namespace Diluvian
                 ">Player luck: Reduced in some places.",
                 $">Monster Health Regeneration: +{MonsterRegen * 100}% of MaxHP per second (out of danger)",
                 ">Oneshot Protection: Also applies to monsters",
-                $">Oneshot Protection: Protects only {100 - 100 * NewOSPTreshold}%",
-                $">Elites: {(1 - EliteModifier) * 100}% cheaper.",
+                $">Oneshot Protection: Protects {100 - 100 * NewOSPTreshold}% at best.",
+                ESOenabled? ">Elites: Handled by Elite Spawning Overhaul." : $">Elites: {(1 - EliteModifier) * 100}% cheaper.",
                 ">Shrine of Blood: Cost hidden and random."
 
                 );
@@ -144,7 +142,7 @@ namespace Diluvian
                 //Make our hooks.
                 HooksApplied = true;
                 IL.RoR2.HealthComponent.TakeDamage += UnluckyBears;
-                IL.RoR2.HealthComponent.TakeDamage += ChangeOSP;
+                On.RoR2.CharacterBody.RecalculateStats += ChangeOSP;
                 IL.RoR2.CharacterBody.RecalculateStats += AdjustRegen;
                 RoR2.TeleporterInteraction.onTeleporterFinishGlobal += MakeSureBonusDirectorDiesOnStageFinish;
                 //
@@ -197,7 +195,7 @@ namespace Diluvian
             {
                 //Remove all of our hooks on run end and restore elite tables to their original value.
                 IL.RoR2.HealthComponent.TakeDamage -= UnluckyBears;
-                IL.RoR2.HealthComponent.TakeDamage -= ChangeOSP;
+                On.RoR2.CharacterBody.RecalculateStats += ChangeOSP;
                 IL.RoR2.CharacterBody.RecalculateStats -= AdjustRegen;
                 //RoR2.TeleporterInteraction.onTeleporterChargedGlobal += NoSafetyAfterFinishCharging;
                 //IL.RoR2.TeleporterInteraction.StateFixedUpdate -= NoSafetyAfterFinishCharging;
@@ -221,6 +219,17 @@ namespace Diluvian
             }
         }
 
+        private void ChangeOSP(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
+        {
+            orig(self);
+            if(self.teamComponent!=null && self.teamComponent.teamIndex == TeamIndex.Monster) { 
+                self.SetPropertyValue("hasOneShotProtection",true);
+            }
+            if (self.oneShotProtectionFraction >= 1-NewOSPTreshold)
+            {
+                self.SetPropertyValue("oneShotProtectionFraction", 1 - NewOSPTreshold);
+            }
+        }
 
         private void BloodShrinePriceRandom(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, RoR2.ShrineBloodBehavior self)
         {
@@ -298,8 +307,8 @@ namespace Diluvian
         {
             ILCursor c = new ILCursor(il);
             c.GotoNext(
-                x => x.MatchLdcI4((int)ItemIndex.Bear),
-                x => x.MatchCallvirt<RoR2.Inventory>("GetItemCount")
+                x => x.MatchLdflda(typeof(HealthComponent), "itemCounts"),
+                x => x.MatchLdfld("RoR2.HealthComponent/ItemCounts", "bear")
                 );
             c.GotoNext(MoveType.Before,
                 x => x.MatchLdcR4(0),//This is the luck value used in CheckRoll for toughertimes.
@@ -308,29 +317,6 @@ namespace Diluvian
                 );
             c.Remove();
             c.Emit(OpCodes.Ldc_R4, -1f);//We replace it with -1. Because no mercy.
-        }
-
-        private void ChangeOSP(ILContext il)
-        {
-            try
-            {
-                ILCursor c = new ILCursor(il);
-                c.GotoNext(MoveType.After,//move to right after the call to check if it's a player.
-                    x => x.MatchCallvirt<RoR2.HealthComponent>("get_hasOneshotProtection")
-                    );
-                c.Emit(OpCodes.Pop);//remove the result from the stack
-                c.Emit(OpCodes.Ldc_I4_1);//put "true" on the stack.
-                c.GotoNext(MoveType.After,//go to right after the 0.9 from OSP
-                        x => x.MatchLdcR4(0.9f)
-                        );
-                c.Emit(OpCodes.Pop);//Remove the 0.9
-                c.Emit(OpCodes.Ldc_R4, NewOSPTreshold);//Put my valye there instead.
-            }
-            catch (Exception e) //probably pointless.
-            {
-                Logger.LogWarning("Couldn't modify OneShotProtection. Maybe you have a mod interfering. Game might act weird.");
-                Logger.LogError(e);
-            }
         }
 
 
