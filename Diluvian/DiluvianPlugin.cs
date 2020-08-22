@@ -1,386 +1,212 @@
 using BepInEx;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
+using BepInEx.Configuration;
+using BepInEx.Logging;
 using R2API;
 using R2API.Utils;
 using RoR2;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using EliteDef = RoR2.CombatDirector.EliteTierDef;
+using UnityEngine.UI;
 
 namespace Diluvian
 {
 
-    [R2APISubmoduleDependency("DifficultyAPI", "ResourcesAPI", "LanguageAPI")]
-    //DifficultyAPI: I am adding a difficulty.
-    //ResourcesAPI:  I am loading in a custom icon.
-    //LanguageAPI:     For the massive amounts of text replacement.
-
+    [R2APISubmoduleDependency(nameof(DifficultyAPI),nameof(ResourcesAPI),nameof(LanguageAPI),nameof(UnlockablesAPI))]
     [BepInDependency(R2API.R2API.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.jarlyk.eso", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(GUID, NAME, VERSION)]
-    public class Diluvian : BaseUnityPlugin
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod,VersionStrictness.EveryoneNeedSameModVersion)]
+    public class DiluvianPlugin : BaseUnityPlugin
     {
         public const string
             NAME = "Diluvian",
             GUID = "com.harbingerofme." + NAME,
-            VERSION = "1.1.0";
+            VERSION = "2.0.0";
 
-        //Defining The difficultyDef of Diluvian.
-        private readonly Color DiluvianColor = new Color(0.61f, 0.07f, 0.93f);
-        private readonly float DiluvianCoef = 3.5f;
-        private readonly RoR2.DifficultyDef DiluvianDef;
-        private DifficultyIndex DiluvianIndex;
+        internal static DiluvianPlugin instance;
 
-        //DiluvianModifiers:
-        private const float EliteModifier = 0.8f;
-        private const float HealthRegenMultiplier = -0.6f;
-        private const float MonsterRegen = 0.015f;
-        private const float NewOSPTreshold = 0.99f;
+        public static ManualLogSource GetLogger() { if (instance != null) return instance.Logger; return null; }
 
         //ResourceAPI stuff.
-        private const string assetPrefix = "@HarbDiluvian";
-        private const string assetString = assetPrefix + ":Assets/Diluvian/DiluvianIcon.png";
+        internal const string assetPrefix = "@HarbDiluvian";
+        internal const string assetString = assetPrefix + ":Assets/Diluvian/";
         //The Assetbundle bundled into the dll has the path above to the icon.
         //When replicating make sure the icon is saved as a sprite.
 
         //Hold for the old language so that we can restore it.
         private readonly Dictionary<string, string> DefaultLanguage;
         //Keeping track of ESO
-        private bool ESOenabled = false;
+        internal static bool ESOenabled = false;
         //Keeping track of internal state.
         private bool HooksApplied = false;
         //Remember vanilla values.
-        private float[] vanillaEliteMultipliers;
-        //Cache the array for the combatdirector.
-        private EliteDef[] CombatDirectorTierDefs;
-        //Cache the fieldinfo for bloodshrines.
-        private FieldInfo BloodShrineWaitingForRefresh;
-        private FieldInfo BloodShrinePurchaseInteraction;
 
+        internal static Dictionary<DifficultyIndex, HarbDifficultyDef> myDefs;
 
-        private Diluvian()
+        internal static DifficultyIndex EDindex;
+        internal static DifficultyIndex Dindex;
+        internal static RuleChoiceDef EDrule;
+
+        internal static ConfigEntry<String> diluvianArtist;
+        internal static ConfigEntry<String> syzygyArtist;
+
+        private DiluvianPlugin()
         {
-            DiluvianDef = new DifficultyDef(
-                            DiluvianCoef,
-                            "DIFFICULTY_DILUVIAN_NAME",
-                            assetString,
-                            "DIFFICULTY_DILUVIAN_DESCRIPTION",
-                            DiluvianColor,
-                            "DIL",
-                            true
-                            );
+            instance = this;
             DefaultLanguage = new Dictionary<string, string>();
+            myDefs = new Dictionary<DifficultyIndex, HarbDifficultyDef>();
         }
 
         public void Awake()
         {
             //acquire my assetbundle and give it to the resource api.
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Diluvian.diluvian"))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Diluvian.Resources.diluvian"))
             {
                 var bundle = AssetBundle.LoadFromStream(stream);
                 var provider = new R2API.AssetBundleResourcesProvider(assetPrefix, bundle);
-                R2API.ResourcesAPI.AddProvider(provider);
+                ResourcesAPI.AddProvider(provider);
             }
             //Check ESO existence.
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.jarlyk.eso"))
             {
                 ESOenabled = true;
-                Logger.LogWarning("ESO detected: Delegating Elite modifications to them. Future support planned.");
+                Logger.LogWarning("Using ESO's elite cards!");
             }
-            //Index tierDef array.
-            CombatDirectorTierDefs = (EliteDef[])typeof(RoR2.CombatDirector).GetFieldCached("eliteTiers").GetValue(null);
-            //Init array because we now know the size.
-            vanillaEliteMultipliers = new float[CombatDirectorTierDefs.Length];
-            //Cache the BloodshrineBehaviour field.
-            BloodShrineWaitingForRefresh = typeof(RoR2.ShrineBloodBehavior).GetField("waitingForRefresh", BindingFlags.Instance | BindingFlags.NonPublic);
-            BloodShrinePurchaseInteraction = typeof(RoR2.ShrineBloodBehavior).GetField("purchaseInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            //Acquire my index from R2API.
-            DiluvianIndex = R2API.DifficultyAPI.AddDifficulty(DiluvianDef);
+            diluvianArtist = Config.Bind(new ConfigDefinition("Art", "Diluvian"), "avizvul",new ConfigDescription("The artist for the diluvian icon. Options: \"harb\",\"avizvul\",\"horus\"",new AcceptableValueList<string>(new string[] { "avizvul","harb","horus"})));
+            syzygyArtist = Config.Bind(new ConfigDefinition("Art", "OTHER"), "avizvul",new ConfigDescription("The artist for the other icon.Options: \"harb\",\"avizvul\"",new AcceptableValueList<string>(new string[] { "avizvul", "harb" })));
 
-            //Create my description.
-            LanguageAPI.Add("DIFFICULTY_DILUVIAN_NAME", "Diluvian");
-            string description = "For those found wanting. <style=cDeath>N'Kuhana</style> watches with interest.<style=cStack>\n";
-            description = string.Join("\n",
-                description,
-                $">Difficulty Scaling: +{DiluvianDef.scalingValue * 50 - 100}%",
-                $">Player Health Regeneration: {(int)(HealthRegenMultiplier * 100)}%",
-                ">Player luck: Reduced in some places.",
-                $">Monster Health Regeneration: +{MonsterRegen * 100}% of MaxHP per second (out of danger)",
-                ">Oneshot Protection: Also applies to monsters",
-                $">Oneshot Protection: Protects {100 - 100 * NewOSPTreshold}% at best.",
-                ESOenabled? ">Elites: Handled by Elite Spawning Overhaul." : $">Elites: {(1 - EliteModifier) * 100}% cheaper.",
-                ">Shrine of Blood: Cost hidden and random."
+            UnlockablesAPI.AddUnlockable<DiluvianCompletedAchievement>(true);
+            LanguageAPI.Add("COMPLETE_MAINENDING_DILUVIAN_NAME", "Unobscured. Unblinking. Unrelenting.");
+            LanguageAPI.Add("COMPLETE_MAINENDING_DILUVIAN_DESC", "Completed the game on Diluvian.");
+            LanguageAPI.Add("DIFFICULTY_ECLIPSED_DILUVIAN_NAME", "what is this field for?");
 
-                );
-            description += "</style>";
-            LanguageAPI.Add("DIFFICULTY_DILUVIAN_DESCRIPTION", description);
+            DiluvianDifficulty.def = new DiluvianDifficulty();
+            Dindex = DifficultyAPI.AddDifficulty(DiluvianDifficulty.def.DifficultyDef);
+            myDefs.Add(Dindex, DiluvianDifficulty.def);
+            Syzygy.def = new Syzygy();
+            EDindex  = DifficultyAPI.AddDifficulty(Syzygy.def.DifficultyDef,true);
+            myDefs.Add(EDindex, Syzygy.def);
+
+            On.RoR2.RuleDef.FromDifficulty += RuleDef_FromDifficulty;
+            On.RoR2.UI.RuleCategoryController.SetData += RuleCategoryController_SetData;
+
 
             //This is where my hooks live. They themselves are events, not ONhooks
-            RoR2.Run.onRunStartGlobal += Run_onRunStartGlobal;
-            RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
+            Run.onRunStartGlobal += Run_onRunStartGlobal;
+            Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
+            On.RoR2.UI.CurrentDifficultyIconController.Start += CurrentDifficultyIconController_Start;
 
         }
 
-        //Because I want to restore the orignal strings when replacing them with assetplus, I store them prior to replacing them.
-        private void ReplaceString(string token, string newText)
+        private void CurrentDifficultyIconController_Start(On.RoR2.UI.CurrentDifficultyIconController.orig_Start orig, MonoBehaviour self)
         {
-            DefaultLanguage[token] = RoR2.Language.GetString(token);
-            LanguageAPI.Add(token, newText);
-        }
-
-
-        private void Run_onRunStartGlobal(RoR2.Run run)
-        {
-            //Only do stuff when Diluvian is selected.
-            if (run.selectedDifficulty == DiluvianIndex && HooksApplied == false)
+            orig(self);
+            /*
+            if(Run.instance && myDefs.TryGetValue(Run.instance.selectedDifficulty, out var def))
             {
-                ChatMessage.SendColored("A storm is brewing...", DiluvianColor);
+                self.GetComponent<Image>().sprite = UnityEngine.Resources.Load<Sprite>(assetString + def.DifficultyDef.iconPath);
+            }*/
+        }
+
+        private void RuleCategoryController_SetData(On.RoR2.UI.RuleCategoryController.orig_SetData orig, RoR2.UI.RuleCategoryController self, RuleCategoryDef categoryDef, RuleChoiceMask availability, RuleBook ruleBook)
+        {
+            if(categoryDef.displayToken == "RULE_HEADER_DIFFICULTY" && EDrule !=null)
+            {
+                try
+                {
+                    bool knowsED = AchievementManager.GetUserAchievementManager(LocalUserManager.GetFirstLocalUser()).userProfile.HasAchievement("COMPLETE_MAINENDING_DILUVIAN");
+                    if (knowsED)
+                    {
+                        Syzygy.Unlocked();   
+                    }
+                    else
+                    {
+                        Syzygy.Locked();
+                    }
+                    EDrule.spritePath = assetString + Syzygy.def.IconPath;
+                    reloadLanguage();
+                }
+                catch(Exception e)
+                {
+                    Logger.LogWarning(e);
+                }
+            }
+            orig(self, categoryDef, availability, ruleBook);
+        }
+
+        private RuleDef RuleDef_FromDifficulty(On.RoR2.RuleDef.orig_FromDifficulty orig)
+        {
+            var origReturn = orig();
+            EDrule = origReturn.choices.First((def) =>
+           {
+               return def.difficultyIndex == EDindex;
+           });
+            return origReturn;
+        }
+
+
+        private void Run_onRunStartGlobal(Run run)
+        {
+            Logger.LogDebug("Run started on difficulty index: "+run.selectedDifficulty);
+            //Only do stuff when Diluvian is selected.
+            if (myDefs.TryGetValue(run.selectedDifficulty, out var def) && HooksApplied == false)
+            {
+                var message = def.StartMessages[Run.instance.runRNG.RangeInt(0, def.StartMessages.Length)];
+                ChatMessage.SendColored(message, def.Color);
                 //Make our hooks.
                 HooksApplied = true;
-                IL.RoR2.HealthComponent.TakeDamage += UnluckyBears;
-                On.RoR2.CharacterBody.RecalculateStats += ChangeOSP;
-                IL.RoR2.CharacterBody.RecalculateStats += AdjustRegen;
-                RoR2.TeleporterInteraction.onTeleporterFinishGlobal += MakeSureBonusDirectorDiesOnStageFinish;
-                //
-                if (!ESOenabled)
-                {
-                    for (int i = 0; i < CombatDirectorTierDefs.Length; i++)
-                    {
-                        EliteDef tierDef = CombatDirectorTierDefs[i];
-                        vanillaEliteMultipliers[i] = tierDef.costMultiplier;
-                        tierDef.costMultiplier *= EliteModifier;
-                    }
-                }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinePriceRandom;
 
-                //All of these replace strings.
-                ReplaceInteractibles();
-                ReplaceItems();
-                ReplaceObjectives();
-                ReplacePause();
-                ReplaceStats();
-                //Forcefully update the language
+                
+                SharedHooks.ApplyRegenChanges(def.HealthRegenMod, def.MonsterRegenMod);
+                SharedHooks.ApplyBears();
+                SharedHooks.ApplyOSPHook();
+                SharedHooks.SetupCombatDirectorChanges(def.EliteModifier);
+                SharedHooks.ApplyBloodShrineRandom();
+                def.ApplyHooks();
+                BuildLanguage(def.Language,true);
             }
         }
 
-        //Failed code for keeping the teleporter director enabled. The game disagreees with me that this code sets it to disabled.
-        /*
-        private void ChargingState_OnExit(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            c.GotoNext(MoveType.After,//Position our cursor far forward.
-                x => x.MatchCallOrCallvirt<TeleporterInteraction.ChargingState>("get_bonusDirector")//13	002B	call	instance class RoR2.CombatDirector RoR2.TeleporterInteraction/ChargingState::get_bossDirector()
-                );
-            c.GotoNext(MoveType.Before,
-                x => x.MatchCallOrCallvirt<TeleporterInteraction.ChargingState>("get_bonusDirector"),
-                x => x.MatchLdcI4(0)
-                );
-            c.Index += 1;//Move our cursor between the instructions just matched.
-            c.RemoveRange(2);//remove the 'false' and the enabled call of the bonusdirector
-            c.EmitDelegate<Action<RoR2.CombatDirector>>((director) =>
-                {
-                    director.expRewardCoefficient = 0f;//make the monsters not worth anything after the teleporter has finished charging.
-                }
-            );
-        }
-        */
 
-        private void Run_onRunDestroyGlobal(RoR2.Run obj)
+        private void Run_onRunDestroyGlobal(Run run)
         {
-            if (HooksApplied)
+            if (myDefs.TryGetValue(run.selectedDifficulty, out var def) && HooksApplied)
             {
                 //Remove all of our hooks on run end and restore elite tables to their original value.
-                IL.RoR2.HealthComponent.TakeDamage -= UnluckyBears;
-                On.RoR2.CharacterBody.RecalculateStats += ChangeOSP;
-                IL.RoR2.CharacterBody.RecalculateStats -= AdjustRegen;
-                //RoR2.TeleporterInteraction.onTeleporterChargedGlobal += NoSafetyAfterFinishCharging;
-                //IL.RoR2.TeleporterInteraction.StateFixedUpdate -= NoSafetyAfterFinishCharging;
-                RoR2.TeleporterInteraction.onTeleporterFinishGlobal -= MakeSureBonusDirectorDiesOnStageFinish;
-                if (!ESOenabled)
-                {
-                    for (int i = 0; i < CombatDirectorTierDefs.Length; i++)
-                    {
-                        EliteDef tierDef = CombatDirectorTierDefs[i];
-                        tierDef.costMultiplier = vanillaEliteMultipliers[i];
-                    }
-                }
-                On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinePriceRandom;
+                
+                SharedHooks.UndoRegenChanges();
+                SharedHooks.UndoBears();
+                SharedHooks.UndoCombatDirectorChanges();
+                SharedHooks.UndoOSPHook();
+                SharedHooks.UndoBloodShrineRandom();
 
-                //Restore vanilla text.
-                DefaultLanguage.ForEachTry((pair) =>
-                {
-                    LanguageAPI.Add(pair.Key, pair.Value);
-                });
+                BuildLanguage(DefaultLanguage,false);
+                DefaultLanguage.Clear();
+
+                def.UndoHooks();
                 HooksApplied = false;
             }
         }
 
-        private void ChangeOSP(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
+        private void BuildLanguage(Dictionary<string, string> dict, bool storeValue)
         {
-            orig(self);
-            if(self.teamComponent!=null && self.teamComponent.teamIndex == TeamIndex.Monster) { 
-                self.SetPropertyValue("hasOneShotProtection",true);
-            }
-            if (self.oneShotProtectionFraction >= 1-NewOSPTreshold)
+            dict.ForEachTry((pair) =>
             {
-                self.SetPropertyValue("oneShotProtectionFraction", 1 - NewOSPTreshold);
-            }
-        }
-
-        private void BloodShrinePriceRandom(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, RoR2.ShrineBloodBehavior self)
-        {
-            //This 'if' is essentially the same as the first line of the orig method(, save that they don't need to do reflection).
-            if ((bool)BloodShrineWaitingForRefresh.GetValue(self))
-            {
-                orig(self);
-                //reflect to get the purchaseinteractioncomponent. I then get a random number to change it's price. The price is hidden by the language modification.
-                RoR2.PurchaseInteraction pi = ((RoR2.PurchaseInteraction)BloodShrinePurchaseInteraction.GetValue(self));
-                if (pi)
-                {
-                    pi.Networkcost = RoR2.Run.instance.stageRng.RangeInt(50, 100);
-                }
-            }
-        }
-
-
-        private void MakeSureBonusDirectorDiesOnStageFinish(RoR2.TeleporterInteraction obj)
-        {
-            if (obj.bonusDirector && obj.bonusDirector.enabled)
-            {
-                obj.bonusDirector.enabled = false;
-            }
-
-        }
-
-        private void AdjustRegen(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            int monsoonPlayerHelperCountIndex = 25;//This value doesn't need to be set, but I set it to keep track of what it's expected to be.
-            c.GotoNext(//Since this is only to move the cursor, no explicit movetyp is given as I don't care.
-                x => x.MatchLdcI4((int)ItemIndex.MonsoonPlayerHelper),//Find where the itemcount of the monsoon regen modifier is called
-                x => x.MatchCallvirt<RoR2.Inventory>("GetItemCount"),
-                x => x.MatchStloc(out monsoonPlayerHelperCountIndex)//Then use the `out` keyword to store the index of the local holding the count.
-                );
-            int regenMultiIndex = 44;//Again this is the expected index,  but I'll be overwriting it.
-            c.GotoNext(MoveType.Before,//Movetype defaults to before, but I like to make it epxlicit.
-                x => x.MatchStloc(out regenMultiIndex),//The regen multiplier local field is stored right before...
-                x => x.MatchLdloc(monsoonPlayerHelperCountIndex)//the itemcount of the monsoonmultiplier item is checked.
-                );
-            c.Index += 2;//Since the previous cursor location will get skipped over by if statements, we need to move into a slightly weird place that is always called
-            c.Emit(OpCodes.Ldarg_0);//emit the characterbody
-            c.Emit(OpCodes.Ldloc, regenMultiIndex);//emit the local regen multiplier
-            c.EmitDelegate<Func<RoR2.CharacterBody, float, float>>((self, regenMulti) =>//emit a function taking a charbody and a float that returns a float.
-            {
-                if (self.isPlayerControlled)
-                {
-                    regenMulti += HealthRegenMultiplier;//note that a + -b == a - b;
-                }
-                return regenMulti;
+                if(storeValue)
+                    DefaultLanguage.Add(pair.Key, Language.currentLanguage.GetLocalizedStringByToken(pair.Key));
+                LanguageAPI.Add(pair.Key, pair.Value);
             });
-            c.Emit(OpCodes.Stloc, regenMultiIndex);//store the result.
-            int regenIndex = 36;//As usual with indexes, I overwrite this later with the 'out' keyword. I just put the expected value here
-            c.GotoPrev(MoveType.Before,//We need to go back, but I couldn't find these instructions earlier becase I hadn't found the regenMultiIndex yet.
-                x => x.MatchStloc(out regenIndex),//The base+level regen i stored with this instruction.
-                x => x.MatchLdcR4(1),//And the regen multiplier is initialised.
-                x => x.MatchStloc(regenMultiIndex)
-                ); ;
-            c.Index += 1;//go to right before the init of the regen multi
-            c.Emit(OpCodes.Ldarg_0);//emit the characterbody
-            c.Emit(OpCodes.Ldloc, regenIndex);//emit the value of the regen
-            c.EmitDelegate<Func<RoR2.CharacterBody, float, float>>((self, regen) =>//emit a function taking a characterbody an a float that returns a float
-            {
-                //Check if this is a monster and if it's not been hit for 5 seconds.
-                if (self.teamComponent.teamIndex == TeamIndex.Monster && self.outOfDanger && self.baseNameToken != "ARTIFACTSHELL_BODY_NAME" && self.baseNameToken != "TITANGOLD_BODY_NAME")
-                {
-                    regen += self.maxHealth * MonsterRegen;
-                }
-                return regen;
-            });
-            c.Emit(OpCodes.Stloc, regenIndex);//store the new regen.
+            reloadLanguage();
         }
-
-        private void UnluckyBears(ILContext il)
+       
+        private static void reloadLanguage()
         {
-            ILCursor c = new ILCursor(il);
-            c.GotoNext(
-                x => x.MatchLdflda(typeof(HealthComponent), "itemCounts"),
-                x => x.MatchLdfld("RoR2.HealthComponent/ItemCounts", "bear")
-                );
-            c.GotoNext(MoveType.Before,
-                x => x.MatchLdcR4(0),//This is the luck value used in CheckRoll for toughertimes.
-                x => x.MatchLdnull(),
-                x => x.MatchCall("RoR2.Util", "CheckRoll")
-                );
-            c.Remove();
-            c.Emit(OpCodes.Ldc_R4, -1f);//We replace it with -1. Because no mercy.
+            Language.CCLanguageReload(new ConCommandArgs());
         }
-
-
-        //Below here is only string replacement.
-
-        private void ReplaceInteractibles()
-        {
-            ReplaceString("MSOBELISK_CONTEXT", "Escape the madness");
-            ReplaceString("MSOBELISK_CONTEXT_CONFIRMATION", "Take the cowards way out");
-            ReplaceString("COST_PERCENTHEALTH_FORMAT", "?");//hide the cost for bloodshrines.
-            ReplaceString("SHRINE_BLOOD_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: This pleases me. <style=cShrine>({1})</color>");
-            ReplaceString("SHRINE_BLOOD_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: {0} has paid their respects. Will you do the same? <style=cShrine>({1})</color>");
-            ReplaceString("SHRINE_HEALING_USE_MESSAGE_2P", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
-            ReplaceString("SHRINE_HEALING_USE_MESSAGE", "<style=cDeath>N'Kuhana</style>: Bask in my embrace.");
-            ReplaceString("SHRINE_BOSS_BEGIN_TRIAL", "<style=cShrine>Show me your courage.</style>");
-            ReplaceString("SHRINE_BOSS_END_TRIAL", "<style=cShrine>Your effort entertains me.</style>");
-            ReplaceString("PORTAL_MYSTERYSPACE_CONTEXT", "Hide in another realm.");
-            ReplaceString("SCAVLUNAR_BODY_SUBTITLE", "The weakling");
-            ReplaceString("MAP_LIMBO_SUBTITLE", "Hideaway");
-        }
-
-        private void ReplaceItems()
-        {
-            ReplaceString("ITEM_BEAR_PICKUP", "Chance to block incoming damage. They think you are <style=cDeath>unlucky</style>.");
-        }
-
-        private void ReplaceObjectives()
-        {
-            ReplaceString("OBJECTIVE_FIND_TELEPORTER", "Flee");
-            ReplaceString("OBJECTIVE_DEFEAT_BOSS", "Defeat the <style=cDeath>Anchor</style>");
-        }
-        private void ReplacePause()
-        {
-            ReplaceString("PAUSE_RESUME", "Entertain me");
-            ReplaceString("PAUSE_SETTINGS", "Change your perspective");
-            ReplaceString("PAUSE_QUIT_TO_MENU", "Give up");
-            ReplaceString("PAUSE_QUIT_TO_DESKTOP", "Don't come back");
-            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_SINGLEPLAYER", "You are a disappointment.");
-            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_CLIENT", "Leave these weaklings with me?");
-            ReplaceString("QUIT_RUN_CONFIRM_DIALOG_BODY_HOST", "You are my main interest, <style=cDeath>end the others?</style>");
-        }
-        private void ReplaceStats()
-        {
-            ReplaceString("STAT_KILLER_NAME_FORMAT", "Released by: <color=#FFFF7F>{0}</color>");
-            ReplaceString("STAT_POINTS_FORMAT", "");//Delete points
-            ReplaceString("STAT_TOTAL", "");//delete more points
-            ReplaceString("STAT_CONTINUE", "Try again");
-
-            ReplaceString("STATNAME_TOTALTIMEALIVE", "Wasted time");
-            ReplaceString("STATNAME_TOTALDEATHS", "Times Blessed");
-            ReplaceString("STATNAME_HIGHESTLEVEL", "Strength Acquired");
-            ReplaceString("STATNAME_TOTALGOLDCOLLECTED", "Greed");
-            ReplaceString("STATNAME_TOTALDISTANCETRAVELED", "Ground laid to waste");
-            ReplaceString("STATNAME_TOTALMINIONDAMAGEDEALT", "Pacification delegated");
-            ReplaceString("STATNAME_TOTALITEMSCOLLECTED", "Trash cleaned up");
-            ReplaceString("STATNAME_HIGHESTITEMSCOLLECTED", "Most trash held");
-            ReplaceString("STATNAME_TOTALSTAGESCOMPLETED", "Times fled");
-            ReplaceString("STATNAME_HIGHESTSTAGESCOMPLETED", "Times fled");
-            ReplaceString("STATNAME_TOTALPURCHASES", "Offered");
-            ReplaceString("STATNAME_HIGHESTPURCHASES", "Offered");
-
-            ReplaceString("GAME_RESULT_LOST", "PATHETHIC");
-            ReplaceString("GAME_RESULT_WON", "IMPRESSIVE");
-            ReplaceString("GAME_RESULT_UNKNOWN", "where are you?");
-        }
+       
     }
 }
