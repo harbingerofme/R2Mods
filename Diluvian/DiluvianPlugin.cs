@@ -24,7 +24,7 @@ namespace Diluvian
         public const string
             NAME = "Diluvian",
             GUID = "com.harbingerofme." + NAME,
-            VERSION = "2.0.0";
+            VERSION = "2.0.2";
 
         internal static DiluvianPlugin instance;
 
@@ -98,18 +98,6 @@ namespace Diluvian
             //This is where my hooks live. They themselves are events, not ONhooks
             Run.onRunStartGlobal += Run_onRunStartGlobal;
             Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
-            On.RoR2.UI.CurrentDifficultyIconController.Start += CurrentDifficultyIconController_Start;
-
-        }
-
-        private void CurrentDifficultyIconController_Start(On.RoR2.UI.CurrentDifficultyIconController.orig_Start orig, MonoBehaviour self)
-        {
-            orig(self);
-            /*
-            if(Run.instance && myDefs.TryGetValue(Run.instance.selectedDifficulty, out var def))
-            {
-                self.GetComponent<Image>().sprite = UnityEngine.Resources.Load<Sprite>(assetString + def.DifficultyDef.iconPath);
-            }*/
         }
 
         private void RuleCategoryController_SetData(On.RoR2.UI.RuleCategoryController.orig_SetData orig, RoR2.UI.RuleCategoryController self, RuleCategoryDef categoryDef, RuleChoiceMask availability, RuleBook ruleBook)

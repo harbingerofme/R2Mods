@@ -19,7 +19,7 @@ Upon completion the main game ending on Diluvian, you unlock a second difficulty
 
 ### Credits ###
 
-* AvizVul for making the new primary difficuly icons.
+* Avizvul for making the new primary difficulty icons.
 * Horus for providing an additional one.
 * People who keep asking when it will be updated for providing some pressure to update.
 
@@ -27,6 +27,8 @@ Upon completion the main game ending on Diluvian, you unlock a second difficulty
 
 ## Changelog ##
 
+* **2.0.2** Reduce memory footprint by not hooking for no reason. Corrected Avizvul's capitalization. Fixed a typo. @me when you beat the game on Diluvian.
+* **2.0.1** Fixed the regen multiplier actually being -100%. *oops*. Also have a [trailer](https://www.youtube.com/watch?v=LKfAw8TZtq8).
 * **2.0.0** Updated for game update 1.0.  New icon, new difficulty. Re-evaluated One Shot Protection. Added config to choose icon artist.
 * **1.0.5** Health regen no longer applies to characterbodies with invulnerability or invulberability phases.
 * **1.0.4** Updated for Artifacts, by... removing the monsters spawning after tp completion. Code just wouldn't work. I'll compensate for this in a future update, but for now, I want people able to play Diluvian again.

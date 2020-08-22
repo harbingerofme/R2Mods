@@ -103,7 +103,7 @@ namespace Diluvian
             {
                 if (self.isPlayerControlled)
                 {
-                    regenMulti += HealthRegenMultiplier;//note that a + -b == a - b;
+                    regenMulti += HealthRegenMultiplier+0.4f;//note that a + -b == a - b; 0.4 is to offset the monsoon degen.
                 }
                 return regenMulti;
             }
