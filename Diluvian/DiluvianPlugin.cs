@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace Diluvian
@@ -24,7 +25,7 @@ namespace Diluvian
         public const string
             NAME = "Diluvian",
             GUID = "com.harbingerofme." + NAME,
-            VERSION = "2.0.2";
+            VERSION = "2.0.3";
 
         internal static DiluvianPlugin instance;
 
@@ -106,17 +107,21 @@ namespace Diluvian
             {
                 try
                 {
-                    bool knowsED = AchievementManager.GetUserAchievementManager(LocalUserManager.GetFirstLocalUser()).userProfile.HasAchievement("COMPLETE_MAINENDING_DILUVIAN");
-                    if (knowsED)
+                    var localUser1 = LocalUserManager.GetFirstLocalUser();
+                    if (localUser1 != null)
                     {
-                        Syzygy.Unlocked();   
+                        bool knowsED = AchievementManager.GetUserAchievementManager(localUser1).userProfile.HasAchievement("COMPLETE_MAINENDING_DILUVIAN");
+                        if (knowsED)
+                        {
+                            Syzygy.Unlocked();
+                        }
+                        else
+                        {
+                            Syzygy.Locked();
+                        }
+                        EDrule.spritePath = assetString + Syzygy.def.IconPath;
+                        reloadLanguage();
                     }
-                    else
-                    {
-                        Syzygy.Locked();
-                    }
-                    EDrule.spritePath = assetString + Syzygy.def.IconPath;
-                    reloadLanguage();
                 }
                 catch(Exception e)
                 {
@@ -143,17 +148,22 @@ namespace Diluvian
             //Only do stuff when Diluvian is selected.
             if (myDefs.TryGetValue(run.selectedDifficulty, out var def) && HooksApplied == false)
             {
-                var message = def.StartMessages[Run.instance.runRNG.RangeInt(0, def.StartMessages.Length)];
-                ChatMessage.SendColored(message, def.Color);
-                //Make our hooks.
                 HooksApplied = true;
+
+                if (NetworkServer.active)
+                {
+                    var message = def.StartMessages[Run.instance.runRNG.RangeInt(0, def.StartMessages.Length)];
+                    ChatMessage.SendColored(message, def.Color);
+                    //Make our hooks.
+                    SharedHooks.ApplyBears();
+                    SharedHooks.SetupCombatDirectorChanges(def.EliteModifier);
+                    SharedHooks.ApplyBloodShrineRandom();
+                }
 
                 
                 SharedHooks.ApplyRegenChanges(def.HealthRegenMod, def.MonsterRegenMod);
-                SharedHooks.ApplyBears();
                 SharedHooks.ApplyOSPHook();
-                SharedHooks.SetupCombatDirectorChanges(def.EliteModifier);
-                SharedHooks.ApplyBloodShrineRandom();
+
                 def.ApplyHooks();
                 BuildLanguage(def.Language,true);
             }
@@ -165,13 +175,17 @@ namespace Diluvian
             if (myDefs.TryGetValue(run.selectedDifficulty, out var def) && HooksApplied)
             {
                 //Remove all of our hooks on run end and restore elite tables to their original value.
-                
-                SharedHooks.UndoRegenChanges();
-                SharedHooks.UndoBears();
-                SharedHooks.UndoCombatDirectorChanges();
-                SharedHooks.UndoOSPHook();
-                SharedHooks.UndoBloodShrineRandom();
+                if (NetworkServer.active)
+                {
 
+                    SharedHooks.UndoBears();
+                    SharedHooks.UndoCombatDirectorChanges();
+
+                    SharedHooks.UndoBloodShrineRandom();
+                }
+
+                SharedHooks.UndoRegenChanges();
+                SharedHooks.UndoOSPHook();
                 BuildLanguage(DefaultLanguage,false);
                 DefaultLanguage.Clear();
 

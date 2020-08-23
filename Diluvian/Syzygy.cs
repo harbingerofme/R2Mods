@@ -4,6 +4,7 @@ using R2API;
 using R2API.Utils;
 using RoR2;
 using UnityEngine;
+using UnityEngine.Networking;
 using static Diluvian.SZGHooks;
 
 namespace Diluvian
@@ -92,26 +93,32 @@ namespace Diluvian
         private bool illegalAccess;
         public override void ApplyHooks()
         {
-            RoR2.SceneDirector.onGenerateInteractableCardSelection += RemoveCleansingPools;
-            IL.RoR2.GenericPickupController.OnTriggerStay += LunarsUnConsentional;
-            SceneDirector.onPostPopulateSceneServer += StartAMeteorTimer;
-            On.RoR2.ScavengerItemGranter.Start += GiveScavsLunarsAndBossItems;
-            if (!EveryoneCanPlay())
+            if (NetworkServer.active)
             {
-                illegalAccess = true;
-                Diluvian.DiluvianPlugin.GetLogger().LogInfo("Attempted to start game without having unlocked the achievement for it!");
-                RoR2.CharacterBody.onBodyStartGlobal += CharacterBody_onBodyStartGlobal;
+                RoR2.SceneDirector.onGenerateInteractableCardSelection += RemoveCleansingPools;
+                IL.RoR2.GenericPickupController.OnTriggerStay += LunarsUnConsentional;
+                SceneDirector.onPostPopulateSceneServer += StartAMeteorTimer;
+                On.RoR2.ScavengerItemGranter.Start += GiveScavsLunarsAndBossItems;
+                if (!EveryoneCanPlay())
+                {
+                    illegalAccess = true;
+                    Diluvian.DiluvianPlugin.GetLogger().LogInfo("Attempted to start game without having unlocked the achievement for it!");
+                    RoR2.CharacterBody.onBodyStartGlobal += CharacterBody_onBodyStartGlobal;
+                }
             }
         }
         public override void UndoHooks()
         {
-            RoR2.SceneDirector.onGenerateInteractableCardSelection -= RemoveCleansingPools;
-            IL.RoR2.GenericPickupController.OnTriggerStay -= LunarsUnConsentional;
-            SceneDirector.onPostPopulateSceneServer -= StartAMeteorTimer;
-            On.RoR2.ScavengerItemGranter.Start -= GiveScavsLunarsAndBossItems;
-            if (illegalAccess)
+            if (NetworkServer.active)
             {
-                CharacterBody.onBodyStartGlobal -= CharacterBody_onBodyStartGlobal;
+                RoR2.SceneDirector.onGenerateInteractableCardSelection -= RemoveCleansingPools;
+                IL.RoR2.GenericPickupController.OnTriggerStay -= LunarsUnConsentional;
+                SceneDirector.onPostPopulateSceneServer -= StartAMeteorTimer;
+                On.RoR2.ScavengerItemGranter.Start -= GiveScavsLunarsAndBossItems;
+                if (illegalAccess)
+                {
+                    CharacterBody.onBodyStartGlobal -= CharacterBody_onBodyStartGlobal;
+                }
             }
         }
 

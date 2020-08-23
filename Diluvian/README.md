@@ -21,12 +21,14 @@ Upon completion the main game ending on Diluvian, you unlock a second difficulty
 
 * Avizvul for making the new primary difficulty icons.
 * Horus for providing an additional one.
+* Vulfoof for providing Mithrix dialogue.
 * People who keep asking when it will be updated for providing some pressure to update.
 
 ---
 
 ## Changelog ##
 
+* **2.0.3** Fixed calling some server-only methods as a client.This had multiple side-effects, for example, not letting starting items run. Also started skip checking if the localplayer had the achievement for dedicated servers, because well... they don't have a local player. Finally, I added some more text replacements, because I think they are neat.
 * **2.0.2** Reduce memory footprint by not hooking for no reason. Corrected Avizvul's capitalization. Fixed a typo. @me when you beat the game on Diluvian.
 * **2.0.1** Fixed the regen multiplier actually being -100%. *oops*. Also have a [trailer](https://www.youtube.com/watch?v=LKfAw8TZtq8).
 * **2.0.0** Updated for game update 1.0.  New icon, new difficulty. Re-evaluated One Shot Protection. Added config to choose icon artist.

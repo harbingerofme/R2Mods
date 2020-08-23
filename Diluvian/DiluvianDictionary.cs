@@ -30,6 +30,7 @@ namespace Diluvian
             BuildObjectives();
             BuildPause();
             BuildStats();
+            ReplaceMithrix();
         }
 
         public void BuildInteractibles()
@@ -91,6 +92,54 @@ namespace Diluvian
             Add("GAME_RESULT_LOST", "PATHETHIC");
             Add("GAME_RESULT_WON", "IMPRESSIVE");
             Add("GAME_RESULT_UNKNOWN", "where are you?");
+        }
+
+        public void ReplaceMithrix()
+        {
+            //spawn
+            Add("BROTHER_SPAWN_PHASE1_1", "You shall die.");
+            Add("BROTHER_SPAWN_PHASE1_2", "This will be quick.");
+            Add("BROTHER_SPAWN_PHASE1_3", "Weakling.");
+            Add("BROTHER_SPAWN_PHASE1_4", "Why try?");
+
+            //early damage
+            Add("BROTHER_DAMAGEDEALT_1", "You dare try? Laughable.");
+            Add("BROTHER_DAMAGEDEALT_3", "It tickles.");
+            Add("BROTHER_DAMAGEDEALT_5", "Why try, if you shall die?");
+            Add("BROTHER_DAMAGEDEALT_9", "You're a bug.");
+
+            //early kill
+            Add("BROTHER_KILL_1", "I warned you. Pathetic.");
+            Add("BROTHER_KILL_2", "Die, bug.");
+            Add("BROTHER_KILL_3", "Worthless.");
+            Add("BROTHER_KILL_4", "Nobody will remember you. Pathetic.");
+            Add("BROTHER_KILL_5", "The dirt repulses at your corpse.");
+
+            //late damage
+            Add("BROTHERHURT_DAMAGEDEALT_1", "YOUR DEATH IS INEVITABLE.");
+            Add("BROTHERHURT_DAMAGEDEALT_2", "WEAK. DISGUSTING.");
+            Add("BROTHERHURT_DAMAGEDEALT_3", "YOU ARE PATHETIC.");
+            Add("BROTHERHURT_DAMAGEDEALT_4", "YOU DISGUST ME WITH WHAT YOU CALL EFFORT.");
+            Add("BROTHERHURT_DAMAGEDEALT_5", "DIE, VERMIN.");
+            Add("BROTHERHURT_DAMAGEDEALT_7", "YOU SHALL BREAK.");
+            Add("BROTHERHURT_DAMAGEDEALT_8", "YOU SHOULD GIVE UP. PATHETIC BUG.");
+            Add("BROTHERHURT_DAMAGEDEALT_9", "DISGUSTING HOW POORLY YOU USED YOUR TRINKETS. I SHALL DEMONSTRATE HOW TO USE THEM BETTER.");
+            Add("BROTHERHURT_DAMAGEDEALT_10", "YOUR MIND AND BODY SHALL BREAK AND SHATTER.");
+
+            //late kill
+            Add("BROTHERHURT_KILL_1", "YOUR EFFORT WAS WORTHLESS. TRASH.");
+            Add("BROTHERHURT_KILL_2", "AS I THOUGHT, JUST ANOTHER DISGUSTING BUG...");
+            Add("BROTHERHURT_KILL_3", "DIE. PATHETIC WORTHLESS VERMIN.");
+            Add("BROTHERHURT_KILL_4", "YOUR SOUL SHALL BE DESTROYED BY ME.");
+            Add("BROTHERHURT_KILL_5", "WARNED, BUT DARED NONETHELESS. AN EFFORT THAT IS WASTED AGAINST ME.");
+
+            //death
+            Add("BROTHERHURT_DEATH_1", "BUT...BUT HOW...");
+            Add("BROTHERHURT_DEATH_2", "BROTHER...!");
+            Add("BROTHERHURT_DEATH_3", "HOW...DID I DIE...TO SUCH VERMIN...");
+            Add("BROTHERHURT_DEATH_4", "SUCH...A WORTHLESS...DEATH...");
+            Add("BROTHERHURT_DEATH_5", "WHY...HOW...TO A PATHETIC BUG...");
+            Add("BROTHERHURT_DEATH_6", "SHE SHOULD HAVE... INSTEAD I... WHY");
         }
     }
 }
