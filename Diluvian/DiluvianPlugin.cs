@@ -10,7 +10,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 
 namespace Diluvian
 {
@@ -25,7 +24,7 @@ namespace Diluvian
         public const string
             NAME = "Diluvian",
             GUID = "com.harbingerofme." + NAME,
-            VERSION = "2.0.3";
+            VERSION = "2.0.6";
 
         internal static DiluvianPlugin instance;
 
@@ -81,9 +80,11 @@ namespace Diluvian
             syzygyArtist = Config.Bind(new ConfigDefinition("Art", "OTHER"), "avizvul",new ConfigDescription("The artist for the other icon.Options: \"harb\",\"avizvul\"",new AcceptableValueList<string>(new string[] { "avizvul", "harb" })));
 
             UnlockablesAPI.AddUnlockable<DiluvianCompletedAchievement>(true);
+            UnlockablesAPI.AddUnlockable<SZGAchievement>(true);
             LanguageAPI.Add("COMPLETE_MAINENDING_DILUVIAN_NAME", "Unobscured. Unblinking. Unrelenting.");
             LanguageAPI.Add("COMPLETE_MAINENDING_DILUVIAN_DESC", "Completed the game on Diluvian.");
-            LanguageAPI.Add("DIFFICULTY_ECLIPSED_DILUVIAN_NAME", "what is this field for?");
+            LanguageAPI.Add("COMPLETE_AAO_SYZYGY_NAME", "Crescendo");
+            LanguageAPI.Add("COMPLETE_AAO_SYZYGY_DESC", "Obliterate on Syzygy difficulty with all artifacts enabled.");
 
             DiluvianDifficulty.def = new DiluvianDifficulty();
             Dindex = DifficultyAPI.AddDifficulty(DiluvianDifficulty.def.DifficultyDef);
@@ -154,6 +155,7 @@ namespace Diluvian
                 {
                     var message = def.StartMessages[Run.instance.runRNG.RangeInt(0, def.StartMessages.Length)];
                     ChatMessage.SendColored(message, def.Color);
+
                     //Make our hooks.
                     SharedHooks.ApplyBears();
                     SharedHooks.SetupCombatDirectorChanges(def.EliteModifier);
@@ -174,15 +176,10 @@ namespace Diluvian
         {
             if (myDefs.TryGetValue(run.selectedDifficulty, out var def) && HooksApplied)
             {
-                //Remove all of our hooks on run end and restore elite tables to their original value.
-                if (NetworkServer.active)
-                {
+                SharedHooks.UndoBears();
+                SharedHooks.UndoCombatDirectorChanges();
 
-                    SharedHooks.UndoBears();
-                    SharedHooks.UndoCombatDirectorChanges();
-
-                    SharedHooks.UndoBloodShrineRandom();
-                }
+                SharedHooks.UndoBloodShrineRandom();
 
                 SharedHooks.UndoRegenChanges();
                 SharedHooks.UndoOSPHook();

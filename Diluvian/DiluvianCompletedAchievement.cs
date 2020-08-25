@@ -18,7 +18,7 @@ namespace Diluvian
 
         public string UnlockableNameToken => "DIFFICULTY_ECLIPSED_DILUVIAN_NAME";
 
-        public string SpritePath => DiluvianPlugin.assetString+ "AnotherRoRDifficultyIcon-"+DiluvianPlugin.syzygyArtist.Value+".png";
+        public string SpritePath => DiluvianPlugin.assetString+ "diluvian-"+DiluvianPlugin.diluvianArtist.Value+".png";
 
 
         protected override bool ShouldGrant(RunReport runReport)

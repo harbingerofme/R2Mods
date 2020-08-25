@@ -25,7 +25,7 @@ namespace Diluvian
         {
             cardCategorySelection.RemoveCardsThatFailFilter(card =>
             {
-                return card.spawnCard.name == "iscShrineCleanse";
+                return card.spawnCard.name != "iscShrineCleanse";
             });
         }
 

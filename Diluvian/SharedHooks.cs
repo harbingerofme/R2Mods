@@ -26,10 +26,7 @@ namespace Diluvian
             }
         }
 
-        public static void ApplyOSPHook()
-        {
-            On.RoR2.CharacterBody.RecalculateStats += ChangeOSP;
-        }
+        public static void ApplyOSPHook() => On.RoR2.CharacterBody.RecalculateStats += ChangeOSP;
         public static void UndoOSPHook() => On.RoR2.CharacterBody.RecalculateStats -= ChangeOSP;
 
         private static void ChangeOSP(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
@@ -38,8 +35,22 @@ namespace Diluvian
             self.SetPropertyValue("hasOneShotProtection", false);
         }
 
-        public static void ApplyBears() => IL.RoR2.HealthComponent.TakeDamage += UnluckyBears;
-        public static void UndoBears() => IL.RoR2.HealthComponent.TakeDamage -= UnluckyBears;
+        private static bool BearsApplied = false;
+        public static void ApplyBears()
+        {
+            if (!BearsApplied)
+            {
+                BearsApplied = true;
+                IL.RoR2.HealthComponent.TakeDamage += UnluckyBears;
+            }
+        }
+        public static void UndoBears(){
+            if (BearsApplied)
+            {
+                BearsApplied = false;
+                IL.RoR2.HealthComponent.TakeDamage -= UnluckyBears;
+            }
+}
 
         private static void UnluckyBears(ILContext il)
         {
@@ -119,11 +130,16 @@ namespace Diluvian
             }
         }
 
+
+        private static bool CombatDirectorModifiersApplied = false;
         private static readonly CombatDirector.EliteTierDef[] CombatDirectorTierDefs;
         private static readonly float[] vanillaEliteMultipliers;
 
         public static void SetupCombatDirectorChanges(float multiplier)
         {
+            if (CombatDirectorModifiersApplied)
+                return;
+            CombatDirectorModifiersApplied = true;
             if (DiluvianPlugin.ESOenabled)
             {
                 ESOTweaking(multiplier, false);
@@ -141,6 +157,9 @@ namespace Diluvian
 
         public static void UndoCombatDirectorChanges()
         {
+            if (!CombatDirectorModifiersApplied)
+                return;
+            CombatDirectorModifiersApplied = false;
             if (DiluvianPlugin.ESOenabled)
             {
                 ESOTweaking(0, true);
@@ -175,8 +194,22 @@ namespace Diluvian
         }
 
 
-        public static void ApplyBloodShrineRandom() => On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinePriceRandom;
-        public static void UndoBloodShrineRandom() => On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinePriceRandom;
+        private static bool BloodShrinesApplied = false;
+        public static void ApplyBloodShrineRandom()
+        {
+            if (BloodShrinesApplied)
+                return;
+            BloodShrinesApplied = true;
+            On.RoR2.ShrineBloodBehavior.FixedUpdate += BloodShrinePriceRandom;
+        }
+
+        public static void UndoBloodShrineRandom()
+        {
+            if (!BloodShrinesApplied)
+                return;
+            BloodShrinesApplied = false;
+            On.RoR2.ShrineBloodBehavior.FixedUpdate -= BloodShrinePriceRandom;
+        }
 
         private static void BloodShrinePriceRandom(On.RoR2.ShrineBloodBehavior.orig_FixedUpdate orig, RoR2.ShrineBloodBehavior self)
         {

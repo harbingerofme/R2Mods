@@ -22,12 +22,16 @@ Upon completion the main game ending on Diluvian, you unlock a second difficulty
 * Avizvul for making the new primary difficulty icons.
 * Horus for providing an additional one.
 * Vulfoof for providing Mithrix dialogue.
+* Phedg1 for getting pestered for all my bugs and relaying them to me while remaining polite.
 * People who keep asking when it will be updated for providing some pressure to update.
 
 ---
 
 ## Changelog ##
 
+* **2.0.6** Fixed a case where people who didn't unlock SZG tried to play it and then got stuck with the debuff applying until they restarted the game. Also added an achievement for completing SAAO. It unlocks nothing. It's style points only.
+* **2.0.5** Fixed not undoing all of Diluvian's (the entire) modifiers when a run ends in the common case that there is no active host when the run is over. Thanks @phedg1. Also fixed SZG' difficulty scaling not displaying as 80%.
+* **2.0.4** Fixed removing everything but Cleansing Pools on SZG. It's been a long week.
 * **2.0.3** Fixed calling some server-only methods as a client.This had multiple side-effects, for example, not letting starting items run. Also started skip checking if the localplayer had the achievement for dedicated servers, because well... they don't have a local player. Finally, I added some more text replacements, because I think they are neat.
 * **2.0.2** Reduce memory footprint by not hooking for no reason. Corrected Avizvul's capitalization. Fixed a typo. @me when you beat the game on Diluvian.
 * **2.0.1** Fixed the regen multiplier actually being -100%. *oops*. Also have a [trailer](https://www.youtube.com/watch?v=LKfAw8TZtq8).

@@ -117,6 +117,7 @@ namespace Diluvian
                 On.RoR2.ScavengerItemGranter.Start -= GiveScavsLunarsAndBossItems;
                 if (illegalAccess)
                 {
+                    illegalAccess = false;
                     CharacterBody.onBodyStartGlobal -= CharacterBody_onBodyStartGlobal;
                 }
             }
@@ -139,7 +140,7 @@ namespace Diluvian
             string desc = "<color=#224470>With an audience of <color=white>stars</color>, give it your all.</style><style=cStack>\n";
             desc = string.Join("\n",
                 desc,
-                $">Difficulty Scaling: +{ScalingValue * 50 - 100}%",
+                $">Difficulty Scaling: +{Mathf.RoundToInt(ScalingValue * 50 - 100)}%",
                 ">All <style=cArtifact>Diluvian</style> modifiers",
                 ">All <style=cIsHealth>Eclipse</style> modifiers",
                 "><style=cIsUtility>The destruction of the Moon has influenced the world.</style>"
