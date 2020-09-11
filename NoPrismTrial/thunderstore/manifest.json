@@ -1,0 +1,9 @@
+{
+  "name": "NoPrismaticTrialNoProblem",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/harbingerofme/r2mods",
+  "description": "Adds a console command that grants you the unlocks gated behind prismatic trials.",
+  "dependencies": [
+    "tristanmcpherson-R2API-2.5.14"
+  ]
+}
