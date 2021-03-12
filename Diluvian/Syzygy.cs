@@ -127,14 +127,7 @@ namespace Diluvian
 
         private bool EveryoneCanPlay()
         {
-            UnlockableDef def = UnlockableCatalog.GetUnlockableDef("COMPLETE_MAINENDING_DILUVIAN_UNLOCKABLE");
-            ReadOnlyCollection<NetworkUser> onlyInstancesList = NetworkUser.readOnlyInstancesList;
-            for (int index = 0; index < onlyInstancesList.Count; ++index)
-            {
-                if (!onlyInstancesList[index].unlockables.Contains(def))
-                    return false;
-            }
-            return true;
+            return Run.instance.DoesEveryoneHaveThisUnlockableUnlocked("COMPLETE_MAINENDING_DILUVIAN_UNLOCKABLE");
         }
 
         private string BuildDescription()
