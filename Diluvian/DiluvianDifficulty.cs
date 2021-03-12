@@ -38,13 +38,13 @@ namespace Diluvian
             string desc = "For those found wanting. <style=cDeath>N'Kuhana</style> watches with interest.<style=cStack>\n";
             desc = string.Join("\n",
                 desc,
-                $">Difficulty Scaling: +{ScalingValue * 50 - 100}%",
-                $">Player Health Regeneration: {(int)(HealthRegenMod * 100)}%",
-                ">Player luck: Reduced in some places.",
-                $">Monster Health Regeneration: +{MonsterRegenMod * 100}% of MaxHP per second (out of danger)",
-                ">Oneshot Protection: Removed completely",
-                DiluvianPlugin.ESOenabled ? ">Elites: Handled by Elite Spawning Overhaul." : $">Elites: {(1 - EliteModifier) * 100}% cheaper.",
-                ">Shrine of Blood: Cost hidden and random."
+                $">Difficulty Scaling: <style=cDeath>+{ScalingValue * 50 - 100}%</style>",
+                $">Player Health Regeneration: <style=cDeath>{(int)(HealthRegenMod * 100)}%</style>",
+                ">Player luck: <style=cSub>Reduced in some places.</style>",
+                $">Monster Health Regeneration: <style=cIsHealing>+{MonsterRegenMod * 100}%</style> of MaxHP per second (out of danger)",
+                ">Oneshot Protection: <style=cSub>Removed completely</style>",
+                $">Elites: <style=cIsHealing>{(1 - EliteModifier) * 100}%</style> cheaper.",
+                ">Shrine of Blood: Cost <style=cDeath>hidden</style> and <style=cShrine>random</style>."
                 );
             desc += "</style>";
             return desc;
