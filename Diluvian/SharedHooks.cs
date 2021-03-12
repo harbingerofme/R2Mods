@@ -174,7 +174,7 @@ namespace Diluvian
             }
         }
 
-        private static Dictionary<EliteIndex, float> EsoVals = new Dictionary<EliteIndex, float>();
+        private static readonly Dictionary<EliteIndex, float> EsoVals = new Dictionary<EliteIndex, float>();
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ESOTweaking(float multiplier, bool undo)
         {
