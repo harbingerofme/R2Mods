@@ -1,8 +1,8 @@
 ﻿using BepInEx;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using System.Reflection;
 using BepInEx.Configuration;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using System.Reflection;
 
 /*
     Code By Guido "Harb". 
@@ -22,12 +22,12 @@ namespace HarbTweaks
 
         public void Awake()
         {
-            scaling =  Config.AddSetting<float>(
+            scaling = Config.AddSetting<float>(
                 "",
                 "First stage scaling",
                 2f,
                 new ConfigDescription("Vanilla gameplay is 0. But since you have this tweak to start quicker anyway, I've doubled it by default.")
-                ) ;
+                );
             IL.RoR2.SceneDirector.PopulateScene += SceneDirector_PopulateScene;
         }
 
@@ -48,7 +48,7 @@ namespace HarbTweaks
             c.Emit(OpCodes.Ldarg_0);
             c.Emit(OpCodes.Ldfld, typeof(RoR2.SceneDirector).GetField("monsterCredit", BindingFlags.NonPublic | BindingFlags.Instance));
             c.Emit(OpCodes.Conv_R4);
-            c.Emit(OpCodes.Ldc_R4,val);
+            c.Emit(OpCodes.Ldc_R4, val);
             c.Emit(OpCodes.Mul);
             c.Emit(OpCodes.Conv_I4);
         }

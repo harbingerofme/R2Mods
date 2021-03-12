@@ -1,8 +1,4 @@
-﻿using BepInEx;
-using RoR2;
-using UnityEngine;
-
-/*
+﻿/*
     Code By Guido "Harb". 
      */
 
@@ -27,21 +23,23 @@ namespace GreedyLockbox
             if (purchInter && purchInter.displayNameToken.ToLower() == "lockbox_name")
             {
                 Debug.Log(purchInter.displayNameToken.ToLower());
-                if (purchInter.costType == CostTypeIndex.None) {
+                if (purchInter.costType == CostTypeIndex.None)
+                {
                     if (buddy && buddy.inventory && buddy.inventory.GetItemCount(ItemIndex.TreasureCache) == 0)
                     {
                         return;
                     }
                 }
             }
-        orig(self, interactableObject);
+            orig(self, interactableObject);
         }
 
         private Interactability PurchaseInteraction_GetInteractability(On.RoR2.PurchaseInteraction.orig_GetInteractability orig, PurchaseInteraction self, Interactor activator)
         {
-            
+
             CharacterBody buddy = activator.GetComponent<CharacterBody>();
-            if (self.costType == CostTypeIndex.None) {
+            if (self.costType == CostTypeIndex.None)
+            {
                 if (self.displayNameToken.ToLower() == "lockbox_name")
                 {
                     if (buddy && buddy.inventory && buddy.inventory.GetItemCount(ItemIndex.TreasureCache) == 0)
@@ -50,7 +48,7 @@ namespace GreedyLockbox
                     }
                 }
             }
-            return orig(self,activator);
+            return orig(self, activator);
         }
     }
 }

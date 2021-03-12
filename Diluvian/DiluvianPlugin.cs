@@ -121,7 +121,7 @@ namespace Diluvian
                             Syzygy.Locked();
                         }
                         EDrule.spritePath = assetString + Syzygy.def.IconPath;
-                        reloadLanguage();
+                        ReloadLanguage();
                     }
                 }
                 catch(Exception e)
@@ -199,10 +199,10 @@ namespace Diluvian
                     DefaultLanguage.Add(pair.Key, Language.currentLanguage.GetLocalizedStringByToken(pair.Key));
                 LanguageAPI.Add(pair.Key, pair.Value);
             });
-            reloadLanguage();
+            ReloadLanguage();
         }
        
-        private static void reloadLanguage()
+        private static void ReloadLanguage()
         {
             Language.CCLanguageReload(new ConCommandArgs());
         }

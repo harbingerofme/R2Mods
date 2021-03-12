@@ -1,7 +1,7 @@
 ﻿using BepInEx;
-using UnityEngine;
 using R2API.Utils;
 using RoR2;
+using UnityEngine;
 
 /*
     Code By Guido "Harb". 
@@ -53,7 +53,7 @@ namespace NoMoreTripleQuestion
                 var pre = lastSTB.CurrentPickupIndex();
                 var pre2 = lastSTB.pickupIndexIsHidden;
                 lastSTB.SetPickupIndex(lastSTB.CurrentPickupIndex(), false);
-                Logger.LogMessage(string.Format("All question marks. Unhiding the last terminal. ({0},{1} -> {2},{3})",pre,pre2,lastSTB.CurrentPickupIndex(),lastSTB.pickupIndexIsHidden));
+                Logger.LogMessage(string.Format("All question marks. Unhiding the last terminal. ({0},{1} -> {2},{3})", pre, pre2, lastSTB.CurrentPickupIndex(), lastSTB.pickupIndexIsHidden));
             }
             if (allSame && lastSTB)
             {
