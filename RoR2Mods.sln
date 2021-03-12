@@ -41,9 +41,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatsAnnex", "StatsAnnex\StatsAnnex.csproj", "{E1DA4BA3-ECD4-4D0D-A110-621B6C8FBE6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallationChecker", "InstallationChecker\InstallationChecker.csproj", "{96EAC145-BCB4-4E92-8C4F-EEB69F762B22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstallationChecker", "InstallationChecker\InstallationChecker.csproj", "{96EAC145-BCB4-4E92-8C4F-EEB69F762B22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoPrismTrial", "NoPrismTrial\NoPrismTrial.csproj", "{8591EDAE-09E0-4E8A-8935-39AE59A5DCF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoPrismTrial", "NoPrismTrial\NoPrismTrial.csproj", "{8591EDAE-09E0-4E8A-8935-39AE59A5DCF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
