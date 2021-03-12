@@ -105,11 +105,12 @@ namespace Diluvian
                     Diluvian.DiluvianPlugin.GetLogger().LogInfo("Attempted to start game without having unlocked the achievement for it!");
                     RoR2.CharacterBody.onBodyStartGlobal += CharacterBody_onBodyStartGlobal;
                 }
+                HooksApplied = true;
             }
         }
         public override void UndoHooks()
         {
-            if (NetworkServer.active)
+            if (HooksApplied)
             {
                 RoR2.SceneDirector.onGenerateInteractableCardSelection -= RemoveCleansingPools;
                 IL.RoR2.GenericPickupController.OnTriggerStay -= LunarsUnConsentional;
@@ -120,6 +121,7 @@ namespace Diluvian
                     illegalAccess = false;
                     CharacterBody.onBodyStartGlobal -= CharacterBody_onBodyStartGlobal;
                 }
+                HooksApplied = false;
             }
         }
 

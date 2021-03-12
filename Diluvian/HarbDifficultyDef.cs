@@ -25,6 +25,7 @@ namespace Diluvian
 
         public float EliteModifier { get; protected set; }
 
+        public bool HooksApplied { get; protected set; }
         public abstract void ApplyHooks();
         public abstract void UndoHooks();
 
