@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace Diluvian
 {
-    class DiluvianDifficulty : HarbDifficultyDef
+    internal class DiluvianDifficulty : HarbDifficultyDef
     {
         internal static DiluvianDifficulty def;
+
         public DiluvianDifficulty()
         {
             Name = "Diluvian";
@@ -14,8 +15,8 @@ namespace Diluvian
             ScalingValue = 3.5f;
             HealthRegenMod = -0.6f;
             Tag = "DIL";
-            IconPath = "diluvian-"+DiluvianPlugin.diluvianArtist.Value+".png";
-            StartMessages = new string[]{"A storm is brewing.","You feel as though your thoughts are drenched.", "The world shivers in anticipation."};
+            IconPath = "diluvian-" + DiluvianPlugin.diluvianArtist.Value + ".png";
+            StartMessages = new string[] { "A storm is brewing.", "You feel as though your thoughts are drenched.", "The world shivers in anticipation." };
             MonsterRegenMod = 0.015f;
             EliteModifier = 0.8f;
             Description = buildDescription();
@@ -25,12 +26,10 @@ namespace Diluvian
 
         public override void ApplyHooks()
         {
-            
         }
 
         public override void UndoHooks()
         {
-            
         }
 
         private string buildDescription()
