@@ -1,0 +1,9 @@
+{
+  "name": "Disinter",
+  "description": "Utility mod to remove broken runreports from the game.",
+  "version_number": "1.0.0",
+  "dependencies": [
+    "RiskofThunder-HookGenPatcher-1.2.1"
+  ],
+  "website_url": "https://github.com/harbingerofme/R2Mods/tree/master/Disinter"
+}
