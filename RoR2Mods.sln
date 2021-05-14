@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstallationChecker", "Inst
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoPrismTrial", "NoPrismTrial\NoPrismTrial.csproj", "{8591EDAE-09E0-4E8A-8935-39AE59A5DCF9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Disinter", "Disinter\Disinter.csproj", "{B6485B9E-4BF2-43F1-8BAC-C1B77EDC0C99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,10 @@ Global
 		{8591EDAE-09E0-4E8A-8935-39AE59A5DCF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8591EDAE-09E0-4E8A-8935-39AE59A5DCF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8591EDAE-09E0-4E8A-8935-39AE59A5DCF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6485B9E-4BF2-43F1-8BAC-C1B77EDC0C99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6485B9E-4BF2-43F1-8BAC-C1B77EDC0C99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6485B9E-4BF2-43F1-8BAC-C1B77EDC0C99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6485B9E-4BF2-43F1-8BAC-C1B77EDC0C99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
